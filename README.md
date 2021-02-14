@@ -1,5 +1,5 @@
 # FindMyTag
-SUTD 50.003 ESC Indoor Tracking Project with UnaBiz
+SUTD 50.003 ESC Indoor Tracking Project with [UnaBiz](https://www.unabiz.com/)
 
 Cohort 3 Group 7 Team Members:
 
