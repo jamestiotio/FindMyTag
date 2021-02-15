@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "661062829643",
+    "project_id": "findmytag-esc2021",
+    "storage_bucket": "findmytag-esc2021.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661062829643:android:c250c13fa768545ca7afce",
+        "android_client_info": {
+          "package_name": "com.example.findmytag"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "661062829643-3dduf4en3ee9epj2k9rtrnr6sf97d314.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrYz2Wr_FE_0GcWs6IVxH1Q_k6741c5oY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "661062829643-3dduf4en3ee9epj2k9rtrnr6sf97d314.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
