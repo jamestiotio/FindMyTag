@@ -3,6 +3,7 @@ package com.example.findmytag;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -30,7 +31,7 @@ public class LocationActivity extends AppCompatActivity {
         btn_mappingfrag.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                //view.performClick();
+                view.performClick();
                 view.setPressed(true);
                 btn_testingfrag.setPressed(false);
                 fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -55,7 +56,7 @@ public class LocationActivity extends AppCompatActivity {
         btn_testingfrag.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                //view.performClick();
+                view.performClick();
                 view.setPressed(true);
                 btn_mappingfrag.setPressed(false);
                 fragmentTransaction = getSupportFragmentManager().beginTransaction();
