@@ -11,7 +11,7 @@
         android:id="@+id/imgView_mapping_floorplan"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-
+        android:src="@drawable/floorplan_src"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
