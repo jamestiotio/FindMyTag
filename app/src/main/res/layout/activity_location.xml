@@ -44,4 +44,16 @@
         android:layout_margin="30dp"
         android:name="com.example.tagtest.MappingFragment"/>
 
+    <Button
+        android:id="@+id/listofwifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WiFi"
+        app:layout_constraintBottom_toTopOf="@+id/frag_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.987"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.005" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
