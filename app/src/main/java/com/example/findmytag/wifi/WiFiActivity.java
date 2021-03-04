@@ -46,26 +46,20 @@ public class WiFiActivity extends AppCompatActivity {
             wifiManager.setWifiEnabled(true);
         }
 
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent x = new Intent(WiFiActivity.this, LocationActivity.class);
-                startActivity(x);
-            }
+        buttonBack.setOnClickListener(v -> {
+            Intent x = new Intent(WiFiActivity.this, LocationActivity.class);
+            startActivity(x);
         });
 
-        buttonScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(WiFiActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(
-                            WiFiActivity.this,
-                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_ACCESS_COARSE_LOCATION
-                    );
-                } else {
-                    wifiManager.startScan();
-                }
+        buttonScan.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(WiFiActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                        WiFiActivity.this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_ACCESS_COARSE_LOCATION
+                );
+            } else {
+                wifiManager.startScan();
             }
         });
     }
