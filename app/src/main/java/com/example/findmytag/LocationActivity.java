@@ -3,16 +3,17 @@ package com.example.findmytag;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.findmytag.wifi.WiFiActivity;
+
 public class LocationActivity extends AppCompatActivity {
 
-    Button btn_mappingfrag, btn_testingfrag;
+    Button btn_mappingfrag, btn_testingfrag, btn_listofwifi;
     FragmentTransaction fragmentTransaction;
 
     @Override
@@ -22,11 +23,19 @@ public class LocationActivity extends AppCompatActivity {
 
         btn_mappingfrag = findViewById(R.id.btn_mappingfrag);
         btn_testingfrag = findViewById(R.id.btn_testingfrag);
+        btn_listofwifi = findViewById(R.id.listofwifi);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         MappingFragment mappingFragment = new MappingFragment();
         fragmentTransaction.replace(R.id.frag_container, mappingFragment);
         fragmentTransaction.commit();
 
+        btn_listofwifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent x = new Intent(LocationActivity.this, WiFiActivity.class);
+                startActivity(x);
+            }
+        });
 
         btn_mappingfrag.setOnTouchListener(new View.OnTouchListener() {
             @Override
