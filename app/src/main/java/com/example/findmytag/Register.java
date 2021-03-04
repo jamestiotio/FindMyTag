@@ -57,7 +57,7 @@ public class Register extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         if (fAuth.getCurrentUser() != null) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), LocationActivity.class));
             finish();
         }
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +131,7 @@ public class Register extends AppCompatActivity {
                                     Log.d(TAG, "onFailure: " + e.toString());
                                 }
                             });
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            startActivity(new Intent(getApplicationContext(), LocationActivity.class));
 
 
                         } else {
