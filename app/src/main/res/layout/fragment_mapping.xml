@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frag_map"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MappingFragment">
+
+    <ImageView
+        android:id="@+id/imgView_mapping_floorplan"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:src="@drawable/floorplan_src"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:text="Upload"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgView_mapping_floorplan"
+        android:layout_marginLeft="30dp" />
+
+    <Button
+        android:id="@+id/btn_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:text="Map"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_upload"
+        app:layout_constraintStart_toEndOf="@+id/btn_upload"
+        app:layout_constraintTop_toTopOf="@+id/btn_upload"
+        android:layout_marginLeft="50dp" />
+
+    <TextView
+        android:id="@+id/txtView_map_L1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textview_rectangle"
+        android:text="L1"
+        app:layout_constraintBottom_toTopOf="@+id/txtView_map_L2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_map"
+        app:layout_constraintTop_toTopOf="@+id/btn_map"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/txtView_map_L2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textview_rectangle"
+        android:text="L2"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_map"
+        app:layout_constraintEnd_toEndOf="@+id/txtView_map_L1"
+        app:layout_constraintStart_toStartOf="@+id/txtView_map_L1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
