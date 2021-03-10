@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userId;
-    Button resendCode, logout;
+    Button resendCode, logout, location;
     Button resetPassLocal,changeProfileImage;
     FirebaseUser user;
     ImageView profileImage;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         phone = findViewById(R.id.profilePhone);
         fullName = findViewById(R.id.profileName);
         email    = findViewById(R.id.profileEmail);
-        logout = findViewById(R.id.location);
+        location = findViewById(R.id.location);
         resetPassLocal = findViewById(R.id.resetPasswordLocal);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                    if (documentSnapshot.exists()) {
+                    if (documentSnapshot != null) {
                         phone.setText(documentSnapshot.getString("studentid"));
                         fullName.setText(documentSnapshot.getString("fName"));
                         email.setText(documentSnapshot.getString("email"));
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
     public void location(View view) {
+
         startActivity(new Intent(getApplicationContext(),LocationActivity.class));
-        finish();
     }
 }
