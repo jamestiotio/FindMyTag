@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
 
-
             DocumentReference documentReference = fStore.collection("users").document(userId);
             documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                 @Override
@@ -108,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
                         phone.setText(documentSnapshot.getString("phone"));
                         fullName.setText(documentSnapshot.getString("fName"));
                         email.setText(documentSnapshot.getString("email"));
-
                     } else {
                         Log.d("tag", "onEvent: Document do not exists");
                     }
