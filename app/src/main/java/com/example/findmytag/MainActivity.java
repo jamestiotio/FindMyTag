@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
                     if (documentSnapshot != null) {
-                        phone.setText(documentSnapshot.getString("studentid"));
+                        phone.setText(documentSnapshot.getString("phone"));
                         fullName.setText(documentSnapshot.getString("fName"));
                         email.setText(documentSnapshot.getString("email"));
 
@@ -179,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
     public void location(View view) {
-
         startActivity(new Intent(getApplicationContext(),LocationActivity.class));
     }
 }

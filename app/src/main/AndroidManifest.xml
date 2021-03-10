@@ -21,11 +21,7 @@
             android:label="@string/title_activity_register"
             android:theme="@style/Theme.FindMyTag.NoActionBar" />
         <activity android:name=".Login">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            
         </activity>
         <activity android:name=".wifi.WiFiActivity">
             <intent-filter>
