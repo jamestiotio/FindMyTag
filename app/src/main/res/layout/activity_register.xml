@@ -94,6 +94,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Email" />
+
     <EditText
         android:id="@+id/phone"
         android:layout_width="0dp"
@@ -101,11 +102,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:inputType="textPhonetic"
-        android:hint="Student ID"
         android:background="@android:color/black"
+        android:ems="10"
         android:fontFamily="@font/aclonica"
+        android:hint="Phone"
+        android:inputType="textPhonetic"
         android:padding="10dp"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
