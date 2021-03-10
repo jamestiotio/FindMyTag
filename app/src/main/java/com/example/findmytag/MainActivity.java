@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    final EditText resetPassword = new EditText(v.getContext());
+                       final EditText resetPassword = new EditText(v.getContext());
 
                     final AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
                     passwordResetDialog.setTitle("Reset Password ?");
