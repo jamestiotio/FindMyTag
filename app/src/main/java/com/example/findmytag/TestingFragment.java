@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +47,8 @@ public class TestingFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    private TextView L1,L2;
+    private ImageView F;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,8 +61,32 @@ public class TestingFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_testing, container, false);
+                   Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_testing, container, false);
+
+        L1 = view.findViewById(R.id.txtView_testing_L1);
+        L2 = view.findViewById(R.id.txtView_testing_L2);
+        F = view.findViewById(R.id.imgView_testing_floorplan);
+        L1.setClickable(true);
+        L2.setClickable(true);
+        L1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                F.setImageResource(R.drawable.floorplan1);
+            }
+        });
+        L2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                F.setImageResource(R.drawable.floorplan2);
+            }
+        });
+        // Inflate the layout for this fragment//return inflater.inflate(R.layout.fragment_testing, container, false);
+        return view;
+
+
+
     }
+
+
 }
