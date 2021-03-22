@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -11,12 +12,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.davemorrissey.labs.subscaleview.ImageSource;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,9 +79,10 @@ public class MappingFragment extends Fragment {
 
     //outside
     Button upload_btn;
-    ImageView mapping_floorplan_imgView;
+    Marker mapping_floorplan_imgView;
     private static final int IMAGE_PICK_CODE = 1000;
     private static final int PERMISSION_CODE = 1001;
+    private boolean ready = false; // boolean to check if user uploaded image
     //---
 
     @Override
@@ -86,6 +92,40 @@ public class MappingFragment extends Fragment {
         upload_btn = view.findViewById(R.id.btn_upload);
         mapping_floorplan_imgView = view.findViewById(R.id.imgView_mapping_floorplan);
 
+        //--------Marker touch event------------
+        GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                if(mapping_floorplan_imgView.isReady() && ready){
+                    PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(),e.getY());
+                    mapping_floorplan_imgView.setPin(markerCoord);
+                    Toast.makeText(getContext(),"x: " + markerCoord.x + " y: " + markerCoord.y,Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+
+
+//            @Override
+//            public boolean onDown(MotionEvent e) {
+//                if(marker.isReady()){
+//                    marker.removePin();
+//                    PointF markerCoord = marker.viewToSourceCoord(e.getX(),e.getY());
+//                    marker.setPin(markerCoord);
+//                }
+//                return true;
+//            }
+        });
+
+        mapping_floorplan_imgView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
+        //--------Marker touch event------------
+
+
+        // ---------Upload image--------------
         upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,8 +178,12 @@ public class MappingFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
             //set image to image view
-            mapping_floorplan_imgView.setImageURI(data.getData());
+            //mapping_floorplan_imgView.setImageURI(data.getData());
+            mapping_floorplan_imgView.setImage(ImageSource.uri(data.getData()));
+            ready = true;
         }
     }
+
+    //---------upload img-----------
 
 }

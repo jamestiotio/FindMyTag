@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.davemorrissey.labs.subscaleview.ImageSource;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TestingFragment#newInstance} factory method to
@@ -48,7 +50,7 @@ public class TestingFragment extends Fragment {
         return fragment;
     }
     private TextView L1,L2;
-    private ImageView F;
+    private Marker F;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,13 +74,15 @@ public class TestingFragment extends Fragment {
         L1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                F.setImageResource(R.drawable.floorplan1);
+                //F.setImageResource(R.drawable.floorplan1);
+                F.setImage(ImageSource.resource(R.drawable.floorplan1));
             }
         });
         L2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                F.setImageResource(R.drawable.floorplan2);
+                //F.setImageResource(R.drawable.floorplan2);
+                F.setImage(ImageSource.resource(R.drawable.floorplan2));
             }
         });
         // Inflate the layout for this fragment//return inflater.inflate(R.layout.fragment_testing, container, false);
