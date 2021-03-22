@@ -134,3 +134,6 @@ ehthumbs.db
 Thumbs.db
 
 .vscode/
+.project
+
+.settings/org.eclipse.buildship.core.prefs
