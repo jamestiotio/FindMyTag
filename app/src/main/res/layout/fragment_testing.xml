@@ -6,11 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".TestingFragment">
 
-    <ImageView
+    <com.example.findmytag.Marker
         android:id="@+id/imgView_testing_floorplan"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:src="@drawable/floorplan_src"
+        app:src="@drawable/floorplan_src"
         app:layout_constraintBottom_toTopOf="@+id/txtView_testing_L1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
