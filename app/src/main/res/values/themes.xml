@@ -22,4 +22,9 @@
     <style name="Theme.FindMyTag.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.FindMyTag.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.FindMyTag.Popme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
 </resources>
