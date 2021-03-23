@@ -28,9 +28,10 @@ import java.lang.Math;
  * conducts extended joint development with Alcatel-Lucent (as one among many)? Is Alcatel-Lucent a
  * vendor partner of Aruba and basically just resells Aruba products and technologies? I am not a
  * business person so I do not know or understand anything about this strange arrangement. It feels
- * alien and unfamiliar to me, and I mean that in a wholesome kind of way. Anyway, all possibly
- * relevant technical specifications are included in the `docs/ap_specs` directory. Don't ask how I
- * found the German one. I don't even know how to read or speak German.
+ * alien and unfamiliar to me, and I mean that in a wholesome kind of way. I also found some
+ * M1-Nokia 5G WiFi APs in the Campus Centre, but I was not able to find the specific model number.
+ * Anyway, all possibly relevant technical specifications are included in the `docs/ap_specs`
+ * directory. Don't ask how I found the German one. I don't even know how to read or speak German.
  * 
  * NOTE: This aspect is the weak-point link of this entire neural network algorithm since it has so
  * many assumptions. A good neural network should be able to handle significantly variable
