@@ -5,14 +5,14 @@ import java.lang.Math;
  * Distances are measured in units of metres.
  */
 public class Coordinate {
-    private static final double USER_ALTITUDE = 0;
-    private static final double ROUTER_ALTITUDE = 1;
     private double x;
     private double y;
+    private double z;
 
-    public Coordinate(double x, double y) {
+    public Coordinate(double x, double y, double z) {
         this.x = x;
         this.y = y;
+        this.z = z;
     }
 
     public double getX() {
@@ -23,6 +23,10 @@ public class Coordinate {
         return this.y;
     }
 
+    public double getZ() {
+        return this.z;
+    }
+
     public void setX(double x) {
         this.x = x;
     }
@@ -31,8 +35,12 @@ public class Coordinate {
         this.y = y;
     }
 
+    public void setZ(double z) {
+        this.z = z;
+    }
+
     // Get three-dimensional Euclidean distance
     public double getDistance(Coordinate c) {
-        return Math.sqrt(Math.pow(Math.abs(c.getX() - this.getX()), 2) + Math.pow(Math.abs(c.getY() - this.getY()), 2) + Math.pow(Math.abs(ROUTER_ALTITUDE - USER_ALTITUDE), 2));
+        return Math.sqrt(Math.pow(Math.abs(c.getX() - this.getX()), 2) + Math.pow(Math.abs(c.getY() - this.getY()), 2) + Math.pow(Math.abs(c.getZ() - this.getZ()), 2));
     }
 }
