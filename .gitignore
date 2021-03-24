@@ -136,3 +136,4 @@ Thumbs.db
 .vscode/
 .settings/
 .project
+node_modules
