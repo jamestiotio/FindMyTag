@@ -1,19 +1,23 @@
 {
   "emulators": {
     "auth": {
-      "port": 9099
+      "port": 9098
     },
     "functions": {
-      "port": 5001
+      "port": 5002
     },
     "firestore": {
-      "port": 8080
+      "port": 8082
     },
     "database": {
-      "port": 9000
+      "port": 9001
     },
     "ui": {
       "enabled": true
     }
+  },
+  "firestore": {
+    "rules": "firestores.rules",
+    "indexes": "firestore.indexes.json"
   }
 }

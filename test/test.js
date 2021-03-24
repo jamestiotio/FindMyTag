@@ -3,6 +3,7 @@ const firebase = require('@firebase/testing');
 
 const MY_PROJECT_ID = "findmytag-esc2021";
 
+
 describe("FindMyTag", () => {
 
     it("Checking basic maths functions to confirm whether testing is working as expected", () => {
@@ -20,5 +21,28 @@ describe("FindMyTag", () => {
         const testDoc = db.collection("readonly").doc("testdock");
         firebase.assertFails(testDoc.set({test: "hello"}));
         
+    }
+    )
+    it("Can't write to a user document with same ID as our user", async() => {
+        const myAuth = {uid: "user_abc", email: "abc@gmail.com"}
+        const db = firebase.initializeTestApp({projectId: MY_PROJECT_ID, auth: myAuth}).firestore();
+        const testDoc = db.collection("users").doc("buser_abc");
+        firebase.assertSucceeds(testDoc.set({test: "hello"}));
+        
+    })
+    it("Can't write to a user document with same ID as our user", async() => {
+        const myAuth = {uid: "user_abc", email: "abc@gmail.com"}
+        const db = firebase.initializeTestApp({projectId: MY_PROJECT_ID, auth: myAuth}).firestore();
+        const testDocc = db.collection("users").doc("user_abc");
+        firebase.assertSucceeds(testDocc.set({test: "hello"}));
+        
+    })
+    it("Can't write to a user document with different ID as our user", async() => {
+        const myAuth = {uid: "usewewr_abc", email: "abwewefc@gmail.com"}
+        const db = firebase.initializeTestApp({projectId: MY_PROJECT_ID, auth: myAuth}).firestore();
+        const testxDoc = db.collection("users").doc("user_abc");
+        firebase.assertFails(testxDoc.set({test: "hello"}));
+        
     })
 })
+

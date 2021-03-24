@@ -1,4 +1,4 @@
-// package com.example.findmytag.algorithms.neuralnetwork;
+package com.example.findmytag.algorithms.neuralnetwork;// package com.example.findmytag.algorithms.neuralnetwork;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ import java.util.Map;
  * Identifier of each access point could be its BSSID/MAC address or its local IP address (since there are multiple access points with the same SSID name).
  * Do take note that one access point could potentially emit multiple SSIDs as well (perhaps on different channels).
  */
-public class BaseCoordinateSystem {
+/** public class BaseCoordinateSystem {
     private static final Coordinate refPosition = new Coordinate(0, 0);
     private Coordinate targetPosition;
     private Map<Coordinate, Integer> PositionList;
@@ -18,4 +18,4 @@ public class BaseCoordinateSystem {
             this.PositionList.put(entry.getKey(), entry.getValue());
         }
     }
-}
+} */
