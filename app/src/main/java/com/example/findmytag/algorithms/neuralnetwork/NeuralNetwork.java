@@ -10,6 +10,11 @@
  * Linux 802.11n CSI Tool (https://dhalperi.github.io/linux-80211n-csitool/) could be conducted but
  * this is not entirely in line with the project's requirements to actually conduct the mapping
  * on-the-fly on the smartphone mobile device itself.
+ * 
+ * Regarding scalability issues, this network is scalable in terms of different buildings (with
+ * different physical measurements such as the attenuation and propagation constants) and different
+ * numbers/arrangements of Wi-Fi access points with different specifications/models, but this may
+ * not generally scale to N floors (this is only for 2 floors).
  */
 public class NeuralNetwork {
 

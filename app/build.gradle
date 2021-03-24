@@ -44,8 +44,32 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.2.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation "org.deeplearning4j:deeplearning4j-core:1.0.0-beta6"
-    implementation "org.nd4j:nd4j-native-platform:1.0.0-beta6"  // check if we might wanna train using cuda and cudnn (cuda v11.0 requires to be built from source)
+    // check if we might wanna train using CUDA and cuDNN (CUDA v11.0 requires to be built from source)
+    implementation (group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '{{page.version}}') {
+        exclude group: 'org.bytedeco', module: 'opencv-platform'
+        exclude group: 'org.bytedeco', module: 'leptonica-platform'
+        exclude group: 'org.bytedeco', module: 'hdf5-platform'
+    }
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6'
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-arm"
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-arm64"
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-x86"
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-x86_64"
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2'
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-arm"
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-arm64"
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-x86"
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-x86_64"
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2'
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-arm"
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-arm64"
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-x86"
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-x86_64"
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2'
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-arm"
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-arm64"
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-x86"
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-x86_64"
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
