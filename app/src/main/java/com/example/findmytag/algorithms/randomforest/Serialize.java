@@ -13,22 +13,31 @@ public class Serialize {
      * Writes an object to a temp file and returns the path of temp file.
      * The temp file will be deleted when the VM exits.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    static Path write(Object o) throws IOException {
-        Path temp = Files.createTempFile("smile-test-", ".tmp");
-        OutputStream file = Files.newOutputStream(temp);
+    public static Path write(Object o) throws IOException {
+        Path temp = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            temp = Files.createTempFile("smile-test-", ".tmp");
+        }
+        OutputStream file = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            file = Files.newOutputStream(temp);
+        }
         ObjectOutputStream out = new ObjectOutputStream(file);
         out.writeObject(o);
         out.close();
         file.close();
-        temp.toFile().deleteOnExit();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            temp.toFile().deleteOnExit();
+        }
         return temp;
     }
 
     /** Reads an object from a (temp) file. */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    static Object read(Path path) throws IOException, ClassNotFoundException {
-        InputStream file = Files.newInputStream(path);
+    public static Object read(Path path) throws IOException, ClassNotFoundException {
+        InputStream file = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            file = Files.newInputStream(path);
+        }
         ObjectInputStream in = new ObjectInputStream(file);
         Object o = in.readObject();
         in.close();

@@ -1,8 +1,10 @@
-package com.example.findmytag.algorithms.randomforest;
+package com.example.findmytag.algorithms.randomforest.tester;
 
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
+
+import com.example.findmytag.algorithms.randomforest.Serialize;
 
 import org.junit.After;
 import org.testng.annotations.AfterClass;
@@ -16,8 +18,6 @@ import smile.base.cart.SplitRule;
 import smile.classification.RandomForest;
 import smile.math.MathEx;
 import smile.validation.*;
-import smile.validation.metric.Accuracy;
-import smile.validation.metric.Error;
 
 import static org.junit.Assert.*;
 
