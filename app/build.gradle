@@ -29,6 +29,12 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute module('org.hamcrest:hamcrest-core:1.1') with module('junit:junit:4.10')
+    }
+}
+
 dependencies {
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
     implementation 'com.android.support:multidex:1.0.3'
@@ -45,14 +51,16 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.github.haifengl:smile-kotlin:2.6.0"
+    implementation 'org.testng:testng:6.9.6'
 
-    /*// check if we might wanna train using CUDA and cuDNN (CUDA v11.0 requires to be built from source)
+    /*
+    // check if we might wanna train using CUDA and cuDNN (CUDA v11.0 requires to be built from source)
     implementation (group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '{{page.version}}') {
         exclude group: 'org.bytedeco', module: 'opencv-platform'
         exclude group: 'org.bytedeco', module: 'leptonica-platform'
         exclude group: 'org.bytedeco', module: 'hdf5-platform'
     }
-     */
+
     implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6'
     implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-arm"
     implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-arm64"
@@ -73,7 +81,8 @@ dependencies {
     implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-arm64"
     implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-x86"
     implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-x86_64"
-    implementation 'org.testng:testng:6.9.6'
+    */
+
     //Zen's static logger for random forest, leave it for now
     //implementation files('/Users/zen/Downloads/slf4j-api-1.7.30.jar')
     //implementation files('/Users/zen/Downloads/slf4j-simple-1.7.30.jar')
