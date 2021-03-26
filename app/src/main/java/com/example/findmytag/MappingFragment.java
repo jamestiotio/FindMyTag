@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -84,6 +85,8 @@ public class MappingFragment extends Fragment {
     Button upload_btn;
     Marker mapping_floorplan_imgView;
     private final int activity_code = 2000;
+    private Uri imgUri1 = null, imgUri2 = null;
+    private TextView lvl1,lvl2;
 
 
     private boolean ready = false; // boolean to check if user uploaded image
@@ -95,6 +98,29 @@ public class MappingFragment extends Fragment {
 
         upload_btn = view.findViewById(R.id.btn_upload);
         mapping_floorplan_imgView = view.findViewById(R.id.imgView_mapping_floorplan);
+        lvl1 = view.findViewById(R.id.txtView_map_L1);
+        lvl2 = view.findViewById(R.id.txtView_map_L2);
+
+        //----------- Change level floorplan-----------------
+        lvl1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (imgUri1 != null){
+                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri1));
+                }
+
+            }
+        });
+
+        lvl2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (imgUri2 != null){
+                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri2));
+                }
+
+            }
+        });
 
         //--------Marker touch event------------
         GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener(){
@@ -145,9 +171,10 @@ public class MappingFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == activity_code){
             if (resultCode == Activity.RESULT_OK){
-                String location_name = data.getStringExtra("locationName");
-                Uri imgUri = Uri.parse(data.getExtras().getString("imgUri"));
-                mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri));
+                String location_name = data.getStringExtra("locationName1");
+                imgUri1 = Uri.parse(data.getExtras().getString("imgUri1"));
+                mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri1));
+                imgUri2 = Uri.parse(data.getExtras().getString("imgUri2"));
                 ready = true;
             }
         }

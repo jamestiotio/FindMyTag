@@ -1,72 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".imgPopupWindow">
 
-    <EditText
-        android:id="@+id/uploadPopup_upload_locationName"
+    <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:ems="10"
-        android:hint="Input location name"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        android:layout_above="@id/uploadPopup_upload_btn_confirm"
+        android:layout_marginBottom="15dp">
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="Location Name:"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.21"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/uploadPopup_upload_imgView"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/uploadPopup_upload_btn_cancel"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadPopup_upload_btn"
-        app:srcCompat="@drawable/floorplan_src" />
+            <TextView
+                android:id="@+id/locationName_txtView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="Location 1 Name:"
+                android:layout_marginLeft="15dp"/>
 
-    <Button
-        android:id="@+id/uploadPopup_upload_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Upload Image"
-        app:layout_constraintStart_toStartOf="@+id/uploadPopup_upload_locationName"
-        app:layout_constraintTop_toBottomOf="@+id/uploadPopup_upload_locationName" />
+            <EditText
+                android:id="@+id/uploadPopup_upload_locationName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:hint="Input location 1 name"
+                android:inputType="textPersonName"
+                android:layout_below="@id/locationName_txtView"
+                android:layout_marginLeft="15dp"/>
+            <Button
+                android:id="@+id/uploadPopup_upload_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Upload location 1"
+                android:layout_below="@id/uploadPopup_upload_locationName"
+                android:layout_marginLeft="15dp"/>
+
+            <ImageView
+                android:id="@+id/uploadPopup_upload_imgView"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="30dp"
+                android:layout_below="@id/uploadPopup_upload_btn"
+                app:srcCompat="@drawable/floorplan_src" />
+
+            <TextView
+                android:id="@+id/locationName_txtView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Location 2 Name:"
+                android:layout_below="@id/uploadPopup_upload_imgView"
+                android:layout_marginLeft="15dp"/>
+
+            <EditText
+                android:id="@+id/uploadPopup_upload_locationName2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:ems="10"
+                android:hint="Input location 2 name"
+                android:inputType="textPersonName"
+                android:layout_below="@id/locationName_txtView2"
+                android:layout_marginLeft="15dp"/>
+            <Button
+                android:id="@+id/uploadPopup_upload_btn2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Upload location 2"
+                android:layout_below="@id/uploadPopup_upload_locationName2"
+                android:layout_marginLeft="15dp"/>
+
+            <ImageView
+                android:id="@+id/uploadPopup_upload_imgView2"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="30dp"
+                android:layout_below="@id/uploadPopup_upload_btn2"
+                app:srcCompat="@drawable/floorplan_src" />
+
+
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
 
     <Button
         android:id="@+id/uploadPopup_upload_btn_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
         android:text="Confirm"
-        app:layout_constraintEnd_toStartOf="@+id/uploadPopup_upload_btn_cancel"
-        app:layout_constraintTop_toTopOf="@+id/uploadPopup_upload_btn_cancel" />
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/uploadPopup_upload_btn_cancel"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"/>
 
     <Button
         android:id="@+id/uploadPopup_upload_btn_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="12dp"
         android:text="Cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"/>
+</RelativeLayout>
