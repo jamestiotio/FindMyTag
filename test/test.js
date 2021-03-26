@@ -44,5 +44,11 @@ describe("FindMyTag", () => {
         firebase.assertFails(testxDoc.set({test: "hello"}));
         
     })
+    it("Can read public information like maps", async() => {
+        const db = firebase.initializeTestApp({projectId: MY_PROJECT_ID}).firestore();
+        const testQuery = db.collection("posts").where("visibility", "==", "public");
+        firebase.assertSucceeds(testQuery.get());
+        
+    })
 })
 
