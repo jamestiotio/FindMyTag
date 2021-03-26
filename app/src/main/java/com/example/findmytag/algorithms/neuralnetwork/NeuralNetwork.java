@@ -20,6 +20,8 @@ import java.util.List;
  * not generally scale to N floors (this is only for 2 floors).
  */
 public class NeuralNetwork {
+    // Use these to only selectively identify and take into account the desired AP signals (instead
+    // of other random BSSIDs that might come by and visit the proximity)
     private final List<String> KNOWN_B2L1_AP_LIST = Arrays.asList("18-64-72-CD-5F-EC",
             "18-64-72-CD-5F-E6", "18-64-72-CD-60-00", "18-64-72-CD-5F-BE", "18-64-72-CD-5F-C6",
             "18-64-72-CD-60-88", "18-64-72-CD-60-9A", "18-64-72-CD-5F-B8", "18-64-72-CD-5F-38",
