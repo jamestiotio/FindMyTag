@@ -5,6 +5,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.example.findmytag.algorithms.randomforest.Serialize;
+import com.example.findmytag.algorithms.randomforest.WifiValues;
 
 import org.junit.After;
 import org.testng.annotations.AfterClass;
