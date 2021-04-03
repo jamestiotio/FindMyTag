@@ -38,6 +38,9 @@ public class MappingFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    static float x;
+    static float y;
+    CallBackValue callBackValue;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -73,6 +76,15 @@ public class MappingFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+    @Override
+    public void onAttach(Activity activity) {
+        // TODO Auto-generated method stub
+        super.onAttach(activity);
+        //当前fragment从activity重写了回调接口  得到接口的实例化对象
+        callBackValue =(CallBackValue) getActivity();
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,6 +142,8 @@ public class MappingFragment extends Fragment {
                     PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(),e.getY());
                     mapping_floorplan_imgView.setPin(markerCoord);
                     Toast.makeText(getContext(),"x: " + markerCoord.x + " y: " + markerCoord.y,Toast.LENGTH_SHORT).show();
+                    x=e.getX();
+                    y=e.getY();
                 }
                 return true;
             }
@@ -179,4 +193,8 @@ public class MappingFragment extends Fragment {
             }
         }
     }
+    public interface CallBackValue{
+        public void SendMessageValue(float x, float y);
+    }
+
 }
