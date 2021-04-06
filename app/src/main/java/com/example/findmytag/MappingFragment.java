@@ -2,6 +2,7 @@ package com.example.findmytag;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
@@ -9,10 +10,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.example.findmytag.wifi.WiFiDataManager;
+import com.example.findmytag.wifi.WifiReceiver;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,7 +29,14 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,9 +49,13 @@ public class MappingFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    static float x;
-    static float y;
-    CallBackValue callBackValue;
+    public static float x;
+    public static float y;
+    String coord;
+    List rssi;
+    private Context mcontext;
+    private WiFiDataManager wifiDataManager;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -71,37 +86,45 @@ public class MappingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-    @Override
-    public void onAttach(Activity activity) {
-        // TODO Auto-generated method stub
-        super.onAttach(activity);
-        //当前fragment从activity重写了回调接口  得到接口的实例化对象
-        callBackValue =(CallBackValue) getActivity();
-    }
+
 
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mcontext = getActivity();
+        wifiDataManager = new WiFiDataManager(mcontext);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_mapping, container, false);
     }
 
     //outside
+    Button rssi_btn;
     Button upload_btn;
     Marker mapping_floorplan_imgView;
     private final int activity_code = 2000;
     private Uri imgUri1 = null, imgUri2 = null;
     private TextView lvl1,lvl2;
+    String path, txt;
+
 
 
     private boolean ready = false; // boolean to check if user uploaded image
+    public void onStart() {
+        super.onStart();
+//        if (isAdded()){
+//            String rssi = getArguments().getString("rssi");
+//
+//        }
+    }
+
     //---
 
     @Override
@@ -112,6 +135,46 @@ public class MappingFragment extends Fragment {
         mapping_floorplan_imgView = view.findViewById(R.id.imgView_mapping_floorplan);
         lvl1 = view.findViewById(R.id.txtView_map_L1);
         lvl2 = view.findViewById(R.id.txtView_map_L2);
+        rssi_btn= view.findViewById(R.id.btn_rssi);
+
+
+        //------------upload data-------------
+        rssi_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                wifiDataManager.scanWifi();
+                rssi=wifiDataManager.scanResults;//wifi info
+                coord = ("("+x+","+y+")");//(x,y)
+                HashMap txt=new HashMap();
+                txt.put(coord,rssi);
+                try {
+                    path = Environment.getDownloadCacheDirectory().toString() + File.separator +"data.txt";
+
+                    File file = new File(path);
+                    if(!file.exists()){
+                        try{
+                            file.mkdirs();
+                        }catch (Exception e){
+                            //
+                        }
+                    }
+
+
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
+                    objectOutputStream.writeObject(txt);
+                    new FileOutputStream(file).close();
+                    Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                }
+            }
+
+
+
+        });
 
         //----------- Change level floorplan-----------------
         lvl1.setOnClickListener(new View.OnClickListener() {
@@ -193,8 +256,8 @@ public class MappingFragment extends Fragment {
             }
         }
     }
-    public interface CallBackValue{
-        public void SendMessageValue(float x, float y);
-    }
+
+
+
 
 }

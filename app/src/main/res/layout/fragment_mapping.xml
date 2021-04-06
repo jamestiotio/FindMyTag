@@ -31,12 +31,13 @@
         android:id="@+id/btn_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="152dp"
+        android:layout_marginLeft="152dp"
         android:text="Map"
         app:layout_constraintBottom_toBottomOf="@+id/btn_upload"
         app:layout_constraintStart_toEndOf="@+id/btn_upload"
         app:layout_constraintTop_toTopOf="@+id/btn_upload"
-        android:layout_marginLeft="50dp" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/txtView_map_L1"
@@ -46,6 +47,7 @@
         android:text="L1"
         app:layout_constraintBottom_toTopOf="@+id/txtView_map_L2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.779"
         app:layout_constraintStart_toEndOf="@+id/btn_map"
         app:layout_constraintTop_toTopOf="@+id/btn_map"
         app:layout_constraintVertical_bias="1.0" />
@@ -59,5 +61,20 @@
         app:layout_constraintBottom_toBottomOf="@+id/btn_map"
         app:layout_constraintEnd_toEndOf="@+id/txtView_map_L1"
         app:layout_constraintStart_toStartOf="@+id/txtView_map_L1" />
+
+    <Button
+        android:id="@+id/btn_rssi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="31dp"
+        android:layout_marginLeft="31dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginRight="33dp"
+        android:text="RSSI"
+        app:layout_constraintEnd_toStartOf="@+id/btn_map"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/btn_upload"
+        app:layout_constraintTop_toBottomOf="@+id/imgView_mapping_floorplan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

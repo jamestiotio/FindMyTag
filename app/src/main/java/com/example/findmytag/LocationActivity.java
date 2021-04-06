@@ -1,6 +1,7 @@
 package com.example.findmytag;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
@@ -18,6 +19,8 @@ public class LocationActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        Bundle bundle=getIntent().getExtras();
+//        String rssi=bundle.getString("rssi");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
 
@@ -26,6 +29,9 @@ public class LocationActivity extends AppCompatActivity {
         btn_listofwifi = findViewById(R.id.listofwifi);
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         MappingFragment mappingFragment = new MappingFragment();
+//        bundle.putString("rssi", rssi);
+//        mappingFragment.setArguments(bundle);
+        fragmentTransaction.show(mappingFragment);
         fragmentTransaction.replace(R.id.frag_container, mappingFragment);
         fragmentTransaction.commit();
 
