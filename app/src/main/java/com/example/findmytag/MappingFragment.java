@@ -40,6 +40,8 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,6 +66,7 @@ public class MappingFragment extends Fragment {
     ArrayList arrayList;
     private Context mcontext;
     private WiFiDataManager wifiDataManager;
+    StringBuffer sb;
 
     //verifystoragePermissions verifystoragePermissions;
     String[] permissions = {
@@ -202,17 +205,13 @@ public class MappingFragment extends Fragment {
         rssi_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                wifiDataManager.scanWifi();
-                rssi=wifiDataManager.scanResults;//wifi info
-//                for (ScanResult scanResult : rssi) {
-//
-//                    arrayList.add(("\n")+scanResult.SSID + " - " + scanResult.BSSID + " - " + scanResult.level);
-//                }
-  //              System.out.println(arrayList);
+                 String s=wifiDataManager.scanWifi();
+                 ArrayList arrayList= new ArrayList(Arrays.asList(s.split("/n")));
+
                 coord = ("("+x+","+y+")");//(x,y)
-                System.out.println(coord);
                 HashMap txt=new HashMap();
-                txt.put(coord,rssi);
+                txt.put(coord,arrayList);
+                System.out.println(txt);
                 try {
 //                    path = Environment.getExternalStorageDirectory().getAbsolutePath();
 //                    File file = new File(path+"/text.txt");
@@ -226,7 +225,7 @@ public class MappingFragment extends Fragment {
 //                            //
 //                        }
                     writeToFile(txt);
-                    } catch (Exception exception) {
+                } catch (Exception exception) {
                     exception.printStackTrace();
                 }
 //                    if(!file.exists()){
@@ -236,7 +235,9 @@ public class MappingFragment extends Fragment {
 //                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
 //                    objectOutputStream.writeObject(txt);
 //                    new FileOutputStream(file).close();
-                    Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
+
+
 //                } catch (FileNotFoundException e) {
 //                    e.printStackTrace();
 //                } catch (IOException e) {
@@ -278,8 +279,8 @@ public class MappingFragment extends Fragment {
                     PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(),e.getY());
                     mapping_floorplan_imgView.setPin(markerCoord);
                     Toast.makeText(getContext(),"x: " + markerCoord.x + " y: " + markerCoord.y,Toast.LENGTH_SHORT).show();
-                    x=e.getX();
-                    y=e.getY();
+                    x=markerCoord.x;
+                    y=markerCoord.y;
                 }
                 return true;
             }
@@ -336,6 +337,7 @@ public class MappingFragment extends Fragment {
 
         File root = android.os.Environment.getExternalStorageDirectory();
         File dir = new File(root.getAbsolutePath() + "/download");
+
         dir.mkdirs();
         File file = new File(dir, "WiFiData.txt");
 

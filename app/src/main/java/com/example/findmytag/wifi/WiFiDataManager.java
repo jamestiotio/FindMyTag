@@ -1,6 +1,7 @@
 package com.example.findmytag.wifi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,6 +26,8 @@ public class WiFiDataManager {
     private volatile static WiFiDataManager wiFiDataManager;
     public MainActivity activity;
     private Context mcontext;
+    StringBuilder sb;
+   // ArrayList arrayList;
 
     public ArrayList<HashMap<Integer, Integer>> dataRssi = new ArrayList<HashMap<Integer, Integer>>(); // 每行代表一个Wifi热点，对应一个map，map的第一个值是数据的index，第二个值是rssi
     public HashMap<String, Integer> dataBssid = new HashMap<String, Integer>();
@@ -39,7 +42,7 @@ public class WiFiDataManager {
     }
 
 
-    public void scanWifi() {
+    public String scanWifi() {
 
         if (!wifiManager.isWifiEnabled()) {
             Toast.makeText(mcontext, "WiFi is disabled ... enabling it now", Toast.LENGTH_LONG).show();
@@ -49,20 +52,38 @@ public class WiFiDataManager {
 
         mcontext.registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
+        sb = new StringBuilder();
+        List<ScanResult> wifiList = wifiManager.getScanResults();
+        for (ScanResult scanResult : wifiList) {
+
+            sb.append(("\n")+scanResult.SSID + " - " + scanResult.BSSID + " - " + scanResult.level);
+        }
+        String s=sb.toString();
+
         boolean x = wifiManager.startScan();
+
         if(!x){
             Toast.makeText(mcontext,"Please Waiting",Toast.LENGTH_LONG).show();
-//            Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//            mcontext.startActivity(myIntent);
+            Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            mcontext.startActivity(myIntent);
         }
         Toast.makeText(mcontext, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
+        return s;
 
     }
 
     final BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            scanResults = wifiManager.getScanResults();
+            sb = new StringBuilder();
+            List<ScanResult> wifiList = wifiManager.getScanResults();
+            for (ScanResult scanResult : wifiList) {
+
+                sb.append(("\n")+scanResult.SSID + " - " + scanResult.BSSID + " - " + scanResult.level);
+            }
+          ArrayList  arrayList=new ArrayList( Arrays.asList(sb.toString().split(",")));
+
+
             context.unregisterReceiver(this);
 
 
