@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.net.Uri;
+import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -14,6 +15,7 @@ import com.example.findmytag.wifi.WiFiDataManager;
 import com.example.findmytag.wifi.WifiReceiver;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
@@ -35,8 +37,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,9 +58,18 @@ public class MappingFragment extends Fragment {
     public static float x;
     public static float y;
     String coord;
-    List rssi;
+    List<ScanResult> rssi;
+    ArrayList arrayList;
     private Context mcontext;
     private WiFiDataManager wifiDataManager;
+
+    verifystoragePermissions verifystoragePermissions;
+    String[] permissions = {
+            "android.permission.READ_EXTERNAL_STORAGE",
+            "android.permission.WRITE_EXTERNAL_STORAGE"
+    };
+    int requestCode = 200;
+
 
 
     // TODO: Rename and change types of parameters
@@ -82,10 +97,42 @@ public class MappingFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    /**
+     * Checks if the app has permission to write to device storage
+     *
+     * If the app does not has permission then the user will be prompted to grant permissions
+     *
+     * @param activity
+     */
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1){
+            requestPermissions(permissions, requestCode);
+
+        }
+
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -119,6 +166,7 @@ public class MappingFragment extends Fragment {
     private boolean ready = false; // boolean to check if user uploaded image
     public void onStart() {
         super.onStart();
+
 //        if (isAdded()){
 //            String rssi = getArguments().getString("rssi");
 //
@@ -136,6 +184,16 @@ public class MappingFragment extends Fragment {
         lvl1 = view.findViewById(R.id.txtView_map_L1);
         lvl2 = view.findViewById(R.id.txtView_map_L2);
         rssi_btn= view.findViewById(R.id.btn_rssi);
+        int permission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
 
 
         //------------upload data-------------
@@ -144,23 +202,33 @@ public class MappingFragment extends Fragment {
             public void onClick(View view) {
                 wifiDataManager.scanWifi();
                 rssi=wifiDataManager.scanResults;//wifi info
+//                for (ScanResult scanResult : rssi) {
+//
+//                    arrayList.add(("\n")+scanResult.SSID + " - " + scanResult.BSSID + " - " + scanResult.level);
+//                }
+  //              System.out.println(arrayList);
                 coord = ("("+x+","+y+")");//(x,y)
+                System.out.println(coord);
                 HashMap txt=new HashMap();
                 txt.put(coord,rssi);
                 try {
-                    path = Environment.getDownloadCacheDirectory().toString() + File.separator +"data.txt";
-
-                    File file = new File(path);
+                    path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                    File file = new File(path+"/text.txt");
                     if(!file.exists()){
                         try{
-                            file.mkdirs();
+                            //file.getParentFile().mkdirs();
+//                            file.mkdirs();
+                            file.createNewFile();
+
                         }catch (Exception e){
                             //
                         }
                     }
-
-
-                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
+                    if(!file.exists()){
+                        Toast.makeText(mcontext, "fail", Toast.LENGTH_SHORT).show();
+                    }
+                    FileOutputStream outputStream=new FileOutputStream(path+"/text.txt");
+                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                     objectOutputStream.writeObject(txt);
                     new FileOutputStream(file).close();
                     Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
@@ -255,6 +323,7 @@ public class MappingFragment extends Fragment {
                 ready = true;
             }
         }
+
     }
 
 
