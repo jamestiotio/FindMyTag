@@ -36,7 +36,7 @@ import java.io.File;
 import java.util.Map;
 
 
-public class WiFiActivity extends AppCompatActivity implements MappingFragment.CallBackValue {
+public class WiFiActivity extends AppCompatActivity{
     private ListView wifiList;
     private WifiManager wifiManager;
     StringBuilder sb;
@@ -177,7 +177,7 @@ public class WiFiActivity extends AppCompatActivity implements MappingFragment.C
         }
     }
 
-    @Override
+
     public void SendMessageValue(float x, float y) {
         // TODO Auto-generated method stub
         t1 = "(" + x + "," + y + ")";

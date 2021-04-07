@@ -12,13 +12,13 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.example.findmytag.wifi.WiFiDataManager;
-import com.example.findmytag.wifi.WifiReceiver;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,8 +34,10 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +65,7 @@ public class MappingFragment extends Fragment {
     private Context mcontext;
     private WiFiDataManager wifiDataManager;
 
-    verifystoragePermissions verifystoragePermissions;
+    //verifystoragePermissions verifystoragePermissions;
     String[] permissions = {
             "android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"
@@ -212,32 +214,35 @@ public class MappingFragment extends Fragment {
                 HashMap txt=new HashMap();
                 txt.put(coord,rssi);
                 try {
-                    path = Environment.getExternalStorageDirectory().getAbsolutePath();
-                    File file = new File(path+"/text.txt");
-                    if(!file.exists()){
-                        try{
-                            //file.getParentFile().mkdirs();
-//                            file.mkdirs();
-                            file.createNewFile();
-
-                        }catch (Exception e){
-                            //
-                        }
-                    }
-                    if(!file.exists()){
-                        Toast.makeText(mcontext, "fail", Toast.LENGTH_SHORT).show();
-                    }
-                    FileOutputStream outputStream=new FileOutputStream(path+"/text.txt");
-                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-                    objectOutputStream.writeObject(txt);
-                    new FileOutputStream(file).close();
-                    Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-
+//                    path = Environment.getExternalStorageDirectory().getAbsolutePath();
+//                    File file = new File(path+"/text.txt");
+//                    if(!file.exists()){
+//                        try{
+//                            //file.getParentFile().mkdirs();
+////                            file.mkdirs();
+//                            file.createNewFile();
+//
+//                        }catch (Exception e){
+//                            //
+//                        }
+                    writeToFile(txt);
+                    } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
+//                    if(!file.exists()){
+//                        Toast.makeText(mcontext, "fail", Toast.LENGTH_SHORT).show();
+//                    }
+//                    FileOutputStream outputStream=new FileOutputStream(path+"/text.txt");
+//                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+//                    objectOutputStream.writeObject(txt);
+//                    new FileOutputStream(file).close();
+                    Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//
+//                }
             }
 
 
@@ -326,7 +331,30 @@ public class MappingFragment extends Fragment {
 
     }
 
+    private void writeToFile(HashMap map) {
+        final String TAG = "MEDIA";
+
+        File root = android.os.Environment.getExternalStorageDirectory();
+        File dir = new File(root.getAbsolutePath() + "/download");
+        dir.mkdirs();
+        File file = new File(dir, "WiFiData.txt");
+
+        try {
+            FileOutputStream f = new FileOutputStream(file);
+            PrintWriter pw = new PrintWriter(f);
+            pw.println(map);
+            pw.flush();
+            pw.close();
+            f.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.i(TAG, "File not found.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //tv.append("\n\nFile written to "+file);
 
 
+    }
 
 }
