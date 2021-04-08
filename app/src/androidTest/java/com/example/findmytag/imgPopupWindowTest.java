@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
 public class imgPopupWindowTest {
 
     @Rule
-    public IntentsTestRule<imgPopupWindow> mLoginActivityActivityTestRule = new IntentsTestRule<>(imgPopupWindow.class);
+    public IntentsTestRule<imgPopupWindow> mPopupActivityTestRule = new IntentsTestRule<>(imgPopupWindow.class);
     public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule .grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
     @Before
     public void setUp() throws Exception {

@@ -50,7 +50,7 @@ public class uploadImgTest {
 
     @Rule
     //public ActivityScenarioRule<LocationActivity> mLocationActivityRule = new ActivityScenarioRule<>(LocationActivity.class);
-    public IntentsTestRule<LocationActivity> mLoginActivityActivityTestRule = new IntentsTestRule<>(LocationActivity.class);
+    public IntentsTestRule<LocationActivity> mLoginActivityTestRule = new IntentsTestRule<>(LocationActivity.class);
     public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule .grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
     //public IntentsTestRule<LocationActivity> mLoginActivityActivityTestRule =
      //       new IntentsTestRule<>(LocationActivity.class);
