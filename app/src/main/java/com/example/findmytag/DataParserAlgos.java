@@ -17,27 +17,27 @@ import java.io.IOException;
  */
 public class DataParserAlgos {
     File f = new File("/Users/zen/Downloads/WiFiData.txt");
+    String data = "";
 
 
 
     //For removing dump and extracting levels, coordinates at the same time
+    String[] arrOfRSSI;
     String[] tempArr;
     String rssiAndCoordString = "";
     String kay = "";
 
 
-    public String[] readFile(File file) throws IOException {
+    public void readFile(File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String s;
-        String data = "";
         while ((s = br.readLine()) != null) {
             data = data + "\n" + s;
         }
-        String[] arrOfRSSI = data.split(" - ", -2);
-        return arrOfRSSI;
+        arrOfRSSI = data.split(" - ", -2);
     }
 
-    public void parseForLevelsAndXY(String[] arrOfRSSI){
+    public void parseForLevelsAndXY(){
         for (String x : arrOfRSSI) {
             if (x.contains("=")) {
                 tempArr = x.split(", ", -2);
@@ -99,6 +99,28 @@ public class DataParserAlgos {
         return onlyCoordString;
     }
 
+    public String getBSSIDInString(){
+        String stringOfBSSID = "";
+        for(int o = 0; o < data.length(); o++){
+            char boo = data.charAt(o);
+            if(boo == ':'){
+                stringOfBSSID += boo;
+            }
+            else if((o < data.length() -  2 && data.charAt(o+2) == ':') ||
+                    (o < data.length() - 1 && data.charAt(o+1) == ':')) {
+                stringOfBSSID += boo;
+
+            }
+            else if((o > 2 && data.charAt(o-2) == ':')|| ( o > 1 && data.charAt(o-1) == ':' )) {
+                stringOfBSSID += boo;
+                if(data.charAt(o-2) == ':' && data.charAt(o+1) == ' '){
+                    stringOfBSSID += "\n";
+                }
+            }
+
+        }
+        return stringOfBSSID;
+    }
 
 
 
