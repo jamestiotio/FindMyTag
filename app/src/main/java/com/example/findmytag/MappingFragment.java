@@ -201,7 +201,9 @@ public class MappingFragment extends Fragment {
         }
 
 
-        //------------upload data-------------
+        /**
+         * New thing here @Darren
+         */
         rssi_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -213,37 +215,12 @@ public class MappingFragment extends Fragment {
                 txt.put(coord,arrayList);
                 System.out.println(txt);
                 try {
-//                    path = Environment.getExternalStorageDirectory().getAbsolutePath();
-//                    File file = new File(path+"/text.txt");
-//                    if(!file.exists()){
-//                        try{
-//                            //file.getParentFile().mkdirs();
-////                            file.mkdirs();
-//                            file.createNewFile();
-//
-//                        }catch (Exception e){
-//                            //
-//                        }
                     writeToFile(txt);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
-//                    if(!file.exists()){
-//                        Toast.makeText(mcontext, "fail", Toast.LENGTH_SHORT).show();
-//                    }
-//                    FileOutputStream outputStream=new FileOutputStream(path+"/text.txt");
-//                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-//                    objectOutputStream.writeObject(txt);
-//                    new FileOutputStream(file).close();
                 Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
 
-
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//
-//                }
             }
 
 
@@ -332,6 +309,10 @@ public class MappingFragment extends Fragment {
 
     }
 
+
+    /**
+     * New thing here @Darren
+     */
     private void writeToFile(HashMap map) {
         final String TAG = "MEDIA";
 
@@ -354,8 +335,6 @@ public class MappingFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //tv.append("\n\nFile written to "+file);
-
 
     }
 

@@ -27,12 +27,10 @@ public class WiFiDataManager {
     public MainActivity activity;
     private Context mcontext;
     StringBuilder sb;
-   // ArrayList arrayList;
 
     public ArrayList<HashMap<Integer, Integer>> dataRssi = new ArrayList<HashMap<Integer, Integer>>(); // 每行代表一个Wifi热点，对应一个map，map的第一个值是数据的index，第二个值是rssi
     public HashMap<String, Integer> dataBssid = new HashMap<String, Integer>();
     public ArrayList<String> dataWifiNames = new ArrayList<String>();
-    public int dataCount = 0;
 
     public WiFiDataManager(Context context) {
         mcontext = context;
@@ -63,7 +61,7 @@ public class WiFiDataManager {
         boolean x = wifiManager.startScan();
 
         if(!x){
-            Toast.makeText(mcontext,"Please Waiting",Toast.LENGTH_LONG).show();
+            Toast.makeText(mcontext,"Please Wait",Toast.LENGTH_LONG).show();
             Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             mcontext.startActivity(myIntent);
         }
