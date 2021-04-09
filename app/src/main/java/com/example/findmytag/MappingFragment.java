@@ -206,6 +206,7 @@ public class MappingFragment extends Fragment {
 
 
         //------------upload data-------------
+        // save all info to a hashmap first
         rssi_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -213,45 +214,14 @@ public class MappingFragment extends Fragment {
                 ArrayList arrayList = new ArrayList(Arrays.asList(s.split("/n")));
 
                 coord = ("(" + x + "," + y + ")");//(x,y)
-                hashMap.put(arrayList,coord);
+                hashMap.put(arrayList, coord);
                 System.out.println(hashMap);
 
-//                try {
-////                    path = Environment.getExternalStorageDirectory().getAbsolutePath();
-////                    File file = new File(path+"/text.txt");
-////                    if(!file.exists()){
-////                        try{
-////                            //file.getParentFile().mkdirs();
-//////                            file.mkdirs();
-////                            file.createNewFile();
-////
-////                        }catch (Exception e){
-////                            //
-////                        }
-//                    writeToFile(txt);
-//                } catch (Exception exception) {
-//                    exception.printStackTrace();
-//                }
-//                    if(!file.exists()){
-//                        Toast.makeText(mcontext, "fail", Toast.LENGTH_SHORT).show();
-//                    }
-//                    FileOutputStream outputStream=new FileOutputStream(path+"/text.txt");
-//                    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-//                    objectOutputStream.writeObject(txt);
-//                    new FileOutputStream(file).close();
                 Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
 
-
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//
-//                }
             }
-
-
         });
+        // upload to the storage
         file_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
