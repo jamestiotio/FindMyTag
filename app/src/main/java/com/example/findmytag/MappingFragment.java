@@ -204,8 +204,10 @@ public class MappingFragment extends Fragment {
             );
         }
 
-
-        //------------upload data-------------
+        /**
+         * New thing here @Darren
+         */
+        //------------Fetch wifi data-------------
         // save all info to a hashmap first
         rssi_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,6 +223,10 @@ public class MappingFragment extends Fragment {
 
             }
         });
+        /**
+         * New thing here @Darren
+         */
+        //------------Create file in storage-------------
         // upload to the storage
         file_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -317,6 +323,9 @@ public class MappingFragment extends Fragment {
 
     }
 
+    /**
+     * New thing here @Darren
+     */
     private void writeToFile(HashMap map) {
         final String TAG = "MEDIA";
 

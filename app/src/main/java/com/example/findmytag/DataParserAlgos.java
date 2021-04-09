@@ -79,7 +79,6 @@ public class DataParserAlgos {
             }
         }
         for (char c : rssiAndCoordString.toCharArray()) {
-            //for(int i = 0; i < rssiAndCoordString.length(); i++){
             if ((c == '-') || Character.isDigit(c) ||
                     (c == '(') || (c == ')') ||
                     (c == ',') || (c == '.')) {
