@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
+import android.media.MicrophoneInfo;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.os.Build;
@@ -43,9 +44,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-
-
+import java.util.Map;
 
 
 /**
@@ -67,6 +68,9 @@ public class MappingFragment extends Fragment {
     private Context mcontext;
     private WiFiDataManager wifiDataManager;
     StringBuffer sb;
+    int i = 0;
+    public HashMap hashMap = new HashMap() {
+    };
 
     //verifystoragePermissions verifystoragePermissions;
     String[] permissions = {
@@ -74,7 +78,6 @@ public class MappingFragment extends Fragment {
             "android.permission.WRITE_EXTERNAL_STORAGE"
     };
     int requestCode = 200;
-
 
 
     // TODO: Rename and change types of parameters
@@ -102,6 +105,7 @@ public class MappingFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -110,7 +114,7 @@ public class MappingFragment extends Fragment {
 
     /**
      * Checks if the app has permission to write to device storage
-     *
+     * <p>
      * If the app does not has permission then the user will be prompted to grant permissions
      *
      * @param activity
@@ -133,7 +137,7 @@ public class MappingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             requestPermissions(permissions, requestCode);
 
         }
@@ -144,8 +148,6 @@ public class MappingFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
-
 
 
     @Override
@@ -160,16 +162,17 @@ public class MappingFragment extends Fragment {
     //outside
     Button rssi_btn;
     Button upload_btn;
+    Button file_btn;
     Marker mapping_floorplan_imgView;
     private final int activity_code = 2000;
     private Uri imgUri1 = null, imgUri2 = null;
-    private TextView lvl1,lvl2;
-    String path, txt;
-
+    private TextView lvl1, lvl2;
 
 
     private boolean ready = false; // boolean to check if user uploaded image
+
     public void onStart() {
+
         super.onStart();
 
 //        if (isAdded()){
@@ -188,7 +191,8 @@ public class MappingFragment extends Fragment {
         mapping_floorplan_imgView = view.findViewById(R.id.imgView_mapping_floorplan);
         lvl1 = view.findViewById(R.id.txtView_map_L1);
         lvl2 = view.findViewById(R.id.txtView_map_L2);
-        rssi_btn= view.findViewById(R.id.btn_rssi);
+        rssi_btn = view.findViewById(R.id.btn_rssi);
+        file_btn = view.findViewById(R.id.btn_file);
         int permission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -200,38 +204,48 @@ public class MappingFragment extends Fragment {
             );
         }
 
-
         /**
          * New thing here @Darren
          */
+        //------------Fetch wifi data-------------
+        // save all info to a hashmap first
         rssi_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 String s=wifiDataManager.scanWifi();
-                 ArrayList arrayList= new ArrayList(Arrays.asList(s.split("/n")));
+                String s = wifiDataManager.scanWifi();
+                ArrayList arrayList = new ArrayList(Arrays.asList(s.split("/n")));
 
-                coord = ("("+x+","+y+")");//(x,y)
-                HashMap txt=new HashMap();
-                txt.put(coord,arrayList);
-                System.out.println(txt);
-                try {
-                    writeToFile(txt);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
+                coord = ("(" + x + "," + y + ")");//(x,y)
+                hashMap.put(arrayList, coord);
+                System.out.println(hashMap);
+
                 Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
 
             }
-
-
-
         });
+        /**
+         * New thing here @Darren
+         */
+        //------------Create file in storage-------------
+        // upload to the storage
+        file_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    writeToFile(hashMap);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                Toast.makeText(mcontext, "file saved successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         //----------- Change level floorplan-----------------
         lvl1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (imgUri1 != null){
+                if (imgUri1 != null) {
                     mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri1));
                 }
 
@@ -241,7 +255,7 @@ public class MappingFragment extends Fragment {
         lvl2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (imgUri2 != null){
+                if (imgUri2 != null) {
                     mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri2));
                 }
 
@@ -249,15 +263,15 @@ public class MappingFragment extends Fragment {
         });
 
         //--------Marker touch event------------
-        GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener(){
+        GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                if(mapping_floorplan_imgView.isReady() && ready){
-                    PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(),e.getY());
+                if (mapping_floorplan_imgView.isReady() && ready) {
+                    PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(), e.getY());
                     mapping_floorplan_imgView.setPin(markerCoord);
-                    Toast.makeText(getContext(),"x: " + markerCoord.x + " y: " + markerCoord.y,Toast.LENGTH_SHORT).show();
-                    x=markerCoord.x;
-                    y=markerCoord.y;
+                    Toast.makeText(getContext(), "x: " + markerCoord.x + " y: " + markerCoord.y, Toast.LENGTH_SHORT).show();
+                    x = markerCoord.x;
+                    y = markerCoord.y;
                 }
                 return true;
             }
@@ -286,7 +300,7 @@ public class MappingFragment extends Fragment {
         upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getContext(),imgPopupWindow.class),activity_code);
+                startActivityForResult(new Intent(getContext(), imgPopupWindow.class), activity_code);
             }
         });
         //------upload btn---------
@@ -297,8 +311,8 @@ public class MappingFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == activity_code){
-            if (resultCode == Activity.RESULT_OK){
+        if (requestCode == activity_code) {
+            if (resultCode == Activity.RESULT_OK) {
                 String location_name = data.getStringExtra("locationName1");
                 imgUri1 = Uri.parse(data.getExtras().getString("imgUri1"));
                 mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri1));
@@ -308,7 +322,6 @@ public class MappingFragment extends Fragment {
         }
 
     }
-
 
     /**
      * New thing here @Darren
@@ -320,7 +333,8 @@ public class MappingFragment extends Fragment {
         File dir = new File(root.getAbsolutePath() + "/download");
 
         dir.mkdirs();
-        File file = new File(dir, "WiFiData.txt");
+        File file = new File(dir,"WiFiData.txt");
+
 
         try {
             FileOutputStream f = new FileOutputStream(file);
@@ -335,7 +349,8 @@ public class MappingFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //tv.append("\n\nFile written to "+file);
+
 
     }
-
 }
