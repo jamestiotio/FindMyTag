@@ -7,116 +7,123 @@
     android:layout_height="match_parent"
     tools:context=".MappingFragment">
 
-    <com.example.findmytag.Marker
-        android:id="@+id/imgView_mapping_floorplan"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:src="@drawable/floorplan_src" />
-
-    <Button
-        android:id="@+id/btn_upload"
-        android:layout_width="98dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="132dp"
-        android:text="Upload"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_map"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_file" />
-
-    <Button
-        android:id="@+id/btn_map"
-        android:layout_width="99dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="132dp"
-        android:text="Map"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/txtView_map_L2"
-        app:layout_constraintStart_toEndOf="@+id/btn_upload"
-        app:layout_constraintTop_toBottomOf="@+id/btn_rssi" />
-
-    <TextView
-        android:id="@+id/txtView_map_L1"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="70dp"
-
-        android:layout_marginEnd="63dp"
-        android:layout_marginRight="63dp"
-        android:layout_marginBottom="40dp"
-        android:background="@drawable/textview_rectangle"
-        android:text="L1"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/txtView_map_L2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_rssi"
-        app:layout_constraintTop_toBottomOf="@+id/imgView_mapping_floorplan"
-        app:layout_constraintVertical_bias="0.6" />
-
-    <TextView
-        android:id="@+id/txtView_map_L2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="63dp"
-        android:layout_marginRight="63dp"
-        android:layout_marginBottom="134dp"
-        android:background="@drawable/textview_rectangle"
-        android:text="L2"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_map"
-        app:layout_constraintTop_toBottomOf="@+id/txtView_map_L1" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <Button
-        android:id="@+id/btn_rssi"
-        android:layout_width="99dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="62dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="30dp"
-        android:text="BSSID-RSSI"
-        app:layout_constraintBottom_toTopOf="@+id/btn_map"
-        app:layout_constraintEnd_toStartOf="@+id/txtView_map_L1"
-        app:layout_constraintStart_toEndOf="@+id/btn_file"
-        app:layout_constraintTop_toBottomOf="@+id/imgView_mapping_floorplan" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:paddingVertical="24dp"
 
-    <Button
-        android:id="@+id/btn_file"
-        android:layout_width="98dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="62dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="30dp"
-        android:text="file"
-        app:layout_constraintBottom_toTopOf="@+id/btn_upload"
-        app:layout_constraintEnd_toStartOf="@+id/btn_rssi"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/txtView_map_L1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/textview_rectangle"
+                android:text="L1"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtView_map_L2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/textview_rectangle"
+                android:text="L2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/txtView_map_L1"
+                app:layout_constraintTop_toBottomOf="@+id/txtView_map_L1" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btn_file"
+            android:layout_width="98dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:text="file"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout3" />
+
+        <Button
+            android:id="@+id/btn_upload"
+            android:layout_width="98dp"
+            android:layout_height="50dp"
+            android:text="Upload"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btn_file"
+            app:layout_constraintStart_toStartOf="@+id/btn_file" />
+
+        <Button
+            android:id="@+id/btn_rssi"
+            android:layout_width="99dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:text="BSSID-RSSI"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_file"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
+            app:layout_constraintStart_toEndOf="@+id/btn_file"
+            app:layout_constraintTop_toTopOf="@+id/constraintLayout3"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/btn_map"
+            android:layout_width="99dp"
+            android:layout_height="50dp"
+            android:text="Map"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btn_rssi"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/btn_rssi" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgView_mapping_floorplan" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.example.findmytag.Marker
+            android:id="@+id/imgView_mapping_floorplan"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:src="@drawable/floorplan_src" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -43,6 +43,8 @@ public class LocationActivity extends AppCompatActivity {
             }
         });
 
+        //MappingFragment mappingFragment = new MappingFragment();
+
         btn_mappingfrag.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -50,7 +52,6 @@ public class LocationActivity extends AppCompatActivity {
                 view.setPressed(true);
                 btn_testingfrag.setPressed(false);
                 fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                MappingFragment mappingFragment = new MappingFragment();
                 fragmentTransaction.replace(R.id.frag_container, mappingFragment);
                 fragmentTransaction.commit();
                 return true;
@@ -68,6 +69,7 @@ public class LocationActivity extends AppCompatActivity {
 //
 //            }
 //        });
+        TestingFragment testingFragment = new TestingFragment();
         btn_testingfrag.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -75,7 +77,7 @@ public class LocationActivity extends AppCompatActivity {
                 view.setPressed(true);
                 btn_mappingfrag.setPressed(false);
                 fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                TestingFragment testingFragment = new TestingFragment();
+                //TestingFragment testingFragment = new TestingFragment();
                 fragmentTransaction.replace(R.id.frag_container, testingFragment);
                 fragmentTransaction.commit();
                 return true;

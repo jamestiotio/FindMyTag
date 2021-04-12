@@ -2,13 +2,19 @@ package com.example.findmytag;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 
@@ -17,7 +23,7 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
  * Use the {@link TestingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TestingFragment extends Fragment {
+public class TestingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -51,6 +57,39 @@ public class TestingFragment extends Fragment {
     }
     private TextView L1,L2;
     private Marker F;
+    private Spinner test_spinner;
+    private Button test_btn;
+    private static String select_algo = null;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        test_btn = view.findViewById(R.id.btn_test);
+        //spinner methods
+        test_spinner = view.findViewById(R.id.test_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.algo, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        test_spinner.setAdapter(adapter);
+        test_spinner.setOnItemSelectedListener(this);
+
+        //test_btn onclick listener
+        test_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(select_algo.equals("Neural Network")){
+                    Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
+                }
+                else if(select_algo.equals("Random Forest")){
+                    Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();
+                }
+                else if(select_algo.equals("KNN")){
+                    Toast.makeText(getContext(),"KNN selected",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,8 +105,8 @@ public class TestingFragment extends Fragment {
                    Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_testing, container, false);
 
-        L1 = view.findViewById(R.id.txtView_testing_L1);
-        L2 = view.findViewById(R.id.txtView_testing_L2);
+        L1 = view.findViewById(R.id.txtView_map_L1);
+        L2 = view.findViewById(R.id.txtView_map_L2);
         F = view.findViewById(R.id.imgView_testing_floorplan);
         L1.setClickable(true);
         L2.setClickable(true);
@@ -93,4 +132,16 @@ public class TestingFragment extends Fragment {
     }
 
 
+    //btm 2 methods are for spinner
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(adapterView.getId() == R.id.test_spinner){
+            select_algo = adapterView.getItemAtPosition(i).toString();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }
