@@ -22,6 +22,15 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.findmytag.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.net.URI;
 
@@ -34,6 +43,10 @@ public class imgPopupWindow extends AppCompatActivity {
     private EditText inner_edtTxt, inner_edtTxt2;
     private Uri imgUri = null;
     private Uri imgUri2 = null;
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+    FirebaseUser user;
+    StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +62,11 @@ public class imgPopupWindow extends AppCompatActivity {
         inner_upload_btn2 = findViewById(R.id.uploadPopup_upload_btn2);
         inner_imgView2 = findViewById(R.id.uploadPopup_upload_imgView2);
         inner_edtTxt2 = findViewById(R.id.uploadPopup_upload_locationName2);
+
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        user = fAuth.getCurrentUser();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
 
         //--------Btn confirm------------------
@@ -199,6 +217,28 @@ public class imgPopupWindow extends AppCompatActivity {
 
 
     }
+    private void uploadImageToFirebase(Uri imageUri) {
+        // uplaod image to firebase storage
+        final StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+inner_edtTxt+".jpg");
+        fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get().load(uri).into(inner_imgView);
+                        Picasso.get().load(uri).into(inner_imgView2);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), "Failed.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -207,6 +247,7 @@ public class imgPopupWindow extends AppCompatActivity {
             //set image to image view
             inner_imgView.setImageURI(data.getData());
             imgUri = data.getData();
+            uploadImageToFirebase(imgUri);
             //inner_imgView.setImage(ImageSource.uri(data.getData()));
             //ready = true;
         }
@@ -214,6 +255,7 @@ public class imgPopupWindow extends AppCompatActivity {
             //set image to image view
             inner_imgView2.setImageURI(data.getData());
             imgUri2 = data.getData();
+            uploadImageToFirebase(imgUri2);
             //inner_imgView.setImage(ImageSource.uri(data.getData()));
             //ready = true;
         }
