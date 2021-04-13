@@ -126,11 +126,6 @@ public class DataParserAlgos {
         return onlyCoordString;
     }
 
-    /**
-     * List version of each getter.
-     * @return List
-     */
-
     public String getBSSIDInString(){
         for(int o = 0; o < data.length(); o++){
             char boo = data.charAt(o);
@@ -153,28 +148,35 @@ public class DataParserAlgos {
         return stringOfBSSID;
     }
 
+    /**
+     * List version of each getter.
+     * @return List
+     */
+
+    
 
     public List<String> getSSID(){
-        String str[] = nameOfSSIDs.split("\n", -2);
+        String str[] = getSSIDinString().split("\n", -2);
         List<String> ls = new ArrayList<String>();
         ls = Arrays.asList(str);
         return ls;
     }
 
     public List<String> getLevels(){
-        String str[] = onlyLevelsString.split("\n", -2);
+        String str[] = getLevelsInString().split("\n", -2);
         List<String> ls = Arrays.asList(str);
         return ls;
     }
 
     public List<String> getCoord(){
-        String str[] = onlyCoordString.split("\n", -2);
+        String str[] = getCoordInString().split("\n", -2);
+        //String str[] = onlyCoordString.split("\n", -2);
         List<String> ls = Arrays.asList(str);
         return ls;
     }
 
     public List<String> getBSSID(){
-        String str[] = stringOfBSSID.split("\n", -2);
+        String str[] = getBSSIDInString().split("\n", -2);
         List<String> ls = Arrays.asList(str);
         return ls;
     }
