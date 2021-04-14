@@ -1,22 +1,38 @@
 package com.example.findmytag;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +40,10 @@ import com.davemorrissey.labs.subscaleview.ImageSource;
  * create an instance of this fragment.
  */
 public class TestingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+    FirebaseUser user;
+    StorageReference storageReference;
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,6 +92,9 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         test_spinner.setAdapter(adapter);
         test_spinner.setOnItemSelectedListener(this);
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         //test_btn onclick listener
         test_btn.setOnClickListener(new View.OnClickListener() {
@@ -110,18 +133,71 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         F = view.findViewById(R.id.imgView_testing_floorplan);
         L1.setClickable(true);
         L2.setClickable(true);
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
         L1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //F.setImageResource(R.drawable.floorplan1);
-                F.setImage(ImageSource.resource(R.drawable.floorplan1));
+                //F.setImage(ImageSource.resource(R.drawable.floorplan1));
+                if(fAuth.getCurrentUser() != null) {
+                    StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            //System.out.println(uri);
+//                            Bitmap bitmap = BitmapFactory.decodeFile(uri.toString());
+//                            F.setImage(ImageSource.bitmap(bitmap));
+                               Glide.with(F.getContext()).asBitmap().load(uri).into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                    F.setImage(ImageSource.bitmap(resource));
+                                }
+
+//                                @Override
+//                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                                    view.setImage(ImageSource.bitmap(resource));
+//                                }
+//                            });
+//                            Bitmap bitmap = Glide.with(getActivity()).asBitmap().load(uri).into(-1,-1);
+//
+
+                            });
+                        }
+                    });
+                }
             }
         });
         L2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //F.setImageResource(R.drawable.floorplan2);
-                F.setImage(ImageSource.resource(R.drawable.floorplan2));
+                if(fAuth.getCurrentUser() != null) {
+                    StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l2.jpg");
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            //System.out.println(uri);
+//                            Bitmap bitmap = BitmapFactory.decodeFile(uri.toString());
+//                            F.setImage(ImageSource.bitmap(bitmap));
+                            Glide.with(F.getContext()).asBitmap().load(uri).into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                    F.setImage(ImageSource.bitmap(resource));
+                                }
+
+//                                @Override
+//                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                                    view.setImage(ImageSource.bitmap(resource));
+//                                }
+//                            });
+//                            Bitmap bitmap = Glide.with(getActivity()).asBitmap().load(uri).into(-1,-1);
+//
+
+                            });
+                        }
+                    });
+                }
             }
         });
         // Inflate the layout for this fragment//return inflater.inflate(R.layout.fragment_testing, container, false);

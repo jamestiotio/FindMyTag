@@ -92,7 +92,10 @@ public class imgPopupWindow extends AppCompatActivity {
                         intent.putExtra("locationName2", inner_edtTxt2.getText().toString());
                         intent.putExtra("imgUri2", imgUri2.toString());
                         setResult(Activity.RESULT_OK, intent);
+                        uploadImageToFirebase(imgUri);
+                        uploadImage2ToFirebase(imgUri2);
                         finish();
+
                     }
 
 
@@ -219,7 +222,7 @@ public class imgPopupWindow extends AppCompatActivity {
     }
     private void uploadImageToFirebase(Uri imageUri) {
         // uplaod image to firebase storage
-        final StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+inner_edtTxt+".jpg");
+        final StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
         fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -227,6 +230,28 @@ public class imgPopupWindow extends AppCompatActivity {
                     @Override
                     public void onSuccess(Uri uri) {
                         Picasso.get().load(uri).into(inner_imgView);
+
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), "Failed.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+    private void uploadImage2ToFirebase(Uri imageUri) {
+        // uplaod image to firebase storage
+        final StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l2.jpg");
+        fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
                         Picasso.get().load(uri).into(inner_imgView2);
                     }
                 });
@@ -239,7 +264,6 @@ public class imgPopupWindow extends AppCompatActivity {
         });
 
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -247,7 +271,7 @@ public class imgPopupWindow extends AppCompatActivity {
             //set image to image view
             inner_imgView.setImageURI(data.getData());
             imgUri = data.getData();
-            uploadImageToFirebase(imgUri);
+
             //inner_imgView.setImage(ImageSource.uri(data.getData()));
             //ready = true;
         }
@@ -255,7 +279,7 @@ public class imgPopupWindow extends AppCompatActivity {
             //set image to image view
             inner_imgView2.setImageURI(data.getData());
             imgUri2 = data.getData();
-            uploadImageToFirebase(imgUri2);
+
             //inner_imgView.setImage(ImageSource.uri(data.getData()));
             //ready = true;
         }
