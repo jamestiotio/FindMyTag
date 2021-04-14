@@ -47,3 +47,5 @@ Further readings for the curious and interested, in addition to the research pap
 - [Improving Fingerprint Indoor Localization Using Convolutional Neural Networks](https://ieeexplore.ieee.org/document/9237969)
 - [UJIIndoorLoc: A New Multi-Building and Multi-Floor Database for WLAN Fingerprint-Based Indoor Localization Problems](https://ieeexplore.ieee.org/document/7275492)
 
+More resources such as proprietary localization service SDKs and code samples/tutorials on open-source GitHub repositories can be found online. Google is your friend.
+
