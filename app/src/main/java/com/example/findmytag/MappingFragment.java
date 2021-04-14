@@ -163,10 +163,12 @@ public class MappingFragment extends Fragment {
     Button rssi_btn;
     Button upload_btn;
     Button file_btn;
+    Button map_btn;
     Marker mapping_floorplan_imgView;
     private final int activity_code = 2000;
     private Uri imgUri1 = null, imgUri2 = null;
     private TextView lvl1, lvl2;
+    private static int floorLvl = 1;
 
 
     private boolean ready = false; // boolean to check if user uploaded image
@@ -193,6 +195,8 @@ public class MappingFragment extends Fragment {
         lvl2 = view.findViewById(R.id.txtView_map_L2);
         rssi_btn = view.findViewById(R.id.btn_rssi);
         file_btn = view.findViewById(R.id.btn_file);
+
+        map_btn = view.findViewById(R.id.btn_map);
         int permission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -247,6 +251,7 @@ public class MappingFragment extends Fragment {
             public void onClick(View view) {
                 if (imgUri1 != null) {
                     mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri1));
+                    floorLvl = 1;
                 }
 
             }
@@ -257,6 +262,7 @@ public class MappingFragment extends Fragment {
             public void onClick(View view) {
                 if (imgUri2 != null) {
                     mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri2));
+                    floorLvl = 2;
                 }
 
             }
@@ -300,7 +306,8 @@ public class MappingFragment extends Fragment {
         upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(getContext(), imgPopupWindow.class), activity_code);
+                Intent intent = new Intent(getContext(),imgPopupWindow.class);
+                startActivityForResult(intent, activity_code);
             }
         });
         //------upload btn---------

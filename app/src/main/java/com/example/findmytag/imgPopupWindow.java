@@ -33,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.net.URI;
+import java.util.HashMap;
 
 public class imgPopupWindow extends AppCompatActivity {
     private static final int PERMISSION_CODE = 1001;
@@ -67,7 +68,6 @@ public class imgPopupWindow extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         user = fAuth.getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
-
 
         //--------Btn confirm------------------
             inner_upload_confirm.setOnClickListener(new View.OnClickListener() {
