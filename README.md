@@ -8,3 +8,15 @@ Cohort 3 Group 7 Team Members:
 - [Seah Zen Yi](https://github.com/zenibbles)
 - [Dong Jiajie](https://github.com/djj067)
 - [James Raphael Tiovalen](https://github.com/jamestiotio)
+
+
+
+## Future TODOs
+
+- Improve current algorithms with more collected dataset points.
+- Add more different types/kinds of algorithms.
+- Add building ID and room ID identifiers, as well as the relative position to those rooms (inside or outside).
+- Add user orientation and angle detection features (use accelerometer, gyroscope and magnetometer?).
+- On top of classification features (actual building and floor identification, as well as distance and location coordinates estimation), add regression features (actual longitude and latitude estimation) without using GPS.
+- Add choice of using BLE Bluetooth beacons for multilateration algorithm (some useful tools might include the [log-distance path loss model](https://wikipedia.org/wiki/Log-distance_path_loss_model) or the [Levenberg-Marquardt algorithm](https://wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm)).
+
