@@ -1,64 +1,144 @@
-package com.example.findmytag;
+package com.example.findmytag.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import com.example.findmytag.algorithms.randomforest.ResultGenerator;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
-/**
- * Use this to parse data and input into our algorithm.
- *
- * To use, create an instance of this class with text file as an input.
- *
- * Two diff output formats:
- * 1. String, each item separated by NEWLINE
- * 2. List
- *
- * Only have Levels and Coordinate points at the moment.
- *
- *
- * How To Use:
- * 1. Call readFile(file): Prepares text file to be broken into individual arrayLists, while conveniently gets SSID names
- * 2. Call getSSID(), getLevels(), getString(), getBSSID() to get the individual datas
- */
-public class DataParserAlgos {
-    //File f = new File("/Users/zen/Downloads/WiFiData.txt");
+public class DataParser {
     String data = "";
+    private static final String CSV_FILE_PATH
+            = "./result.csv";
+
 
     //Updated variables after called readFile(file)
     private String nameOfSSIDs = "";
     private String onlyLevelsString = "";
     private String onlyCoordString = "";
     private String stringOfBSSID = "";
+    private List<String> listOfBothSSIDs = new ArrayList<>();
+    private List<String> listOfBSSIDs = new ArrayList<>();
+    private List<String> listOfRSSI = new ArrayList<>();
+    private List<String> listOfCoord = new ArrayList<>();
+    private List<String> listOfRSSIs = new ArrayList<>();
+
+
+
 
     //For removing dump and extracting levels, coordinates at the same time
     private String[] tempArr;
     private String rssiAndCoordString = "";
     private String kay = "";
+    private String stringBSSIDandRSSI = "";
+    private String stringBSSID = "";
+    private String stringRSSI = "";
+    private String stringCoord = "";
+    private int numOfLinesOfData = 0;
+
 
     public void readFile(File file) throws IOException {
         String[] arrOfRSSI;
         BufferedReader br = new BufferedReader(new FileReader(file));
         String s;
         while ((s = br.readLine()) != null) {
+            numOfLinesOfData ++;
             data = data + s+ "\n";
-
             //For SSID names, in case needed
             if(s.contains(" - ")) {
                 int index = s.indexOf(" - ");
                 if (index > 0) {
                     nameOfSSIDs = nameOfSSIDs + s.substring(0, index) + "\n";
+                    stringBSSIDandRSSI = stringBSSIDandRSSI + s.substring(index + 3) + "\n";
+
                 } else {
                     nameOfSSIDs += "**********HIDDEN SSID**********\n";
                 }
             }
         }
+
+        getSubsInDelimeters(data);
+
         arrOfRSSI = data.split(" - ", -2);
 
         parseForLevelsAndXY(arrOfRSSI);
+    }
+
+    //for bssid and ssid and levels logic error
+    public void getSubsInDelimeters(String str) throws IOException {
+        String t = "";
+        BufferedReader b = new BufferedReader(new StringReader(data));
+        while((t = b.readLine()) != null){
+            if(t.contains("=")){
+                int boo = t.indexOf("=");
+                stringCoord = t.substring(boo + 1, t.indexOf(")")+1);
+                listOfCoord.add(stringCoord);
+            }
+        }
+
+        // Stores the indices of
+        Stack<Integer> dels = new Stack<Integer>();
+        for(int i = 0; i < str.length(); i++) {
+
+            // If opening delimeter
+            // is encountered
+            if (str.charAt(i) == '[') {
+                dels.add(i);
+            }
+
+            // If closing delimeter
+            // is encountered
+            else if (str.charAt(i) == ']' && !dels.isEmpty()) {
+                // Extract the position
+                // of opening delimeter
+                int pos = dels.peek();
+
+                dels.pop();
+
+                // Length of subString
+                int len = i - 1 - pos;
+
+                // Extract the subString
+                String ans = str.substring(pos + 1, pos + 1 + len);
+
+                listOfBothSSIDs.add(ans);
+            }
+        }
+        BufferedReader bufReader = new BufferedReader(new StringReader(listOfBothSSIDs.toString()));
+        String s = "";
+        int count = 0;
+        while ((s = bufReader.readLine()) != null) {
+            count++;
+            if(s.contains(" - ")) {
+                int index = s.indexOf(" - ");
+                stringBSSID = stringBSSID + s.substring(index+3).substring(0, s.substring(index+3).indexOf(" "))+";";
+                stringRSSI = stringRSSI + s.substring(s.indexOf("- -")).substring(2)+";";
+                //System.out.println(stringRSSI);
+            }
+            if(s.contains(",")){
+                listOfBSSIDs.add(stringBSSID);
+                stringBSSID = "";
+                listOfRSSI.add(stringRSSI);
+                stringRSSI="";
+            }else if(count == numOfLinesOfData){
+                stringRSSI = stringRSSI.substring(0, stringRSSI.indexOf("]"));
+                listOfBSSIDs.add(stringBSSID);
+                listOfRSSI.add(stringRSSI);
+            }
+        }
+
+        for(String m : listOfRSSI){
+            if(m.contains(",")){
+                int iopo = m.indexOf(",");
+                listOfRSSIs.add(m.substring(0, iopo));
+            }else{
+                listOfRSSIs.add(m);
+            }
+        }
+
+
     }
 
     public void parseForLevelsAndXY(String[] arrOfRSSI){
@@ -126,6 +206,7 @@ public class DataParserAlgos {
         return onlyCoordString;
     }
 
+
     public String getBSSIDInString(){
         for(int o = 0; o < data.length(); o++){
             char boo = data.charAt(o);
@@ -153,7 +234,7 @@ public class DataParserAlgos {
      * @return List
      */
 
-    
+
 
     public List<String> getSSID(){
         String str[] = getSSIDinString().split("\n", -2);
@@ -163,23 +244,36 @@ public class DataParserAlgos {
     }
 
     public List<String> getLevels(){
-        String str[] = getLevelsInString().split("\n", -2);
-        List<String> ls = Arrays.asList(str);
-        return ls;
+        return listOfRSSIs;
     }
 
     public List<String> getCoord(){
-        String str[] = getCoordInString().split("\n", -2);
-        //String str[] = onlyCoordString.split("\n", -2);
-        List<String> ls = Arrays.asList(str);
-        return ls;
+//        String str[] = getCoordInString().split("\n", -2);
+//        List<String> ls = Arrays.asList(str);
+//        return ls;
+        return listOfCoord;
     }
 
     public List<String> getBSSID(){
-        String str[] = getBSSIDInString().split("\n", -2);
-        List<String> ls = Arrays.asList(str);
-        return ls;
+        return listOfBSSIDs;
     }
 
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        File f = new File("/Users/zen/Downloads/WiFiData.txt");
+        DataParser o = new DataParser();
+        o.readFile(f);
+
+        ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoord(), CSV_FILE_PATH);
+
+
+
+
+
+
+
+
+
+    }
 
 }

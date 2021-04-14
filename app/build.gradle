@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.github.haifengl:smile-kotlin:2.6.0"
     implementation 'org.testng:testng:6.9.6'
+    implementation files('/Users/zen/Downloads/opencsv-5.4.jar')
 
     /*
     // check if we might wanna train using CUDA and cuDNN (CUDA v11.0 requires to be built from source)

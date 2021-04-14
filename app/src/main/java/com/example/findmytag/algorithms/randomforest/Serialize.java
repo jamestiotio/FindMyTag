@@ -16,7 +16,7 @@ public class Serialize {
     public static Path write(Object o) throws IOException {
         Path temp = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            temp = Files.createTempFile("smile-test-", ".tmp");
+            temp = Files.createTempFile("rf-test", ".tmp");
         }
         OutputStream file = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

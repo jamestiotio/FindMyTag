@@ -1,11 +1,13 @@
 package com.example.findmytag;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,6 +17,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.findmytag.algorithms.randomforest.ResultGenerator;
+import com.example.findmytag.algorithms.randomforest.WiFiRF;
+import com.example.findmytag.utils.DataParser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,12 +27,31 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.File;
+import java.io.IOException;
+
+import smile.data.DataFrame;
+import smile.data.formula.Formula;
+
 public class Login extends AppCompatActivity {
     EditText mEmail,mPassword;
     Button mLoginBtn;
     TextView mCreateBtn,forgotTextLink;
     ProgressBar progressBar;
     FirebaseAuth fAuth;
+
+    //zen test file
+    private static final String CSV_FILE_PATH
+            = "./result.csv";
+    public static DataFrame train;
+    public static DataFrame test;
+    public static Formula formula = Formula.lhs("rings");
+
+    public static double[][] x;
+    public static double[] y;
+    public static double[][] testX;
+    public static double[] testY;
+    static String path = "./result.csv" ;
 
 
     @Override
@@ -130,10 +154,33 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
 
+        Button test = findViewById(R.id.test);
+        test.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View v) {
+                File f = new File(pathName + "/WiFiData.txt");
+                DataParser o = new DataParser();
+                try {
+                    o.readFile(f);
+                    ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoord(), pathName + "/result.csv");
+                    ResultGenerator.tupleGenerator(o.getBSSID(), o.getLevels(), o.getCoord());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                //Train model
+                String resultPath = pathName+"/result.csv";
+                WiFiRF.trainModel(resultPath);
+            }
+        });
 
 
     }
+
 
 
 }
