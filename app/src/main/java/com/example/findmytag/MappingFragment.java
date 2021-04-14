@@ -67,8 +67,6 @@ public class MappingFragment extends Fragment {
     ArrayList arrayList;
     private Context mcontext;
     private WiFiDataManager wifiDataManager;
-    StringBuffer sb;
-    int i = 0;
     public HashMap hashMap = new HashMap() {
     };
 
@@ -177,10 +175,6 @@ public class MappingFragment extends Fragment {
 
         super.onStart();
 
-//        if (isAdded()){
-//            String rssi = getArguments().getString("rssi");
-//
-//        }
     }
 
     //---
@@ -196,7 +190,7 @@ public class MappingFragment extends Fragment {
         rssi_btn = view.findViewById(R.id.btn_rssi);
         file_btn = view.findViewById(R.id.btn_file);
 
-        map_btn = view.findViewById(R.id.btn_map);
+       // map_btn = view.findViewById(R.id.btn_map);
         int permission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -219,7 +213,7 @@ public class MappingFragment extends Fragment {
                 String s = wifiDataManager.scanWifi();
                 ArrayList arrayList = new ArrayList(Arrays.asList(s.split("/n")));
 
-                coord = ("(" + x + "," + y + ")");//(x,y)
+                coord = ("(" + x + "," + y + ","+floorLvl +")");//(x,y)
                 hashMap.put(arrayList, coord);
                 System.out.println(hashMap);
 

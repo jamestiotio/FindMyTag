@@ -36,7 +36,7 @@ public class WiFiDataManager {
         mcontext = context;
         wifiManager = (WifiManager) mcontext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        //adapter = new ArrayAdapter<>(mcontext, android.R.layout.simple_list_item_1, arrayList);
+
     }
 
 
