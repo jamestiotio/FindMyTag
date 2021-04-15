@@ -39,7 +39,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.*;
 
-public class uploadImgTest {
+public class UploadImgTest {
     String locationInputError1 = "Please fill in Location 1 Name";
     String locationInputError2 = "Please fill in Location 2 Name";
     String imgError1 = "Please upload Location 1 Floor Plan";
@@ -49,11 +49,12 @@ public class uploadImgTest {
     String location2INPUT = "Location 2";
 
     @Rule
-    //public ActivityScenarioRule<LocationActivity> mLocationActivityRule = new ActivityScenarioRule<>(LocationActivity.class);
+    // public ActivityScenarioRule<LocationActivity> mLocationActivityRule = new ActivityScenarioRule<>(LocationActivity.class);
     public IntentsTestRule<LocationActivity> mLoginActivityTestRule = new IntentsTestRule<>(LocationActivity.class);
     public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule .grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
-    //public IntentsTestRule<LocationActivity> mLoginActivityActivityTestRule =
-     //       new IntentsTestRule<>(LocationActivity.class);
+    // public IntentsTestRule<LocationActivity> mLoginActivityActivityTestRule =
+    //        new IntentsTestRule<>(LocationActivity.class);
+
     @Before
     public void setUp() throws Exception {
     }
@@ -61,8 +62,9 @@ public class uploadImgTest {
     @After
     public void tearDown() throws Exception {
     }
-// testing upload function
-    //testing no input
+
+    // testing upload function
+    // testing no input
     @Test
     public void noInput() throws InterruptedException {
         //ActivityScenario locationActivity = ActivityScenario.launch(LocationActivity.class);
@@ -79,7 +81,8 @@ public class uploadImgTest {
 
         //Thread.sleep(3000);
     }
-    //testing with only location 1 text view input
+
+    // testing with only location 1 text view input
     @Test
     public void inputLocation1txt() throws InterruptedException {
         //ActivityScenario locationActivity = ActivityScenario.launch(LocationActivity.class);
@@ -101,7 +104,8 @@ public class uploadImgTest {
 
         //Thread.sleep(3000);
     }
-    //testing with location 1 text view input and img 1 uploaded
+
+    // testing with location 1 text view input and img 1 uploaded
     @Test
     public void inputLocationimg1() throws InterruptedException {
         // check if upload button exists and perform click
@@ -133,8 +137,7 @@ public class uploadImgTest {
         //Thread.sleep(3000);
     }
 
-
-    //testing with location 1 and 2 text view input and img 1 uploaded
+    // testing with location 1 and 2 text view input and img 1 uploaded
     @Test
     public void inputLocation2txt() throws InterruptedException {
         // check if upload button exists and perform click
@@ -172,7 +175,8 @@ public class uploadImgTest {
 
         //Thread.sleep(3000);
     }
-    //testing with location 1 and 2 text view input and img 1 and 2 uploaded
+
+    // testing with location 1 and 2 text view input and img 1 and 2 uploaded
     @Test
     public void inputLocationimg2() throws InterruptedException {
         // check if upload button exists and perform click
@@ -218,9 +222,7 @@ public class uploadImgTest {
         //Thread.sleep(3000);
     }
 
-
-
-    //image picking function
+    // image picking function
     private Instrumentation.ActivityResult galleryPick(){
         Resources resources = ApplicationProvider.getApplicationContext().getResources();
         Uri imgUri = Uri.parse(
@@ -234,5 +236,4 @@ public class uploadImgTest {
         resultIntent.setData(imgUri);
         return new Instrumentation.ActivityResult(Activity.RESULT_OK,resultIntent);
     }
-
 }

@@ -34,11 +34,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.*;
 
-public class imgPopupWindowTest {
-
+public class ImgPopupWindowTest {
     @Rule
     public IntentsTestRule<imgPopupWindow> mPopupActivityTestRule = new IntentsTestRule<>(imgPopupWindow.class);
     public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule .grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+
     @Before
     public void setUp() throws Exception {
     }
@@ -67,7 +67,7 @@ public class imgPopupWindowTest {
 
         intending(expectedIntent).respondWith(activityResult);
 
-        //scroll to imageview so can see afterwards
+        // scroll to imageview so can see afterwards
         onView(withId(R.id.uploadPopup_upload_imgView2)).perform(scrollTo());
         onView(withId(R.id.uploadPopup_upload_btn2)).check(matches(isDisplayed()));
         onView(withId(R.id.uploadPopup_upload_btn2)).perform(click());
