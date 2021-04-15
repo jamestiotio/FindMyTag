@@ -33,6 +33,7 @@ Further readings for the curious and interested, in addition to the research pap
 - [Indoor Positioning System Using Bluetooth Low Energy](https://ieeexplore.ieee.org/document/7915011)
 - [WiFi Positioning: A Survey](https://www.researchgate.net/publication/237046557_WiFi_Positioning_A_Survey)
 - [Evaluation of The Reliability of RSSI for Indoor Localization](https://ieeexplore.ieee.org/document/6402492)
+- [A Polygonal Method for Ranging-Based Localization in an Indoor Wireless Sensor Network](https://link.springer.com/article/10.1007/s11277-011-0306-7)
 - [An Enhanced K-Nearest-Neighbor Algorithm for Indoor Positioning Systems in a WLAN](https://ieeexplore.ieee.org/document/7017163)
 - [Comparison of WiFi-Based Indoor Positioning Techniques](http://publikacio.uni-eszterhazy.hu/11/)
 - [A Comparison of WiFi-Based Indoor Positioning Methods](https://ieeexplore.ieee.org/document/9008751)
