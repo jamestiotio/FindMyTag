@@ -47,6 +47,11 @@ Further readings for the curious and interested, in addition to the research pap
 - [Estimation of the Path-Loss Exponent by Bayesian Filtering Method](https://www.mdpi.com/1424-8220/21/6/1934)
 - [Improving Fingerprint Indoor Localization Using Convolutional Neural Networks](https://ieeexplore.ieee.org/document/9237969)
 - [UJIIndoorLoc: A New Multi-Building and Multi-Floor Database for WLAN Fingerprint-Based Indoor Localization Problems](https://ieeexplore.ieee.org/document/7275492)
+- [Magicol: Indoor Localization Using Pervasive Magnetic Field and Opportunistic WiFi Sensing](https://ieeexplore.ieee.org/document/7102692)
+- [Improving Indoor Localization Using Convolutional Neural Networks on Computationally Restricted Devices](https://ieeexplore.ieee.org/document/8320781)
+- [A Comprehensive Survey of Machine Learning Based Localization with Wireless Signals](https://arxiv.org/abs/2012.11171)
+- [A Scalable Deep Neural Network Architecture for Multi-Building and Multi-Floor Indoor Localization Based on Wi-Fi Fingerprinting](https://bdataanalytics.biomedcentral.com/articles/10.1186/s41044-018-0031-2)
+- [Large-Scale Location-Aware Services in Access: Hierarchical Building/Floor Classification and Location Estimation Using Wi-Fi Fingerprinting Based on Deep Neural Networks](https://www.tandfonline.com/doi/full/10.1080/01468030.2018.1467515)
 
 More resources such as proprietary localization service SDKs and code samples/tutorials on open-source GitHub repositories can be found online. Google is your friend.
 
