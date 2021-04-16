@@ -260,11 +260,11 @@ public class DataParser {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        File f = new File("/Users/zen/Downloads/WiFiData.txt");
-        DataParser o = new DataParser();
-        o.readFile(f);
+//        File f = new File("/Users/zen/Downloads/WiFiData.txt");
+//        DataParser o = new DataParser();
+//        o.readFile(f);
 
-        ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoord(), CSV_FILE_PATH);
+        //ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoord(), CSV_FILE_PATH);
 
 
 

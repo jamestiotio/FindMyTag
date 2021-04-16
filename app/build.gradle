@@ -56,7 +56,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.github.haifengl:smile-kotlin:2.6.0"
     implementation 'org.testng:testng:6.9.6'
-    implementation files('/Users/zen/Downloads/opencsv-5.4.jar')
+    //implementation files('/Users/zen/Downloads/opencsv-5.4.jar')
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
     // Check if we might wanna train using CUDA and cuDNN (CUDA v11.0 requires to be built from source)
@@ -94,4 +94,13 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.3.0'
+
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+
+    //exclude glide coming from place api
+    implementation ('com.google.android.libraries.places:places:1.0.0'){
+        exclude module: 'glide'
+    }
 }

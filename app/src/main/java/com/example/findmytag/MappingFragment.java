@@ -12,6 +12,9 @@ import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.findmytag.wifi.WiFiDataManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +34,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -168,6 +177,13 @@ public class MappingFragment extends Fragment {
     private TextView lvl1, lvl2;
     private static int floorLvl = 1;
 
+    //firebase
+    FirebaseUser user;
+    StorageReference storageReference;
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+
+
 
     private boolean ready = false; // boolean to check if user uploaded image
 
@@ -237,15 +253,47 @@ public class MappingFragment extends Fragment {
                 Toast.makeText(mcontext, "file saved successfully", Toast.LENGTH_SHORT).show();
             }
         });
-
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         //----------- Change level floorplan-----------------
         lvl1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (imgUri1 != null) {
-                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri1));
-                    floorLvl = 1;
+//                if (imgUri1 != null) {
+//                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri1));
+//                    floorLvl = 1;
+//                }
+                if(fAuth.getCurrentUser() != null) {
+
+                    StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(getContext())
+                                    .download(uri)
+                                    .into(new SimpleTarget<File>() {
+//                                        @Override
+//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                            super.onLoadFailed(errorDrawable);
+//                                            Log.d("Failed to load");
+//                                        }
+
+                                        @Override
+                                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                                            //mPlaceHolder.setVisibility(GONE);
+                                            // ImageViewState three parameters are: scale, center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            //
+                                            mapping_floorplan_imgView.setImage(ImageSource.uri(resource.getAbsolutePath()));
+                                            // display the largest proportion
+                                            //F.setMaxScale(10f);
+                                        }
+                                    });
+                        }
+                    });
+
                 }
 
             }
@@ -254,9 +302,37 @@ public class MappingFragment extends Fragment {
         lvl2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (imgUri2 != null) {
-                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri2));
-                    floorLvl = 2;
+//                if (imgUri2 != null) {
+//                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri2));
+//                    floorLvl = 2;
+//                }
+                if(fAuth.getCurrentUser() != null) {
+                    StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l2.jpg");
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(getContext())
+                                    .download(uri)
+                                    .into(new SimpleTarget<File>() {
+//                                        @Override
+//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                            super.onLoadFailed(errorDrawable);
+//                                            Log.d("Failed to load");
+//                                        }
+
+                                        @Override
+                                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                                            //mPlaceHolder.setVisibility(GONE);
+                                            // ImageViewState three parameters are: scale, center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            //
+                                            mapping_floorplan_imgView.setImage(ImageSource.uri(resource.getAbsolutePath()));
+                                            // display the largest proportion
+                                            //F.setMaxScale(10f);
+                                        }
+                                    });
+                        }
+                    });
                 }
 
             }

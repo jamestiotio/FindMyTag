@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -33,6 +35,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -141,31 +148,36 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                 //F.setImageResource(R.drawable.floorplan1);
                 //F.setImage(ImageSource.resource(R.drawable.floorplan1));
                 if(fAuth.getCurrentUser() != null) {
+
                     StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            //System.out.println(uri);
-//                            Bitmap bitmap = BitmapFactory.decodeFile(uri.toString());
-//                            F.setImage(ImageSource.bitmap(bitmap));
-                               Glide.with(F.getContext()).asBitmap().load(uri).into(new SimpleTarget<Bitmap>() {
-                                @Override
-                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                    F.setImage(ImageSource.bitmap(resource));
-                                }
+                            Glide.with(getContext())
+                                    .download(uri)
+                                    .into(new SimpleTarget<File>() {
+//                                        @Override
+//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                            super.onLoadFailed(errorDrawable);
+//                                            Log.d("Failed to load");
+//                                        }
 
-//                                @Override
-//                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                                    view.setImage(ImageSource.bitmap(resource));
-//                                }
-//                            });
-//                            Bitmap bitmap = Glide.with(getActivity()).asBitmap().load(uri).into(-1,-1);
-//
-
-                            });
+                                        @Override
+                                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                                            //mPlaceHolder.setVisibility(GONE);
+                                            // ImageViewState three parameters are: scale, center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            //
+                                            F.setImage(ImageSource.uri(resource.getAbsolutePath()));
+                                            // display the largest proportion
+                                            //F.setMaxScale(10f);
+                                        }
+                                    });
                         }
                     });
+
                 }
+
             }
         });
         L2.setOnClickListener(new View.OnClickListener() {
@@ -177,24 +189,26 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            //System.out.println(uri);
-//                            Bitmap bitmap = BitmapFactory.decodeFile(uri.toString());
-//                            F.setImage(ImageSource.bitmap(bitmap));
-                            Glide.with(F.getContext()).asBitmap().load(uri).into(new SimpleTarget<Bitmap>() {
-                                @Override
-                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                    F.setImage(ImageSource.bitmap(resource));
-                                }
+                            Glide.with(getContext())
+                                    .download(uri)
+                                    .into(new SimpleTarget<File>() {
+//                                        @Override
+//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                            super.onLoadFailed(errorDrawable);
+//                                            Log.d("Failed to load");
+//                                        }
 
-//                                @Override
-//                                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                                    view.setImage(ImageSource.bitmap(resource));
-//                                }
-//                            });
-//                            Bitmap bitmap = Glide.with(getActivity()).asBitmap().load(uri).into(-1,-1);
-//
-
-                            });
+                                        @Override
+                                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                                            //mPlaceHolder.setVisibility(GONE);
+                                            // ImageViewState three parameters are: scale, center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            //
+                                            F.setImage(ImageSource.uri(resource.getAbsolutePath()));
+                                            // display the largest proportion
+                                            //F.setMaxScale(10f);
+                                        }
+                                    });
                         }
                     });
                 }

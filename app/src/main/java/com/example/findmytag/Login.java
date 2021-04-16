@@ -165,8 +165,8 @@ public class Login extends AppCompatActivity {
                 DataParser o = new DataParser();
                 try {
                     o.readFile(f);
-                    ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoord(), pathName + "/result.csv");
-                    ResultGenerator.tupleGenerator(o.getBSSID(), o.getLevels(), o.getCoord());
+                    //ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoord(), pathName + "/result.csv");
+                    //ResultGenerator.tupleGenerator(o.getBSSID(), o.getLevels(), o.getCoord());
 
                 } catch (IOException e) {
                     e.printStackTrace();
