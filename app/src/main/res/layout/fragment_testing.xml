@@ -89,8 +89,9 @@
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:src="@drawable/floorplan_src" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+<!--    app:src="@drawable/floorplan_src"-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

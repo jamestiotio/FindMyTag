@@ -1,5 +1,6 @@
 package com.example.findmytag;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -87,6 +89,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     private Spinner test_spinner;
     private Button test_btn;
     private static String select_algo = null;
+    private Context context;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -102,6 +105,41 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        //instantly put location image if exist
+        if(fAuth.getCurrentUser() != null) {
+            StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
+            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(context)
+                            .download(uri)
+                            .into(new SimpleTarget<File>() {
+//                                        @Override
+//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                            super.onLoadFailed(errorDrawable);
+//                                            Log.d("Failed to load");
+//                                        }
+
+                                @Override
+                                public void onResourceReady(File resource, Transition<? super File> transition) {
+                                    //mPlaceHolder.setVisibility(GONE);
+                                    // ImageViewState three parameters are: scale, center, orientation
+                                    // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                    //
+                                    F.setImage(ImageSource.uri(resource.getAbsolutePath()));
+                                    // display the largest proportion
+                                    //F.setMaxScale(10f);
+                                }
+                            });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    F.setImage(ImageSource.resource(R.drawable.floorplan_src));
+                }
+            });
+        }
 
         //test_btn onclick listener
         test_btn.setOnClickListener(new View.OnClickListener() {
@@ -128,6 +166,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        context = getContext();
     }
 
     @Override
@@ -140,8 +179,6 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         F = view.findViewById(R.id.imgView_testing_floorplan);
         L1.setClickable(true);
         L2.setClickable(true);
-        fAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
         L1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,6 +210,11 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                                             //F.setMaxScale(10f);
                                         }
                                     });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(),"No image found", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -209,6 +251,11 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                                             //F.setMaxScale(10f);
                                         }
                                     });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(),"No image found", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

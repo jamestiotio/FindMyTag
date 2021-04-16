@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -154,6 +155,7 @@ public class MappingFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        context = getContext();
     }
 
 
@@ -176,6 +178,7 @@ public class MappingFragment extends Fragment {
     private Uri imgUri1 = null, imgUri2 = null;
     private TextView lvl1, lvl2;
     private static int floorLvl = 1;
+    private Context context;
 
     //firebase
     FirebaseUser user;
@@ -205,6 +208,46 @@ public class MappingFragment extends Fragment {
         lvl2 = view.findViewById(R.id.txtView_map_L2);
         rssi_btn = view.findViewById(R.id.btn_rssi);
         file_btn = view.findViewById(R.id.btn_file);
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
+
+        //instantly put location image if exist
+        if(fAuth.getCurrentUser() != null) {
+            StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
+            fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(context)
+                            .download(uri)
+                            .into(new SimpleTarget<File>() {
+//                                        @Override
+//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                            super.onLoadFailed(errorDrawable);
+//                                            Log.d("Failed to load");
+//                                        }
+
+                                @Override
+                                public void onResourceReady(File resource, Transition<? super File> transition) {
+                                    //mPlaceHolder.setVisibility(GONE);
+                                    // ImageViewState three parameters are: scale, center, orientation
+                                    // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                    //
+                                    mapping_floorplan_imgView.setImage(ImageSource.uri(resource.getAbsolutePath()));
+                                    // display the largest proportion
+                                    //F.setMaxScale(10f);
+                                }
+                            });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    mapping_floorplan_imgView.setImage(ImageSource.resource(R.drawable.floorplan_src));
+                }
+            });
+        }
+
+
 
        // map_btn = view.findViewById(R.id.btn_map);
         int permission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -253,9 +296,7 @@ public class MappingFragment extends Fragment {
                 Toast.makeText(mcontext, "file saved successfully", Toast.LENGTH_SHORT).show();
             }
         });
-        fAuth = FirebaseAuth.getInstance();
-        fStore = FirebaseFirestore.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
+
 
         //----------- Change level floorplan-----------------
         lvl1.setOnClickListener(new View.OnClickListener() {
@@ -291,6 +332,11 @@ public class MappingFragment extends Fragment {
                                             //F.setMaxScale(10f);
                                         }
                                     });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(),"No image found", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -331,6 +377,11 @@ public class MappingFragment extends Fragment {
                                             //F.setMaxScale(10f);
                                         }
                                     });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(),"No image found", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
