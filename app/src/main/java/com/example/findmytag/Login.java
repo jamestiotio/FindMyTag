@@ -173,8 +173,7 @@ public class Login extends AppCompatActivity {
                 }
 
                 //Train model
-                String resultPath = pathName+"/result.csv";
-                WiFiRF.trainModel(resultPath);
+                WiFiRF.trainModel();
             }
         });
 

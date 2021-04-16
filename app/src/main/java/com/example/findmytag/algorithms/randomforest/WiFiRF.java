@@ -2,7 +2,6 @@ package com.example.findmytag.algorithms.randomforest;
 
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -12,18 +11,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+
+import java.nio.file.Paths;
+
+import tech.tablesaw.api.*;
 
 import smile.base.cart.SplitRule;
 import smile.classification.DataFrameClassifier;
+import smile.classification.SoftClassifier;
 import smile.data.CategoricalEncoder;
 import smile.data.DataFrame;
 import smile.data.Tuple;
@@ -33,8 +30,9 @@ import smile.data.type.StructField;
 import smile.data.type.StructType;
 import smile.glm.model.Model;
 import smile.io.CSV;
-import smile.regression.RandomForest;
+import smile.classification.RandomForest;
 import smile.validation.ClassificationMetrics;
+import smile.validation.CrossValidation;
 import smile.validation.LOOCV;
 import smile.validation.metric.ClassificationMetric;
 
@@ -43,6 +41,13 @@ public class WiFiRF {
     public static DataFrame train;
     public static DataFrame test;
     public static Formula formula = Formula.lhs("location");
+
+
+    //For building model
+    int numberOfFolds = 5;
+    int bestFold = 0;
+    double bestAccuracy = 0d;
+    SoftClassifier<double[]> bestModel = null;
 
     //Hyperparameters to be edited
     private static final int nTrees = 100;
@@ -58,18 +63,38 @@ public class WiFiRF {
     public static double[] y;
     public static double[][] testX;
     public static double[] testY;
-    static String path = "./result.csv" ;
+    static String path = "/result.csv" ;
+    static String csvPath = android.os.Environment.getExternalStorageDirectory() + "/downloads" + path;
     static StructType schema = DataTypes.struct(
             new StructField("bssid", DataTypes.StringType),
             new StructField("rssi", DataTypes.StringType),
-            new StructField("coordinates", DataTypes.LongType)
+            new StructField("coordinates", DataTypes.StringType)
     );
 
 
+    //Try 1
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void trainModel(String trainingPath, String outputPath, int responseIndex, boolean skipCrossValidation) throws Exception{
+
+        String modelFilePath = Paths.get(outputPath, "RandomForest.model").toString();
+
+//        CSVParser csvParser = new CSVParser();
+
+    }
+
+
+    //Try 2: Fail
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void trainModel(String pathName){
+    public static void trainModel(){
         CSV csv = new CSV(CSVFormat.DEFAULT);
         csv.schema(schema);
+
+        File root = android.os.Environment.getExternalStorageDirectory();
+        String pathName = root.getAbsolutePath()+"/download"+path;
+
+        //Build the model
+//        CrossValidation cv = new CrossValidation()
+
 
         try{
             train = csv.read(pathName);
@@ -91,19 +116,7 @@ public class WiFiRF {
             ClassificationMetrics metrics = LOOCV.classification(formula, train,
                     (f, x) -> (DataFrameClassifier) RandomForest.fit(f, x, nTrees,mTry,maxDepth,maxNodes,nodeSize,samplingRate));
 
-            //save the model in a file
-//            Path temp = null;
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                temp = Files.createTempFile("rf-test", ".tmp");
-//            }
-//            OutputStream file = null;
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                file = Files.newOutputStream(temp);
-//            }
-//            ObjectOutputStream out = new ObjectOutputStream(file);
-//            out.writeObject(model);
-//            out.close();
-//            file.close();
+
             File file = new File(pathName,"WiFiData.txt");
             final String TAG = "MODEL";
 
@@ -131,6 +144,18 @@ public class WiFiRF {
 
     }
 
+
+    //Try 3
+
+    public static void trainModelRF() throws IOException {
+
+        //Get the data
+        Table t = Table.read().csv(csvPath);
+
+        //Filter data to start
+        
+
+    }
 
 
 }

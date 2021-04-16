@@ -12,7 +12,9 @@ public class DataParser {
     String data = "";
     private static final String CSV_FILE_PATH
             = "./result.csv";
-
+    static String path = "/result.csv" ;
+    static String csvPath = android.os.Environment.getExternalStorageDirectory() + "/downloads" + path;
+    static String wifiDataPath = android.os.Environment.getExternalStorageDirectory() + "/downloads/WiFiData.txt";
 
     //Updated variables after called readFile(file)
     private String nameOfSSIDs = "";
@@ -24,6 +26,11 @@ public class DataParser {
     private List<String> listOfRSSI = new ArrayList<>();
     private List<String> listOfCoord = new ArrayList<>();
     private List<String> listOfRSSIs = new ArrayList<>();
+    private List<String> listOfCoordX = new ArrayList<>();
+    private List<String> listOfCoordY = new ArrayList<>();
+    private List<String> listOfCoordZ = new ArrayList<>();
+
+
 
 
 
@@ -36,6 +43,9 @@ public class DataParser {
     private String stringBSSID = "";
     private String stringRSSI = "";
     private String stringCoord = "";
+    private String stringCoordX ="";
+    private String stringCoordY ="";
+    private String stringCoordZ ="";
     private int numOfLinesOfData = 0;
 
 
@@ -67,14 +77,32 @@ public class DataParser {
     }
 
     //for bssid and ssid and levels logic error
+
     public void getSubsInDelimeters(String str) throws IOException {
         String t = "";
         BufferedReader b = new BufferedReader(new StringReader(data));
         while((t = b.readLine()) != null){
             if(t.contains("=")){
                 int boo = t.indexOf("=");
+
+
                 stringCoord = t.substring(boo + 1, t.indexOf(")")+1);
                 listOfCoord.add(stringCoord);
+                stringCoord = t.substring(boo + 1, t.indexOf(")")+1);
+                listOfCoord.add(stringCoord);
+
+                //TODO: Uncomment the Z value when have third values
+                int openBracket = stringCoord.indexOf("(");
+                int closeBracket = stringCoord.indexOf(")");
+                int comma = stringCoord.indexOf(",");
+                //int comma2 = stringCoord.lastIndexOf(",");
+
+                stringCoordX = stringCoord.substring(openBracket+1, comma);
+                stringCoordY = stringCoord.substring(comma+1,closeBracket);
+                //stringCoordZ = stringCoord.substring(comma2+1,closeBracket);
+                listOfCoordX.add(stringCoordX);
+                listOfCoordY.add(stringCoordY);
+                listOfCoordZ.add(stringCoordZ);
             }
         }
 
@@ -254,17 +282,29 @@ public class DataParser {
         return listOfCoord;
     }
 
+    public List<String> getCoordX(){
+        return listOfCoordX;
+    }
+    public List<String> getCoordY(){
+        return listOfCoordY;
+    }
+    public List<String> getCoordZ(){
+        return listOfCoordZ;
+    }
+
     public List<String> getBSSID(){
         return listOfBSSIDs;
     }
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-//        File f = new File("/Users/zen/Downloads/WiFiData.txt");
-//        DataParser o = new DataParser();
-//        o.readFile(f);
+        File f = new File(wifiDataPath);
+        DataParser o = new DataParser();
+        o.readFile(f);
+//
+        ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoordX(), o.getCoordY(), CSV_FILE_PATH);
 
-        //ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoord(), CSV_FILE_PATH);
+
 
 
 

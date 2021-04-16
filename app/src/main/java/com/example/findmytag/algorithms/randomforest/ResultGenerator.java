@@ -1,4 +1,6 @@
 package com.example.findmytag.algorithms.randomforest;
+import com.opencsv.CSVWriter;
+
 import java.io.*;
 import java.util.*;
 import java.util.stream.Stream;
@@ -8,22 +10,23 @@ import java.util.stream.Stream;
 import smile.data.Tuple;
 
 public class ResultGenerator {
-//    private static List<Triplet> listOfTriplet = new ArrayList<>();
-//
-//    public static void addDataToCSV(List<String> BSSID, List<String> LEVELS, List<String> COORD, String output) throws IOException {
-//        File file = new File(output);
-//        FileWriter outputFile = new FileWriter(file);
-//
-//        CSVWriter writer = new CSVWriter(outputFile);
-//
-//        List<String[]> data = new ArrayList<>();
-//        for(int i = 0 ; i < LEVELS.size(); i++){
-//            data.add(new String[] {BSSID.get(i), LEVELS.get(i), COORD.get(i)});
-//        }
-//        writer.writeAll(data);
-//        writer.close();
-//    }
-//
+    private static List<Triplet> listOfTriplet = new ArrayList<>();
+
+    //TODO: Include Z value when training final model
+    public static void addDataToCSV(List<String> BSSID, List<String> LEVELS, List<String> COORDX, List<String> COORDY, String output) throws IOException {
+        File file = new File(output);
+        FileWriter outputFile = new FileWriter(file);
+
+        CSVWriter writer = new CSVWriter(outputFile);
+
+        List<String[]> data = new ArrayList<>();
+        for(int i = 0 ; i < LEVELS.size(); i++){
+            data.add(new String[] {BSSID.get(i), LEVELS.get(i), COORDX.get(i), COORDY.get(i)});
+        }
+        writer.writeAll(data);
+        writer.close();
+    }
+
 //    public static void tupleGenerator(List<String> BSSID, List<String> LEVELS, List<String> COORD){
 //        for(int i = 0 ; i < LEVELS.size() ; i++){
 //            listOfTriplet.add(new Triplet(BSSID.get(i), LEVELS.get(i), COORD.get(i)));
