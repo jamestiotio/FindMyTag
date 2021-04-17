@@ -20,6 +20,8 @@ public class ResultGenerator {
         CSVWriter writer = new CSVWriter(outputFile);
 
         List<String[]> data = new ArrayList<>();
+        //data.add(new String[] {"BSSID", "RSSI", "X", "Y", "Z"});
+
         for(int i = 0 ; i < LEVELS.size(); i++){
             data.add(new String[] {BSSID.get(i), LEVELS.get(i), COORDX.get(i), COORDY.get(i)});
         }
