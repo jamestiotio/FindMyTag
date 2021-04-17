@@ -19,6 +19,8 @@ Cohort 3 Group 7 Team Members:
 - Add user orientation and angle detection features (use accelerometer, gyroscope and magnetometer?).
 - On top of classification features (actual building and floor identification, as well as distance and location coordinates estimation), add regression features (actual longitude and latitude estimation) without using GPS (since GPS tends to be less accurate for indoor context/settings/environments).
 - Add choice of using BLE Bluetooth beacons for multilateration algorithm (some useful tools might include the [log-distance path loss model](https://wikipedia.org/wiki/Log-distance_path_loss_model) or the [Levenberg-Marquardt algorithm](https://wikipedia.org/wiki/Levenberg–Marquardt_algorithm)).
+- Move over the collected Wi-Fi BSSID-RSSI data to Firebase (might cost additional overhead of fetching, loading and pushing data).
+- Offload the model training and inference process to the cloud (so as to ultimately integrate with client's online database/dashboard, combined together with data from client's Bluetooth beacons).
 
 
 
