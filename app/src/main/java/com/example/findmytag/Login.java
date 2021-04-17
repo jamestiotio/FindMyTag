@@ -173,7 +173,7 @@ public class Login extends AppCompatActivity {
                 }
 
                 //Train model
-                WiFiRF.trainModel();
+                //WiFiRF.trainModel();
             }
         });
 
