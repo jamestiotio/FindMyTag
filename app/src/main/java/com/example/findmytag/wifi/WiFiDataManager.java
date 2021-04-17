@@ -54,7 +54,11 @@ public class WiFiDataManager {
         List<ScanResult> wifiList = wifiManager.getScanResults();
         for (ScanResult scanResult : wifiList) {
 
-            sb.append(("\n")+scanResult.SSID + " - " + scanResult.BSSID + " - " + scanResult.level);
+     //    if (scanResult.SSID=="SU9B1716E0"||scanResult.SSID=="SUE612461D"||scanResult.SSID=="edAD0C4780"||scanResult.SSID=="SUC67E22ED"){
+                sb.append(("\n")+scanResult.SSID + " - " + scanResult.BSSID + " - " + scanResult.level);
+     //      }
+
+
         }
         String s=sb.toString();
 

@@ -304,7 +304,7 @@ public class MappingFragment extends Fragment {
             public void onClick(View view) {
 //                if (imgUri1 != null) {
 //                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri1));
-//                    floorLvl = 1;
+                floorLvl = 1;
 //                }
                 if(fAuth.getCurrentUser() != null) {
 
@@ -350,7 +350,7 @@ public class MappingFragment extends Fragment {
             public void onClick(View view) {
 //                if (imgUri2 != null) {
 //                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri2));
-//                    floorLvl = 2;
+                floorLvl = 2;
 //                }
                 if(fAuth.getCurrentUser() != null) {
                     StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l2.jpg");
@@ -388,6 +388,15 @@ public class MappingFragment extends Fragment {
 
             }
         });
+//        map_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String s = wifiDataManager.scanWifi();
+//                ArrayList arrayList = new ArrayList(Arrays.asList(s.split("/n")));
+//
+//
+//            }
+//        });
 
         //--------Marker touch event------------
         GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {

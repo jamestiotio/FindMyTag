@@ -297,12 +297,15 @@ public class DataParser {
     }
 
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        File f = new File(wifiDataPath);
-        DataParser o = new DataParser();
-        o.readFile(f);
+//    public static void main(String[] args) throws IOException, InterruptedException {
+//        File f = new File(wifiDataPath);
+//        DataParser o = new DataParser();
+//        o.readFile(f);
 //
-        ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoordX(), o.getCoordY(), CSV_FILE_PATH);
+//        ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoordX(), o.getCoordY(), CSV_FILE_PATH);
+//
+//
+//
 
 
 
@@ -312,8 +315,5 @@ public class DataParser {
 
 
 
-
-
-    }
 
 }
