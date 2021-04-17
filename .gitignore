@@ -137,3 +137,5 @@ Thumbs.db
 .settings/
 .project
 node_modules
+
+.idea/codeStyles/
