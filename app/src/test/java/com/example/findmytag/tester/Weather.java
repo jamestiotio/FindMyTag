@@ -1,4 +1,5 @@
-package com.example.findmytag.algorithms.randomforest.tester;
+package com.example.findmytag.tester;
+
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;

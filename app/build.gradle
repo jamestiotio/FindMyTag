@@ -32,15 +32,13 @@ android {
 configurations.all {
     resolutionStrategy.dependencySubstitution {
         substitute module('org.hamcrest:hamcrest-core:1.1') with module('junit:junit:4.10')
-        substitute module('org.nd4j:guava:1.0.0-beta7') with module('com.google.code.findbugs:jsr305:3.0.2')
-        substitute module('org.nd4j:protobuf:1.0.0-beta7') with module('com.google.guava:guava:28.1-android')
     }
 }
 
 dependencies {
     implementation 'com.opencsv:opencsv:5.3'
-//    implementation 'tech.tablesaw:tablesaw-smile:0.32.1'
-//    implementation 'tech.tablesaw:tablesaw-core:0.38.2'
+    // implementation 'tech.tablesaw:tablesaw-smile:0.32.1'
+    // implementation 'tech.tablesaw:tablesaw-core:0.38.2'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
@@ -50,7 +48,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.firebase:firebase-auth:20.0.4'
     implementation 'com.google.firebase:firebase-database:19.7.0'
-    implementation 'com.google.firebase:firebase-firestore:22.1.2'
+    implementation 'com.google.firebase:firebase-firestore:21.4.3'
     implementation 'com.google.firebase:firebase-storage:19.2.2'
     implementation 'com.google.firebase:firebase-functions:19.2.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
@@ -58,51 +56,61 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation "com.github.haifengl:smile-kotlin:2.6.0"
-    implementation 'org.testng:testng:6.9.6'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
 
     // Check if we might wanna train using CUDA and cuDNN (CUDA v11.0 requires to be built from source)
-    implementation (group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '1.0.0-beta7') {
+    implementation(group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '1.0.0-beta4') {
         exclude group: 'org.bytedeco', module: 'opencv-platform'
         exclude group: 'org.bytedeco', module: 'leptonica-platform'
         exclude group: 'org.bytedeco', module: 'hdf5-platform'
+        exclude group: 'org.nd4j', module: 'nd4j-base64'
     }
 
-    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta7'
-    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta7', classifier: "android-arm"
-    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta7', classifier: "android-arm64"
-    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta7', classifier: "android-x86"
-    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta7', classifier: "android-x86_64"
-    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2'
-    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-arm"
-    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-arm64"
-    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-x86"
-    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.7-1.5.2', classifier: "android-x86_64"
-    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2'
-    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-arm"
-    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-arm64"
-    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-x86"
-    implementation group: 'org.bytedeco', name: 'opencv', version: '4.1.2-1.5.2', classifier: "android-x86_64"
-    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2'
-    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-arm"
-    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-arm64"
-    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-x86"
-    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.78.0-1.5.2', classifier: "android-x86_64"
+    implementation group: 'org.nd4j', name: 'nd4j-native-platform', version: '1.0.0-beta4'
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta4'
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta4', classifier: "android-arm"
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta4', classifier: "android-arm64"
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta4', classifier: "android-x86"
+    implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta4', classifier: "android-x86_64"
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.9-1.5.3'
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.9-1.5.3', classifier: "android-arm"
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.9-1.5.3', classifier: "android-arm64"
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.9-1.5.3', classifier: "android-x86"
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.9-1.5.3', classifier: "android-x86_64"
+    implementation group: 'org.bytedeco', name: 'javacpp', version: '1.5.3'
+    implementation group: 'org.bytedeco', name: 'javacpp', version: '1.5.3', classifier: "android-arm"
+    implementation group: 'org.bytedeco', name: 'javacpp', version: '1.5.3', classifier: 'android-arm64'
+    implementation group: 'org.bytedeco', name: 'javacpp', version: '1.5.3', classifier: 'android-x86'
+    implementation group: 'org.bytedeco', name: 'javacpp', version: '1.5.3', classifier: 'android-x86_64'
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.3.0-1.5.3'
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.3.0-1.5.3', classifier: "android-arm"
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.3.0-1.5.3', classifier: "android-arm64"
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.3.0-1.5.3', classifier: "android-x86"
+    implementation group: 'org.bytedeco', name: 'opencv', version: '4.3.0-1.5.3', classifier: "android-x86_64"
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.79.0-1.5.3'
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.79.0-1.5.3', classifier: "android-arm"
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.79.0-1.5.3', classifier: "android-arm64"
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.79.0-1.5.3', classifier: "android-x86"
+    implementation group: 'org.bytedeco', name: 'leptonica', version: '1.79.0-1.5.3', classifier: "android-x86_64"
+    implementation group: 'org.jetbrains', name: 'annotations', version: '20.1.0'
 
-    //Zen's static logger for random forest, leave it for now
-    //implementation files('/Users/zen/Downloads/slf4j-api-1.7.30.jar')
-    //implementation files('/Users/zen/Downloads/slf4j-simple-1.7.30.jar')
+    // Zen's static logger for random forest
+    // implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    // testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.testng:testng:6.9.6'
+    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.3.0'
 
-    //glide
+    // Glide
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
-    //exclude glide coming from place api
-    implementation ('com.google.android.libraries.places:places:1.0.0'){
+    // Exclude glide coming from place api
+    implementation('com.google.android.libraries.places:places:1.0.0') {
         exclude module: 'glide'
     }
 }

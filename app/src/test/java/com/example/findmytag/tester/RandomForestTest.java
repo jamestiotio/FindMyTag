@@ -1,4 +1,4 @@
-package com.example.findmytag.algorithms.randomforest.tester;
+package com.example.findmytag.tester;
 
 import android.os.Build;
 
@@ -8,10 +8,10 @@ import com.example.findmytag.algorithms.randomforest.Serialize;
 import com.example.findmytag.algorithms.randomforest.WifiValues;
 
 import org.junit.After;
-import org.testng.annotations.AfterClass;
 import org.junit.Before;
-import org.testng.annotations.BeforeClass;
 import org.junit.Test;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 import java.nio.file.Path;
 import java.util.Arrays;
