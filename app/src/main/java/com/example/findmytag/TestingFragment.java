@@ -102,6 +102,8 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         test_spinner.setAdapter(adapter);
         test_spinner.setOnItemSelectedListener(this);
+        //spinner methods
+
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();

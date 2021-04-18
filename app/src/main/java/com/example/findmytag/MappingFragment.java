@@ -28,8 +28,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +67,7 @@ import java.util.Map;
  * Use the {@link MappingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MappingFragment extends Fragment {
+public class MappingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -179,6 +182,8 @@ public class MappingFragment extends Fragment {
     private TextView lvl1, lvl2;
     private static int floorLvl = 1;
     private Context context;
+    private Spinner mapping_spinner;
+    private static String select_algo = null;
 
     //firebase
     FirebaseUser user;
@@ -211,6 +216,31 @@ public class MappingFragment extends Fragment {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+        mapping_spinner = view.findViewById(R.id.mapping_spinner);
+        map_btn = view.findViewById(R.id.btn_map);
+
+        //spinner stuff
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.algo, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mapping_spinner.setAdapter(adapter);
+        mapping_spinner.setOnItemSelectedListener(this);
+
+        //mapping button onclick
+        map_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(select_algo.equals("Neural Network")){
+                    Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
+                }
+                else if(select_algo.equals("Random Forest")){
+                    Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();
+                }
+                else if(select_algo.equals("KNN")){
+                    Toast.makeText(getContext(),"KNN selected",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
         //instantly put location image if exist
         if(fAuth.getCurrentUser() != null) {
@@ -234,6 +264,7 @@ public class MappingFragment extends Fragment {
                                     // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
                                     //
                                     mapping_floorplan_imgView.setImage(ImageSource.uri(resource.getAbsolutePath()));
+                                    ready = true;
                                     // display the largest proportion
                                     //F.setMaxScale(10f);
                                 }
@@ -243,6 +274,7 @@ public class MappingFragment extends Fragment {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     mapping_floorplan_imgView.setImage(ImageSource.resource(R.drawable.floorplan_src));
+                    ready = false;
                 }
             });
         }
@@ -330,6 +362,7 @@ public class MappingFragment extends Fragment {
                                             mapping_floorplan_imgView.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                             // display the largest proportion
                                             //F.setMaxScale(10f);
+                                            ready = true;
                                         }
                                     });
                         }
@@ -375,6 +408,7 @@ public class MappingFragment extends Fragment {
                                             mapping_floorplan_imgView.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                             // display the largest proportion
                                             //F.setMaxScale(10f);
+                                            ready = true;
                                         }
                                     });
                         }
@@ -488,6 +522,18 @@ public class MappingFragment extends Fragment {
         }
         //tv.append("\n\nFile written to "+file);
 
+
+    }
+//spinner stuff
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if(adapterView.getId() == R.id.mapping_spinner){
+            select_algo = adapterView.getItemAtPosition(i).toString();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }
