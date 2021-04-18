@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.findmytag.wifi.WiFiActivity;
 
 public class LocationActivity extends AppCompatActivity {
 
     Button btn_mappingfrag, btn_testingfrag, btn_listofwifi;
+    ImageButton btn_back;
     FragmentTransaction fragmentTransaction;
 
     @Override
@@ -27,6 +29,15 @@ public class LocationActivity extends AppCompatActivity {
         btn_mappingfrag = findViewById(R.id.btn_mappingfrag);
         btn_testingfrag = findViewById(R.id.btn_testingfrag);
         btn_listofwifi = findViewById(R.id.listofwifi);
+
+        btn_back = findViewById(R.id.btn_back);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         MappingFragment mappingFragment = new MappingFragment();
 //        bundle.putString("rssi", rssi);
