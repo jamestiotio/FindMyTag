@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,6 +30,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.example.findmytag.algorithms.knn.KNN;
+import com.example.findmytag.wifi.WiFiDataManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,6 +46,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,7 +59,14 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     StorageReference storageReference;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
+    WifiManager wifiManager;
+    public ArrayList<Integer> dataRssi = new ArrayList<>();
+    public ArrayList<String>  dataBssid =new ArrayList<>();
+    private WiFiDataManager wiFiDataManager=new WiFiDataManager(wifiManager,dataBssid,dataRssi);
 
+    private Context mcontext;
+    private WiFiDataManager wifiDataManager;
+    KNN knn= new KNN();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -91,10 +104,12 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     private static String select_algo = null;
     private Context context;
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        mcontext = getActivity();
+        wifiDataManager = new WiFiDataManager(mcontext);
         test_btn = view.findViewById(R.id.btn_test);
         //spinner methods
         test_spinner = view.findViewById(R.id.test_spinner);
@@ -155,6 +170,9 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                 }
                 else if(select_algo.equals("KNN")){
                     Toast.makeText(getContext(),"KNN selected",Toast.LENGTH_SHORT).show();
+                    dataBssid=wiFiDataManager.dataBssid;
+
+                    System.out.println(wifiDataManager.dataBssid);
                 }
             }
         });

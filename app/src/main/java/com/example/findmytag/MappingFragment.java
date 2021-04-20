@@ -15,6 +15,7 @@ import android.os.Bundle;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.findmytag.algorithms.knn.KNN;
 import com.example.findmytag.wifi.WiFiDataManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -76,12 +77,14 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
     public static float x;
     public static float y;
     String coord;
+    String s;
     List<ScanResult> rssi;
     ArrayList arrayList;
     private Context mcontext;
     private WiFiDataManager wifiDataManager;
     public HashMap hashMap = new HashMap() {
     };
+
 
     //verifystoragePermissions verifystoragePermissions;
     String[] permissions = {
@@ -237,6 +240,9 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                 }
                 else if(select_algo.equals("KNN")){
                     Toast.makeText(getContext(),"KNN selected",Toast.LENGTH_SHORT).show();
+
+
+
                 }
             }
         });

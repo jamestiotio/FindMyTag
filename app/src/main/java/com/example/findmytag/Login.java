@@ -17,9 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.findmytag.algorithms.randomforest.ResultGenerator;
-import com.example.findmytag.algorithms.randomforest.WiFiRF;
-import com.example.findmytag.utils.DataParser;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -162,15 +160,15 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 File f = new File(pathName + "/WiFiData.txt");
-                DataParser o = new DataParser();
-                try {
-                    o.readFile(f);
-                    //ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoord(), pathName + "/result.csv");
-                    //ResultGenerator.tupleGenerator(o.getBSSID(), o.getLevels(), o.getCoord());
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                DataParser o = new DataParser();
+//                try {
+//                    o.readFile(f);
+//                    //ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoord(), pathName + "/result.csv");
+//                    //ResultGenerator.tupleGenerator(o.getBSSID(), o.getLevels(), o.getCoord());
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
 
                 //Train model
                 //WiFiRF.trainModel();
