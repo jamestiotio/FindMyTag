@@ -154,12 +154,12 @@ public class Login extends AppCompatActivity {
 
         String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
 
-        Button test = findViewById(R.id.test);
-        test.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onClick(View v) {
-                File f = new File(pathName + "/WiFiData.txt");
+//        Button test = findViewById(R.id.test);
+//        test.setOnClickListener(new View.OnClickListener() {
+//            @RequiresApi(api = Build.VERSION_CODES.N)
+//            @Override
+//            public void onClick(View v) {
+//                File f = new File(pathName + "/WiFiData.txt");
 //                DataParser o = new DataParser();
 //                try {
 //                    o.readFile(f);
@@ -172,8 +172,8 @@ public class Login extends AppCompatActivity {
 
                 //Train model
                 //WiFiRF.trainModel();
-            }
-        });
+            //}
+//        });
 
 
     }

@@ -3,6 +3,7 @@ package com.example.findmytag;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -103,6 +104,8 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     private Button test_btn;
     private static String select_algo = null;
     private Context context;
+    private static float imgWidth= -1;
+    private static float imgHeight = -1;
 
 
     @Override
@@ -110,6 +113,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         super.onViewCreated(view, savedInstanceState);
         mcontext = getActivity();
         wifiDataManager = new WiFiDataManager(mcontext);
+
         test_btn = view.findViewById(R.id.btn_test);
         //spinner methods
         test_spinner = view.findViewById(R.id.test_spinner);
@@ -147,8 +151,11 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                                     F.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                     // display the largest proportion
                                     //F.setMaxScale(10f);
+
                                 }
                             });
+
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -158,12 +165,16 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
             });
         }
 
+
         //test_btn onclick listener
         test_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PointF imgSourceCoords = F.viewToSourceCoord(F.getWidth(),F.getHeight());
+                imgWidth = imgSourceCoords.x;
+                imgHeight = imgSourceCoords.y;
                 if(select_algo.equals("Neural Network")){
-                    Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"Image Width: " + imgWidth + " Image Height: " + imgHeight,Toast.LENGTH_SHORT).show();
                 }
                 else if(select_algo.equals("Random Forest")){
                     Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();
