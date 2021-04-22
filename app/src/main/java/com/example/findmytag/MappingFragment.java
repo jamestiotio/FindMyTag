@@ -17,6 +17,8 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.findmytag.algorithms.knn.KNN;
 import com.example.findmytag.algorithms.neuralnetwork.NeuralNetwork;
+import com.example.findmytag.algorithms.randomforest.ResultGenerator;
+import com.example.findmytag.utils.DataParser;
 import com.example.findmytag.wifi.WiFiDataManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,6 +52,7 @@ import com.google.firebase.storage.StorageReference;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -237,18 +240,20 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void onClick(View view) {
                 if(select_algo.equals("Neural Network")){
-                    Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
-                    NeuralNetwork nn = new NeuralNetwork("result.csv");
-                    nn.train();
-                    // Save binary files
-                    INDArray xCorrelationVector = nn.xCorrelationVector;
-                    INDArray yCorrelationVector = nn.yCorrelationVector;
-                    File xCorrelationFile = new File("xCorrelationVector.bin");
-                    File yCorrelationFile = new File("yCorrelationVector.bin");
                     try {
+                        Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
+                        String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
+                        NeuralNetwork nn = new NeuralNetwork(pathName + "/result.csv");
+                        nn.train();
+                        // Save binary files
+                        INDArray xCorrelationVector = nn.xCorrelationVector;
+                        INDArray yCorrelationVector = nn.yCorrelationVector;
+                        File xCorrelationFile = new File("xCorrelationVector.bin");
+                        File yCorrelationFile = new File("yCorrelationVector.bin");
                         Nd4j.saveBinary(xCorrelationVector, xCorrelationFile);
                         Nd4j.saveBinary(yCorrelationVector, yCorrelationFile);
                     } catch (IOException e) {
+                        Toast.makeText(getContext(),"File access error!",Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 }
@@ -324,6 +329,7 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         rssi_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 String s = wifiDataManager.scanWifi();
                 ArrayList arrayList = new ArrayList(Arrays.asList(s.split("/n")));
 
@@ -345,6 +351,11 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
             public void onClick(View view) {
                 try {
                     writeToFile(hashMap);
+                    String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
+                    File dir = new File(pathName);
+                    DataParser o = new DataParser();
+                    o.readFile(dir);
+                    ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoordX(), o.getCoordY(), o.getCoordZ(), pathName + "/result.csv");
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -514,7 +525,6 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                 ready = true;
             }
         }
-
     }
 
     /**
@@ -522,20 +532,13 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
      */
     private void writeToFile(HashMap map) {
         final String TAG = "MEDIA";
-
-        File root = android.os.Environment.getExternalStorageDirectory();
-        File dir = new File(root.getAbsolutePath() + "/download");
-
-        dir.mkdirs();
-        File file = new File(dir,"WiFiData.txt");
-
+        String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Downloads";
+        File file = new File(pathName + "/WiFiData.txt");
 
         try {
-            FileOutputStream f = new FileOutputStream(file);
-            PrintWriter pw = new PrintWriter(f);
-            pw.println(map);
-            pw.flush();
-            pw.close();
+            FileWriter f = new FileWriter(file, true);
+            BufferedWriter writer = new BufferedWriter(f);
+            writer.write(String.valueOf(map));
             f.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

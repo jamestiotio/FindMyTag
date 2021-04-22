@@ -33,31 +33,40 @@ public class WiFiDataManager {
         wifiManager = (WifiManager) mcontext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
 
+    public WiFiDataManager(WifiManager wifiManager,ArrayList dataBssid,ArrayList dataRssi ){
+        this.wifiManager=wifiManager;
+        this.dataBssid=dataBssid;
+        this.dataRssi=dataRssi;
     }
 
-
     public String scanWifi() {
-
         if (!wifiManager.isWifiEnabled()) {
             Toast.makeText(mcontext, "WiFi is disabled ... enabling it now", Toast.LENGTH_LONG).show();
             wifiManager.setWifiEnabled(true);
         }
-
 
         mcontext.registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
         sb = new StringBuilder();
         List<ScanResult> wifiList = wifiManager.getScanResults();
         for (ScanResult scanResult : wifiList) {
-
-            //    if (scanResult.SSID=="SU9B1716E0"||scanResult.SSID=="SUE612461D"||scanResult.SSID=="edAD0C4780"||scanResult.SSID=="SUC67E22ED"){
             sb.append(("\n")+scanResult.SSID + " - " + scanResult.BSSID + " - " + scanResult.level);
-            //      }
-
-
         }
-        String s=sb.toString();
 
+
+        String s=sb.toString();
+        /*
+        for (ScanResult scanResult : wifiList) {
+            //if(scanResult.level>=90){
+            for(int i=0;i<AP_LIST.size(); i++){
+                if (scanResult.BSSID==AP_LIST.get(i)) {
+                    dataRssi.add(scanResult.level);
+                    dataBssid.add(scanResult.BSSID);
+                    break;
+                }
+            }
+        }
+*/
         boolean x = wifiManager.startScan();
 
         if(!x){

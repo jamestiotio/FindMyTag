@@ -164,6 +164,77 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
             public void onClick(View view) {
                 if(select_algo.equals("Neural Network")){
                     Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"Image Width: " + imgWidth + " Image Height: " + imgHeight,Toast.LENGTH_SHORT).show();
+                    String TAG = "MEDIA";
+
+                    // Scan Wi-Fi and put in file
+                    String s = wifiDataManager.scanWifi();
+                    ArrayList arrayList = new ArrayList(Arrays.asList(s.split("/n")));
+
+                    coord = ("(" + x + "," + y + ","+floorLvl +")");    // (x,y) (this is unused)
+                    hashMap.put(arrayList, coord);
+
+                    String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download/nn";
+                    File dir = new File(pathName + "/TestData");
+                    if(!dir.exists()) {
+                        dir.mkdirs();
+                    }
+                    File file = new File(dir,"/TestLocation.txt");
+
+                    try {
+                        FileOutputStream f = new FileOutputStream(file);
+                        PrintWriter pw = new PrintWriter(f);
+                        pw.println(hashMap);
+                        pw.flush();
+                        pw.close();
+                        f.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Log.i(TAG, "File not found.");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    //parse the file and save to csv
+                    DataParser o = new DataParser();
+                    try {
+                        o.readFile(file);
+                        ResultGenerator.addDataToCSVWithoutCoord(o.getBSSID(),o.getLevels(),pathName + "/TestResult.csv");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    // Load the saved correlation vectors and assign them to the class
+                    try {
+                        // Initialize the pre-trained models for prediction
+                        String anotherPathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
+                        NeuralNetwork nn = new NeuralNetwork(anotherPathName + "/trained_x_model.zip", anotherPathName + "/trained_y_model.zip");
+                        INDArray xCorrelationVector = Nd4j.readBinary(new File(anotherPathName + "/xCorrelationVector.bin"));
+                        INDArray yCorrelationVector = Nd4j.readBinary(new File(anotherPathName + "/yCorrelationVector.bin"));
+                        nn.xCorrelationVector = xCorrelationVector;
+                        nn.yCorrelationVector = yCorrelationVector;
+                        // Process input and convert it to image representation
+                        INDArray rawInputFingerprint = CNNLocUtils.parseTestingCSV(pathName + "/TestResult.csv");
+                        int upperbound = (int) Math.ceil(Math.sqrt(WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()));
+                        float[] r = rawInputFingerprint.getRow(0).toFloatVector();
+                        INDArray floatR = Nd4j.create(r, new int[]{1, WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()});
+                        INDArray xHP = CNNLocUtils.getHP(floatR, nn.xCorrelationVector);
+                        INDArray yHP = CNNLocUtils.getHP(floatR, nn.yCorrelationVector);
+                        INDArray xImage = CNNLocUtils.imageFromHPINDArray(xHP).reshape(1, 1, upperbound, upperbound);
+                        INDArray yImage = CNNLocUtils.imageFromHPINDArray(yHP).reshape(1, 1, upperbound, upperbound);
+
+                        // Get prediction
+                        Pair<Integer, Integer> predictedCoordPercentages = nn.predict(xImage, yImage);
+                        float actualXCoordinate = predictedCoordPercentages.getFirst().floatValue() * imgWidth;
+                        float actualYCoordinate = predictedCoordPercentages.getSecond().floatValue() * imgWidth;
+                        PointF markerPoint = new PointF(actualXCoordinate, actualYCoordinate);
+                        F.setPin(markerPoint);
+                        Toast.makeText(getContext(), "(Prediction) x: " + actualXCoordinate + " y: " + actualYCoordinate, Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        Toast.makeText(getContext(), "Failed to predict your current location! Did you remember to map and train the model first?", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
                 }
                 else if(select_algo.equals("Random Forest")){
                     Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();

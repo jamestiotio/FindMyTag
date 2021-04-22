@@ -90,7 +90,7 @@ public class NeuralNetwork {
     MultiLayerNetwork yCoordClassifierNetwork;
 
     // Initialize class
-    public NeuralNetwork(String dataSetFilePath) {
+    public NeuralNetwork(String dataSetFilePath) throws IOException {
         this.resultFilePath = dataSetFilePath;
         // Parse CSV file to prep for model training process
         this.parsedInput = CNNLocUtils.parseCSV(this.resultFilePath);
