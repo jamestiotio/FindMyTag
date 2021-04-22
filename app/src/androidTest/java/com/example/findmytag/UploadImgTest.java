@@ -23,6 +23,7 @@ import org.junit.Test;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -179,6 +180,9 @@ public class UploadImgTest {
     // testing with location 1 and 2 text view input and img 1 and 2 uploaded
     @Test
     public void inputLocationimg2() throws InterruptedException {
+        //instantiate previous activity first
+        //ActivityScenario locationActivity = ActivityScenario.launch(LocationActivity.class);
+
         // check if upload button exists and perform click
         onView(withId(R.id.btn_upload)).check(matches(isDisplayed()));
         onView(withId(R.id.btn_upload)).perform(click());
@@ -205,7 +209,7 @@ public class UploadImgTest {
         onView(withId(R.id.uploadPopup_upload_locationName2)).check(matches(isDisplayed()));
         onView(withId(R.id.uploadPopup_upload_locationName2)).perform(click());
         onView(withId(R.id.uploadPopup_upload_locationName2)).perform(clearText());
-        onView(withId(R.id.uploadPopup_upload_locationName2)).perform(typeText(location2INPUT));
+        onView(withId(R.id.uploadPopup_upload_locationName2)).perform(typeText(location2INPUT),closeSoftKeyboard());
 
         //add location img 2
         onView(withId(R.id.uploadPopup_upload_btn2)).perform(scrollTo());
@@ -213,13 +217,14 @@ public class UploadImgTest {
         onView(withId(R.id.uploadPopup_upload_btn2)).perform(click());
 
         //check if popup window confirm button displayed
+        //onView(withId(R.id.uploadPopup_upload_btn_confirm)).perform(scrollTo());
         onView(withId(R.id.uploadPopup_upload_btn_confirm)).check(matches(isDisplayed()));
         onView(withId(R.id.uploadPopup_upload_btn_confirm)).perform(click());
 
         //check if layout returned to location activity
         onView(withId(R.id.locationActivity)).check(matches(isDisplayed()));
-
-        //Thread.sleep(3000);
+        //sleep needed for firebase and glide to load
+        Thread.sleep(1000);
     }
 
     // image picking function

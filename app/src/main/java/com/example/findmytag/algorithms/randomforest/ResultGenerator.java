@@ -13,7 +13,7 @@ public class ResultGenerator {
     private static List<Triplet> listOfTriplet = new ArrayList<>();
 
     //TODO: Include Z value when training final model
-    public static void addDataToCSV(List<String> BSSID, List<String> LEVELS, List<String> COORDX, List<String> COORDY, String output) throws IOException {
+    public static void addDataToCSV(List<String> BSSID, List<String> LEVELS, List<String> COORDX, List<String> COORDY, List<String> COORDZ, String output) throws IOException {
         File file = new File(output);
         FileWriter outputFile = new FileWriter(file);
 
@@ -23,7 +23,23 @@ public class ResultGenerator {
         //data.add(new String[] {"BSSID", "RSSI", "X", "Y", "Z"});
 
         for(int i = 0 ; i < LEVELS.size(); i++){
-            data.add(new String[] {BSSID.get(i), LEVELS.get(i), COORDX.get(i), COORDY.get(i)});
+            data.add(new String[] {BSSID.get(i), LEVELS.get(i), COORDX.get(i), COORDY.get(i), COORDZ.get(i)});
+        }
+        writer.writeAll(data);
+        writer.close();
+    }
+
+    public static void addDataToCSVWithoutCoord(List<String> BSSID, List<String> LEVELS, String output) throws IOException {
+        File file = new File(output);
+        FileWriter outputFile = new FileWriter(file);
+
+        CSVWriter writer = new CSVWriter(outputFile);
+
+        List<String[]> data = new ArrayList<>();
+        //data.add(new String[] {"BSSID", "RSSI", "X", "Y", "Z"});
+
+        for(int i = 0 ; i < LEVELS.size(); i++){
+            data.add(new String[] {BSSID.get(i), LEVELS.get(i)});
         }
         writer.writeAll(data);
         writer.close();

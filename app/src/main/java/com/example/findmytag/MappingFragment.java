@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.findmytag.algorithms.knn.KNN;
+import com.example.findmytag.algorithms.neuralnetwork.NeuralNetwork;
 import com.example.findmytag.wifi.WiFiDataManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,6 +46,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -234,6 +238,19 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
             public void onClick(View view) {
                 if(select_algo.equals("Neural Network")){
                     Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
+                    NeuralNetwork nn = new NeuralNetwork("result.csv");
+                    nn.train();
+                    // Save binary files
+                    INDArray xCorrelationVector = nn.xCorrelationVector;
+                    INDArray yCorrelationVector = nn.yCorrelationVector;
+                    File xCorrelationFile = new File("xCorrelationVector.bin");
+                    File yCorrelationFile = new File("yCorrelationVector.bin");
+                    try {
+                        Nd4j.saveBinary(xCorrelationVector, xCorrelationFile);
+                        Nd4j.saveBinary(yCorrelationVector, yCorrelationFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else if(select_algo.equals("Random Forest")){
                     Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();
@@ -445,7 +462,7 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                 if (mapping_floorplan_imgView.isReady() && ready) {
                     PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(), e.getY());
                     mapping_floorplan_imgView.setPin(markerCoord);
-                    Toast.makeText(getContext(), "x: " + markerCoord.x + " y: " + markerCoord.y, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "(Actual) x: " + markerCoord.x + " y: " + markerCoord.y, Toast.LENGTH_SHORT).show();
                     x = markerCoord.x;
                     y = markerCoord.y;
                 }

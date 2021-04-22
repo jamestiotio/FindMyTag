@@ -1,4 +1,4 @@
-// package com.example.findmytag.algorithms.neuralnetwork;
+package com.example.findmytag.algorithms.neuralnetwork;
 
 /**
  * Define experimentally-measured average altitude constants (units in metres; measured from floor

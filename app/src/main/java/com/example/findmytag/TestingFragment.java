@@ -43,12 +43,10 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -64,8 +62,11 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     WifiManager wifiManager;
     public ArrayList<Integer> dataRssi = new ArrayList<>();
     public ArrayList<String>  dataBssid =new ArrayList<>();
+    private WiFiDataManager wiFiDataManager=new WiFiDataManager(wifiManager,dataBssid,dataRssi);
 
     private Context mcontext;
+    private WiFiDataManager wifiDataManager;
+    KNN knn= new KNN();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -102,12 +103,13 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     private Button test_btn;
     private static String select_algo = null;
     private Context context;
-    private  KNN knn=new KNN();
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mcontext = getActivity();
-        WiFiDataManager wifiDataManager = new WiFiDataManager(mcontext);
+        wifiDataManager = new WiFiDataManager(mcontext);
         test_btn = view.findViewById(R.id.btn_test);
         //spinner methods
         test_spinner = view.findViewById(R.id.test_spinner);
@@ -130,12 +132,21 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                     Glide.with(context)
                             .download(uri)
                             .into(new SimpleTarget<File>() {
+//                                        @Override
+//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                            super.onLoadFailed(errorDrawable);
+//                                            Log.d("Failed to load");
+//                                        }
 
                                 @Override
                                 public void onResourceReady(File resource, Transition<? super File> transition) {
-
+                                    //mPlaceHolder.setVisibility(GONE);
+                                    // ImageViewState three parameters are: scale, center, orientation
+                                    // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                    //
                                     F.setImage(ImageSource.uri(resource.getAbsolutePath()));
-
+                                    // display the largest proportion
+                                    //F.setMaxScale(10f);
                                 }
                             });
                 }
@@ -159,9 +170,9 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                 }
                 else if(select_algo.equals("KNN")){
                     Toast.makeText(getContext(),"KNN selected",Toast.LENGTH_SHORT).show();
+                    dataBssid=wiFiDataManager.dataBssid;
 
-                    HashMap sortteddata=wifiDataManager.userScanWifi();
-                    System.out.println(sortteddata);
+                    System.out.println(wifiDataManager.dataBssid);
                 }
             }
         });
@@ -191,7 +202,10 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         L1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //F.setImageResource(R.drawable.floorplan1);
+                //F.setImage(ImageSource.resource(R.drawable.floorplan1));
                 if(fAuth.getCurrentUser() != null) {
+
                     StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
@@ -207,9 +221,13 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
 
                                         @Override
                                         public void onResourceReady(File resource, Transition<? super File> transition) {
-
+                                            //mPlaceHolder.setVisibility(GONE);
+                                            // ImageViewState three parameters are: scale, center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            //
                                             F.setImage(ImageSource.uri(resource.getAbsolutePath()));
-
+                                            // display the largest proportion
+                                            //F.setMaxScale(10f);
                                         }
                                     });
                         }
@@ -227,6 +245,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         L2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //F.setImageResource(R.drawable.floorplan2);
                 if(fAuth.getCurrentUser() != null) {
                     StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l2.jpg");
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -243,7 +262,13 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
 
                                         @Override
                                         public void onResourceReady(File resource, Transition<? super File> transition) {
+                                            //mPlaceHolder.setVisibility(GONE);
+                                            // ImageViewState three parameters are: scale, center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            //
                                             F.setImage(ImageSource.uri(resource.getAbsolutePath()));
+                                            // display the largest proportion
+                                            //F.setMaxScale(10f);
                                         }
                                     });
                         }
