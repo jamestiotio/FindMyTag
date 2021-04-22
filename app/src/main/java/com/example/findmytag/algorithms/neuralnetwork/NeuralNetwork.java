@@ -79,8 +79,8 @@ public class NeuralNetwork {
     private boolean saveUpdater = false;
     String resultFilePath;
     Triple<INDArray, INDArray, INDArray> parsedInput;
-    INDArray xCorrelationVector;
-    INDArray yCorrelationVector;
+    public INDArray xCorrelationVector;
+    public INDArray yCorrelationVector;
     INDArray xImages;
     INDArray yImages;
     DataSet xDataSet;
@@ -292,8 +292,7 @@ public class NeuralNetwork {
     // Main method to be called by the Android UI app's side that returns the PointF object to be
     // drawn on the floor plan map.
     // Input format: {image representation of Wi-Fi AP BSSID-RSSI list} as an INDArray.
-    // Output format: [{percentage of image width, confidence rate}, {percentage of
-    // image height, confidence rate}] as an INDArray.
+    // Output format: [{percentage of image width}, {percentage of image height}] as an INDArray.
     // Divide the image into 100 classes or bins for each axis of the coordinates to get the
     // "percentage" values.
     // Do take note that the model might be less accurate on Level 1 compared to Level 2 due to
@@ -301,7 +300,13 @@ public class NeuralNetwork {
     // values due to inverse-square law), as well as due to the fact that prediction on Level 2
     // can rely on APs both above and below the user, whereas prediction on Level 1 can only rely
     // on APs above the user.
-    public Pair<Float, Float> predict(INDArray input) {
-        return null;
+    public Pair<Integer, Integer> predict(INDArray xInput, INDArray yInput) {
+        INDArray actualXOutput = this.xCoordClassifierNetwork.output(xInput);
+        INDArray actualYOutput = this.yCoordClassifierNetwork.output(yInput);
+
+        int maxXIndex = Nd4j.argMax(actualXOutput, 1).toIntVector()[0];
+        int maxYIndex = Nd4j.argMax(actualYOutput, 1).toIntVector()[0];
+
+        return new Pair<>(maxXIndex, maxYIndex);
     }
 }

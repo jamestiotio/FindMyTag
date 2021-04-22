@@ -194,4 +194,48 @@ public class CNNLocUtils {
         float temp = (val / maxDimension) * n;
         return Math.round(temp-1);    // Rounding
     }
+
+    public static INDArray parseTestingCSV(String filePath) {
+        String[][] bssidList = new String[][]{};
+        String[][] rssiList = new String[][]{};
+
+        int[][] outerTransitory = new int[][]{};
+        int[] innerTransitory = new int[WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()];
+
+        try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
+            List<String[]> r = reader.readAll();
+            for (String[] item : r) {
+                bssidList = ArrayUtils.add(bssidList, item[0].split(";"));
+                rssiList = ArrayUtils.add(rssiList, item[1].split(";"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CsvException e) {
+            e.printStackTrace();
+        }
+
+        // Loop through N locations
+        for (int i = 0; i < bssidList.length; i++) {
+            for (int j = 0; j < bssidList[i].length; j++) {
+                // Set loop to go through all known K Wi-Fi AP BSSID list to impose fixed ordering
+                for (int k = 0; k < WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size(); k++) {
+                    // Extract only relevant BSSID and RSSI values
+                    if (bssidList[i][j].equalsIgnoreCase(WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.get(k))) {
+                        innerTransitory[k] = Integer.parseInt(rssiList[i][j]);
+                        // Only select first occurrence for that coordinate (throw away duplicates)
+                        break;
+                    }
+                }
+            }
+            innerTransitory = normalizeIntArray(innerTransitory, 100, 55);
+            outerTransitory = ArrayUtils.add(outerTransitory, innerTransitory);
+            // Reset innerTransitory
+            innerTransitory = new int[WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()];
+        }
+
+        // This is the desired N x K matrix fingerprint
+        INDArray normalizedFingerprints = Nd4j.createFromArray(outerTransitory);
+
+        return normalizedFingerprints;
+    }
 }

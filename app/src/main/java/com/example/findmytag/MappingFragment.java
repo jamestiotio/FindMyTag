@@ -47,6 +47,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -237,6 +240,17 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                     Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
                     NeuralNetwork nn = new NeuralNetwork("result.csv");
                     nn.train();
+                    // Save binary files
+                    INDArray xCorrelationVector = nn.xCorrelationVector;
+                    INDArray yCorrelationVector = nn.yCorrelationVector;
+                    File xCorrelationFile = new File("xCorrelationVector.bin");
+                    File yCorrelationFile = new File("yCorrelationVector.bin");
+                    try {
+                        Nd4j.saveBinary(xCorrelationVector, xCorrelationFile);
+                        Nd4j.saveBinary(yCorrelationVector, yCorrelationFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else if(select_algo.equals("Random Forest")){
                     Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();

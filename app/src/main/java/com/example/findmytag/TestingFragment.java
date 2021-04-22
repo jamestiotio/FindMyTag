@@ -33,7 +33,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.findmytag.algorithms.knn.KNN;
+import com.example.findmytag.algorithms.neuralnetwork.CNNLocUtils;
 import com.example.findmytag.algorithms.neuralnetwork.NeuralNetwork;
+import com.example.findmytag.algorithms.neuralnetwork.WiFiAPBSSIDAndSSIDList;
 import com.example.findmytag.algorithms.randomforest.ResultGenerator;
 import com.example.findmytag.utils.DataParser;
 import com.example.findmytag.wifi.WiFiDataManager;
@@ -46,6 +48,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.primitives.Pair;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -237,7 +243,33 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                     // Initialize the pre-trained models for prediction
                     NeuralNetwork nn = new NeuralNetwork("trained_x_model.zip", "trained_y_model.zip");
 
+                    // Load the saved correlation vectors and assign them to the class
+                    try {
+                        INDArray xCorrelationVector = Nd4j.readBinary(new File("xCorrelationVector.bin"));
+                        INDArray yCorrelationVector = Nd4j.readBinary(new File("yCorrelationVector.bin"));
+                        nn.xCorrelationVector = xCorrelationVector;
+                        nn.yCorrelationVector = yCorrelationVector;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Process input and convert it to image representation
+                    INDArray rawInputFingerprint = CNNLocUtils.parseTestingCSV(pathName + "/TestResult.csv");
+                    int upperbound = (int) Math.ceil(Math.sqrt(WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()));
+                    float[] r = rawInputFingerprint.getRow(0).toFloatVector();
+                    INDArray floatR = Nd4j.create(r, new int[]{1, WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()});
+                    INDArray xHP = CNNLocUtils.getHP(floatR, nn.xCorrelationVector);
+                    INDArray yHP = CNNLocUtils.getHP(floatR, nn.yCorrelationVector);
+                    INDArray xImage = CNNLocUtils.imageFromHPINDArray(xHP).reshape(1, 1, upperbound, upperbound);
+                    INDArray yImage = CNNLocUtils.imageFromHPINDArray(yHP).reshape(1, 1, upperbound, upperbound);
+
                     // Get prediction
+                    Pair<Integer, Integer> predictedCoordPercentages = nn.predict(xImage, yImage);
+                    float actualXCoordinate = predictedCoordPercentages.getFirst().floatValue() * imgWidth;
+                    float actualYCoordinate = predictedCoordPercentages.getSecond().floatValue() * imgWidth;
+                    PointF markerPoint = new PointF(actualXCoordinate, actualYCoordinate);
+                    F.setPin(markerPoint);
+                    Toast.makeText(getContext(), "x: " + actualXCoordinate + " y: " + actualYCoordinate, Toast.LENGTH_SHORT).show();
                 }
                 else if(select_algo.equals("Random Forest")){
                     Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();
