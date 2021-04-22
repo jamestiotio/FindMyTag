@@ -1,36 +1,35 @@
 package com.example.findmytag;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.PointF;
 import android.net.Uri;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.findmytag.algorithms.knn.KNN;
+import com.example.findmytag.algorithms.neuralnetwork.CNNLocUtils;
+import com.example.findmytag.algorithms.neuralnetwork.NeuralNetwork;
+import com.example.findmytag.algorithms.neuralnetwork.WiFiAPBSSIDAndSSIDList;
+import com.example.findmytag.algorithms.randomforest.ResultGenerator;
+import com.example.findmytag.utils.DataParser;
 import com.example.findmytag.wifi.WiFiDataManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,15 +38,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.primitives.Pair;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,27 +58,39 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class TestingFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    public static float x;
+    public static float y;
+    private static int floorLvl = 1;
+    private static String select_algo = null;
+    private static float imgWidth = -1;
+    private static float imgHeight = -1;
+    public ArrayList<Integer> dataRssi = new ArrayList<>();
+    public ArrayList<String> dataBssid = new ArrayList<>();
+    public HashMap hashMap = new HashMap() {
+    };
     FirebaseUser user;
     StorageReference storageReference;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     WifiManager wifiManager;
-    public ArrayList<Integer> dataRssi = new ArrayList<>();
-    public ArrayList<String>  dataBssid =new ArrayList<>();
-    private WiFiDataManager wiFiDataManager=new WiFiDataManager(wifiManager,dataBssid,dataRssi);
-
+    KNN knn = new KNN();
+    String coord;
+    String s;
+    private WiFiDataManager wiFiDataManager = new WiFiDataManager(wifiManager, dataBssid, dataRssi);
     private Context mcontext;
     private WiFiDataManager wifiDataManager;
-    KNN knn= new KNN();
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private TextView L1, L2;
+    private Marker F;
+    private Spinner test_spinner;
+    private Button test_btn;
+    private Context context;
     public TestingFragment() {
         // Required empty public constructor
     }
@@ -97,23 +112,18 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         fragment.setArguments(args);
         return fragment;
     }
-    private TextView L1,L2;
-    private Marker F;
-    private Spinner test_spinner;
-    private Button test_btn;
-    private static String select_algo = null;
-    private Context context;
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mcontext = getActivity();
         wifiDataManager = new WiFiDataManager(mcontext);
+
         test_btn = view.findViewById(R.id.btn_test);
         //spinner methods
         test_spinner = view.findViewById(R.id.test_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.algo, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.algo, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         test_spinner.setAdapter(adapter);
         test_spinner.setOnItemSelectedListener(this);
@@ -124,8 +134,9 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
         storageReference = FirebaseStorage.getInstance().getReference();
 
         //instantly put location image if exist
-        if(fAuth.getCurrentUser() != null) {
-            StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
+        if (fAuth.getCurrentUser() != null) {
+            StorageReference fileRef =
+                    storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/l1.jpg");
             fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
@@ -133,22 +144,30 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                             .download(uri)
                             .into(new SimpleTarget<File>() {
 //                                        @Override
-//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                        public void onLoadFailed(@Nullable Drawable
+//                                        errorDrawable) {
 //                                            super.onLoadFailed(errorDrawable);
 //                                            Log.d("Failed to load");
 //                                        }
 
                                 @Override
-                                public void onResourceReady(File resource, Transition<? super File> transition) {
+                                public void onResourceReady(File resource, Transition<?
+                                        super File> transition) {
                                     //mPlaceHolder.setVisibility(GONE);
-                                    // ImageViewState three parameters are: scale, center, orientation
-                                    // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                    // ImageViewState three parameters are: scale, center,
+                                    // orientation
+                                    // subsamplingScaleImageView.setImage(ImageSource.uri(Uri
+                                    // .fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0)
+                                    // , 0));
                                     //
                                     F.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                     // display the largest proportion
                                     //F.setMaxScale(10f);
+
                                 }
                             });
+
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -158,28 +177,35 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
             });
         }
 
+
         //test_btn onclick listener
         test_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(select_algo.equals("Neural Network")){
-                    Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getContext(),"Image Width: " + imgWidth + " Image Height: " + imgHeight,Toast.LENGTH_SHORT).show();
+                PointF imgSourceCoords = F.viewToSourceCoord(F.getWidth(), F.getHeight());
+                imgWidth = imgSourceCoords.x;
+                imgHeight = imgSourceCoords.y;
+                if (select_algo.equals("Neural Network")) {
+                    Toast.makeText(getContext(), "Neural Network selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            "Image Width: " + imgWidth + " Image Height: " + imgHeight,
+                            Toast.LENGTH_SHORT).show();
                     String TAG = "MEDIA";
 
                     // Scan Wi-Fi and put in file
                     String s = wifiDataManager.scanWifi();
                     ArrayList arrayList = new ArrayList(Arrays.asList(s.split("/n")));
 
-                    coord = ("(" + x + "," + y + ","+floorLvl +")");    // (x,y) (this is unused)
+                    coord = ("(" + x + "," + y + "," + floorLvl + ")");    // (x,y) (this is unused)
                     hashMap.put(arrayList, coord);
 
-                    String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download/nn";
+                    String pathName =
+                            android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download/nn";
                     File dir = new File(pathName + "/TestData");
-                    if(!dir.exists()) {
+                    if (!dir.exists()) {
                         dir.mkdirs();
                     }
-                    File file = new File(dir,"/TestLocation.txt");
+                    File file = new File(dir, "/TestLocation.txt");
 
                     try {
                         FileOutputStream f = new FileOutputStream(file);
@@ -199,7 +225,8 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                     DataParser o = new DataParser();
                     try {
                         o.readFile(file);
-                        ResultGenerator.addDataToCSVWithoutCoord(o.getBSSID(),o.getLevels(),pathName + "/TestResult.csv");
+                        ResultGenerator.addDataToCSVWithoutCoord(o.getBSSID(), o.getLevels(),
+                                pathName + "/TestResult.csv");
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -208,46 +235,56 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                     // Load the saved correlation vectors and assign them to the class
                     try {
                         // Initialize the pre-trained models for prediction
-                        String anotherPathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
-                        NeuralNetwork nn = new NeuralNetwork(anotherPathName + "/trained_x_model.zip", anotherPathName + "/trained_y_model.zip");
-                        INDArray xCorrelationVector = Nd4j.readBinary(new File(anotherPathName + "/xCorrelationVector.bin"));
-                        INDArray yCorrelationVector = Nd4j.readBinary(new File(anotherPathName + "/yCorrelationVector.bin"));
+                        NeuralNetwork nn = new NeuralNetwork("trained_x_model.zip",
+                                "trained_y_model.zip");
+                        INDArray xCorrelationVector = Nd4j.readBinary(new File(
+                                "xCorrelationVector.bin"));
+                        INDArray yCorrelationVector = Nd4j.readBinary(new File(
+                                "yCorrelationVector.bin"));
                         nn.xCorrelationVector = xCorrelationVector;
                         nn.yCorrelationVector = yCorrelationVector;
                         // Process input and convert it to image representation
-                        INDArray rawInputFingerprint = CNNLocUtils.parseTestingCSV(pathName + "/TestResult.csv");
-                        int upperbound = (int) Math.ceil(Math.sqrt(WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()));
+                        INDArray rawInputFingerprint = CNNLocUtils.parseTestingCSV(pathName +
+                                "/TestResult.csv");
+                        int upperbound =
+                                (int) Math.ceil(Math.sqrt(WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()));
                         float[] r = rawInputFingerprint.getRow(0).toFloatVector();
-                        INDArray floatR = Nd4j.create(r, new int[]{1, WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()});
+                        INDArray floatR = Nd4j.create(r, new int[]{1,
+                                WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()});
                         INDArray xHP = CNNLocUtils.getHP(floatR, nn.xCorrelationVector);
                         INDArray yHP = CNNLocUtils.getHP(floatR, nn.yCorrelationVector);
-                        INDArray xImage = CNNLocUtils.imageFromHPINDArray(xHP).reshape(1, 1, upperbound, upperbound);
-                        INDArray yImage = CNNLocUtils.imageFromHPINDArray(yHP).reshape(1, 1, upperbound, upperbound);
+                        INDArray xImage = CNNLocUtils.imageFromHPINDArray(xHP).reshape(1, 1,
+                                upperbound, upperbound);
+                        INDArray yImage = CNNLocUtils.imageFromHPINDArray(yHP).reshape(1, 1,
+                                upperbound, upperbound);
 
                         // Get prediction
-                        Pair<Integer, Integer> predictedCoordPercentages = nn.predict(xImage, yImage);
-                        float actualXCoordinate = predictedCoordPercentages.getFirst().floatValue() * imgWidth;
-                        float actualYCoordinate = predictedCoordPercentages.getSecond().floatValue() * imgWidth;
+                        Pair<Integer, Integer> predictedCoordPercentages = nn.predict(xImage,
+                                yImage);
+                        float actualXCoordinate =
+                                predictedCoordPercentages.getFirst().floatValue() * imgWidth;
+                        float actualYCoordinate =
+                                predictedCoordPercentages.getSecond().floatValue() * imgWidth;
                         PointF markerPoint = new PointF(actualXCoordinate, actualYCoordinate);
                         F.setPin(markerPoint);
-                        Toast.makeText(getContext(), "(Prediction) x: " + actualXCoordinate + " y: " + actualYCoordinate, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "(Prediction) x: " + actualXCoordinate + " " +
+                                "y: " + actualYCoordinate, Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
-                        Toast.makeText(getContext(), "Failed to predict your current location! Did you remember to map and train the model first?", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Failed to predict your current location! " +
+                                "Did you remember to map and train the model first?",
+                                Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
-                }
-                else if(select_algo.equals("Random Forest")){
-                    Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();
-                }
-                else if(select_algo.equals("KNN")){
-                    Toast.makeText(getContext(),"KNN selected",Toast.LENGTH_SHORT).show();
-                    dataBssid=wiFiDataManager.dataBssid;
+                } else if (select_algo.equals("Random Forest")) {
+                    Toast.makeText(getContext(), "Random Forest selected", Toast.LENGTH_SHORT).show();
+                } else if (select_algo.equals("KNN")) {
+                    Toast.makeText(getContext(), "KNN selected", Toast.LENGTH_SHORT).show();
+                    // dataBssid=wiFiDataManager.dataBssid;
 
-                    System.out.println(wifiDataManager.dataBssid);
+                    // System.out.println(wifiDataManager.dataBssid);
                 }
             }
         });
-
     }
 
     @Override
@@ -262,7 +299,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                   Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_testing, container, false);
 
         L1 = view.findViewById(R.id.txtView_map_L1);
@@ -275,9 +312,11 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
             public void onClick(View v) {
                 //F.setImageResource(R.drawable.floorplan1);
                 //F.setImage(ImageSource.resource(R.drawable.floorplan1));
-                if(fAuth.getCurrentUser() != null) {
+                if (fAuth.getCurrentUser() != null) {
 
-                    StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
+                    StorageReference fileRef =
+                            storageReference.child("users/" + fAuth.getCurrentUser().getUid() +
+                                    "/l1.jpg");
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -285,16 +324,21 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                                     .download(uri)
                                     .into(new SimpleTarget<File>() {
 //                                        @Override
-//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                        public void onLoadFailed(@Nullable Drawable
+//                                        errorDrawable) {
 //                                            super.onLoadFailed(errorDrawable);
 //                                            Log.d("Failed to load");
 //                                        }
 
                                         @Override
-                                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                                        public void onResourceReady(File resource, Transition<?
+                                                super File> transition) {
                                             //mPlaceHolder.setVisibility(GONE);
-                                            // ImageViewState three parameters are: scale, center, orientation
-                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            // ImageViewState three parameters are: scale,
+                                            // center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri
+                                            // (Uri.fromFile(file)),new ImageViewState(1.0f, new
+                                            // PointF(0, 0), 0));
                                             //
                                             F.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                             // display the largest proportion
@@ -305,7 +349,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(),"No image found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "No image found", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -317,8 +361,10 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
             @Override
             public void onClick(View v) {
                 //F.setImageResource(R.drawable.floorplan2);
-                if(fAuth.getCurrentUser() != null) {
-                    StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l2.jpg");
+                if (fAuth.getCurrentUser() != null) {
+                    StorageReference fileRef =
+                            storageReference.child("users/" + fAuth.getCurrentUser().getUid() +
+                                    "/l2.jpg");
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -326,16 +372,21 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                                     .download(uri)
                                     .into(new SimpleTarget<File>() {
 //                                        @Override
-//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                        public void onLoadFailed(@Nullable Drawable
+//                                        errorDrawable) {
 //                                            super.onLoadFailed(errorDrawable);
 //                                            Log.d("Failed to load");
 //                                        }
 
                                         @Override
-                                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                                        public void onResourceReady(File resource, Transition<?
+                                                super File> transition) {
                                             //mPlaceHolder.setVisibility(GONE);
-                                            // ImageViewState three parameters are: scale, center, orientation
-                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            // ImageViewState three parameters are: scale,
+                                            // center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri
+                                            // (Uri.fromFile(file)),new ImageViewState(1.0f, new
+                                            // PointF(0, 0), 0));
                                             //
                                             F.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                             // display the largest proportion
@@ -346,15 +397,15 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(),"No image found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "No image found", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
             }
         });
-        // Inflate the layout for this fragment//return inflater.inflate(R.layout.fragment_testing, container, false);
+        // Inflate the layout for this fragment//return inflater.inflate(R.layout
+        // .fragment_testing, container, false);
         return view;
-
 
 
     }
@@ -363,7 +414,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     //btm 2 methods are for spinner
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if(adapterView.getId() == R.id.test_spinner){
+        if (adapterView.getId() == R.id.test_spinner) {
             select_algo = adapterView.getItemAtPosition(i).toString();
         }
     }

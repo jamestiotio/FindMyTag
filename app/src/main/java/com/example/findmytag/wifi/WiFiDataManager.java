@@ -31,17 +31,18 @@ public class WiFiDataManager {
     public WiFiDataManager(Context context) {
         mcontext = context;
         wifiManager = (WifiManager) mcontext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+    }
 
 
-    public WiFiDataManager(WifiManager wifiManager,ArrayList dataBssid,ArrayList dataRssi ){
-        this.wifiManager=wifiManager;
-        this.dataBssid=dataBssid;
-        this.dataRssi=dataRssi;
+    public WiFiDataManager(WifiManager wifiManager,ArrayList dataBssid, ArrayList dataRssi ){
+        // this.wifiManager=wifiManager;
+        // this.dataBssid=dataBssid;
+        // this.dataRssi=dataRssi;
     }
 
     public String scanWifi() {
         if (!wifiManager.isWifiEnabled()) {
-            Toast.makeText(mcontext, "WiFi is disabled ... enabling it now", Toast.LENGTH_LONG).show();
+            Toast.makeText(mcontext, "WiFi is disabled... enabling it now", Toast.LENGTH_LONG).show();
             wifiManager.setWifiEnabled(true);
         }
 
@@ -79,7 +80,6 @@ public class WiFiDataManager {
 
     }
     public HashMap userScanWifi() {
-
         if (!wifiManager.isWifiEnabled()) {
             Toast.makeText(mcontext, "WiFi is disabled ... enabling it now", Toast.LENGTH_LONG).show();
             wifiManager.setWifiEnabled(true);
