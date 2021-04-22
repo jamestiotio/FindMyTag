@@ -462,7 +462,7 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                 if (mapping_floorplan_imgView.isReady() && ready) {
                     PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(), e.getY());
                     mapping_floorplan_imgView.setPin(markerCoord);
-                    Toast.makeText(getContext(), "x: " + markerCoord.x + " y: " + markerCoord.y, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "(Actual) x: " + markerCoord.x + " y: " + markerCoord.y, Toast.LENGTH_SHORT).show();
                     x = markerCoord.x;
                     y = markerCoord.y;
                 }

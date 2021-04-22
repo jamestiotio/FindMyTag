@@ -147,15 +147,11 @@ public class NeuralNetwork {
     }
 
     // Load pre-trained models for each classifier (default filepaths are trained_x_model.zip and trained_y_model.zip)
-    public NeuralNetwork(String xClassifierModel, String yClassifierModel) {
-        try {
-            MultiLayerNetwork xModel = ModelSerializer.restoreMultiLayerNetwork(xClassifierModel);
-            MultiLayerNetwork yModel = ModelSerializer.restoreMultiLayerNetwork(yClassifierModel);
-            this.xCoordClassifierNetwork = xModel;
-            this.yCoordClassifierNetwork = yModel;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public NeuralNetwork(String xClassifierModel, String yClassifierModel) throws IOException {
+        MultiLayerNetwork xModel = ModelSerializer.restoreMultiLayerNetwork(xClassifierModel);
+        MultiLayerNetwork yModel = ModelSerializer.restoreMultiLayerNetwork(yClassifierModel);
+        this.xCoordClassifierNetwork = xModel;
+        this.yCoordClassifierNetwork = yModel;
     }
 
     public void train() {
