@@ -66,6 +66,7 @@ dependencies {
         exclude group: 'org.nd4j', module: 'nd4j-base64'
     }
 
+    // native-platform is only for testing purposes on Windows
     implementation group: 'org.nd4j', name: 'nd4j-native-platform', version: '1.0.0-beta4'
     implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta4'
     implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta4', classifier: "android-arm"

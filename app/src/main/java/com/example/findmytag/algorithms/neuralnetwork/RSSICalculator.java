@@ -1,6 +1,6 @@
 // To assist development, double-check and confirm RSSI values by using
 // https://github.com/VREMSoftwareDevelopment/WiFiAnalyzer or Xirrus Wi-Fi Inspector.
-// package com.example.findmytag.algorithms.neuralnetwork;
+package com.example.findmytag.algorithms.neuralnetwork;
 
 import java.lang.Math;
 

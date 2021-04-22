@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.example.findmytag.algorithms.knn.KNN;
+import com.example.findmytag.algorithms.neuralnetwork.NeuralNetwork;
+import com.example.findmytag.algorithms.randomforest.ResultGenerator;
+import com.example.findmytag.utils.DataParser;
 import com.example.findmytag.wifi.WiFiDataManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,10 +48,16 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -63,11 +73,19 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     WifiManager wifiManager;
     public ArrayList<Integer> dataRssi = new ArrayList<>();
     public ArrayList<String>  dataBssid =new ArrayList<>();
-    private WiFiDataManager wiFiDataManager=new WiFiDataManager(wifiManager,dataBssid,dataRssi);
+    private WiFiDataManager wiFiDataManager = new WiFiDataManager(wifiManager,dataBssid,dataRssi);
 
     private Context mcontext;
     private WiFiDataManager wifiDataManager;
     KNN knn= new KNN();
+
+    String coord;
+    String s;
+    public static float x;
+    public static float y;
+    private static int floorLvl = 1;
+    public HashMap hashMap = new HashMap() {};
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -174,7 +192,52 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                 imgWidth = imgSourceCoords.x;
                 imgHeight = imgSourceCoords.y;
                 if(select_algo.equals("Neural Network")){
+                    Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
                     Toast.makeText(getContext(),"Image Width: " + imgWidth + " Image Height: " + imgHeight,Toast.LENGTH_SHORT).show();
+                    String TAG = "MEDIA";
+
+                    // Scan Wi-Fi and put in file
+                    String s = wifiDataManager.scanWifi();
+                    ArrayList arrayList = new ArrayList(Arrays.asList(s.split("/n")));
+
+                    coord = ("(" + x + "," + y + ","+floorLvl +")");    // (x,y) (this is unused)
+                    hashMap.put(arrayList, coord);
+
+                    String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download/nn";
+                    File dir = new File(pathName + "/TestData");
+                    if(!dir.exists()) {
+                        dir.mkdirs();
+                    }
+                    File file = new File(dir,"/TestLocation.txt");
+
+                    try {
+                        FileOutputStream f = new FileOutputStream(file);
+                        PrintWriter pw = new PrintWriter(f);
+                        pw.println(hashMap);
+                        pw.flush();
+                        pw.close();
+                        f.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        Log.i(TAG, "File not found.");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    //parse the file and save to csv
+                    DataParser o = new DataParser();
+                    try {
+                        o.readFile(file);
+                        ResultGenerator.addDataToCSVWithoutCoord(o.getBSSID(),o.getLevels(),pathName + "/TestResult.csv");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    // Initialize the pre-trained models for prediction
+                    NeuralNetwork nn = new NeuralNetwork("trained_x_model.zip", "trained_y_model.zip");
+
+                    // Get prediction
                 }
                 else if(select_algo.equals("Random Forest")){
                     Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();
@@ -187,7 +250,6 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                 }
             }
         });
-
     }
 
     @Override

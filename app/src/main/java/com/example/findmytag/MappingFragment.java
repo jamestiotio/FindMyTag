@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.findmytag.algorithms.knn.KNN;
+import com.example.findmytag.algorithms.neuralnetwork.NeuralNetwork;
 import com.example.findmytag.wifi.WiFiDataManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -234,6 +235,8 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
             public void onClick(View view) {
                 if(select_algo.equals("Neural Network")){
                     Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
+                    NeuralNetwork nn = new NeuralNetwork("result.csv");
+                    nn.train();
                 }
                 else if(select_algo.equals("Random Forest")){
                     Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();
