@@ -266,7 +266,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                         F.setPin(markerPoint);
                         Toast.makeText(getContext(), "(Prediction) x: " + actualXCoordinate + " y: " + actualYCoordinate, Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
-                        Toast.makeText(getContext(), "Failed to get your current location! Did you remember to map and train the model first?", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Failed to predict your current location! Did you remember to map and train the model first?", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 }
