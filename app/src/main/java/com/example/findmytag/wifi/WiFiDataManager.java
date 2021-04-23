@@ -26,6 +26,7 @@ public class WiFiDataManager {
     public MainActivity activity;
     private Context mcontext;
     StringBuilder sb;
+    String s;
     public HashMap<String,Integer> sorteddata= new HashMap<>();
     private final List<String> AP_LIST =Arrays.asList("SUTD_Wifi","SUTD_LAB","SUTD_Guest","eduroam");
     public WiFiDataManager(Context context) {
@@ -56,7 +57,7 @@ public class WiFiDataManager {
 
 
         }
-        String s=sb.toString();
+        s=sb.toString();
 
         boolean x = wifiManager.startScan();
 
@@ -99,6 +100,13 @@ public class WiFiDataManager {
             }
         }
         return sorteddata;
+    }
+    public HashMap<String, Integer> getsorteddata(){
+        return sorteddata;
+
+    }
+    public String gets(){
+        return  s;
     }
 
     final BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
