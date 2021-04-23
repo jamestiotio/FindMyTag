@@ -80,7 +80,6 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     KNN knn = new KNN();
     String coord;
     String s;
-    private WiFiDataManager wiFiDataManager = new WiFiDataManager(wifiManager, dataBssid, dataRssi);
     private Context mcontext;
     private WiFiDataManager wifiDataManager;
     // TODO: Rename and change types of parameters
