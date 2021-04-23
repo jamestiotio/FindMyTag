@@ -1,9 +1,5 @@
 package com.example.findmytag.algorithms.neuralnetwork;
 
-import android.graphics.PointF;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.CacheMode;
 import org.deeplearning4j.nn.conf.ConvolutionMode;
@@ -17,9 +13,6 @@ import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.api.InvocationType;
-import org.deeplearning4j.optimize.listeners.EvaluativeListener;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -35,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * This is just a simple feed-forward convolutional neural network (Conv-ReLu CNN-LOC), nothing
@@ -67,20 +59,18 @@ import java.util.List;
  */
 public class NeuralNetwork {
     private static final Logger log = LoggerFactory.getLogger(NeuralNetwork.class);
-    // Global variables to accept the classification results from the background thread
-    public double x, y;
-    public int floor;
     private static final int numOfEpochs = 12;
     private static final long seed = 1802;
     private static final int CLASSES_COUNT = 100;
     private static final int nChannels = 1;
     private static final int k = WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size();
-    private int upperBound;
-    private boolean saveUpdater = false;
-    String resultFilePath;
-    Triple<INDArray, INDArray, INDArray> parsedInput;
+    // Global variables to accept the classification results from the background thread
+    public double x, y;
+    public int floor;
     public INDArray xCorrelationVector;
     public INDArray yCorrelationVector;
+    String resultFilePath;
+    Triple<INDArray, INDArray, INDArray> parsedInput;
     INDArray xImages;
     INDArray yImages;
     DataSet xDataSet;
@@ -88,9 +78,11 @@ public class NeuralNetwork {
     // We separate the classifier for each coordinate axis
     MultiLayerNetwork xCoordClassifierNetwork;
     MultiLayerNetwork yCoordClassifierNetwork;
+    private int upperBound;
+    private boolean saveUpdater = false;
 
     // Initialize class
-    public NeuralNetwork(String dataSetFilePath) {
+    public NeuralNetwork(String dataSetFilePath) throws IOException {
         this.resultFilePath = dataSetFilePath;
         // Parse CSV file to prep for model training process
         this.parsedInput = CNNLocUtils.parseCSV(this.resultFilePath);
@@ -146,7 +138,8 @@ public class NeuralNetwork {
         this.yDataSet = new DataSet(yInputs, yTargets);
     }
 
-    // Load pre-trained models for each classifier (default filepaths are trained_x_model.zip and trained_y_model.zip)
+    // Load pre-trained models for each classifier (default filepaths are trained_x_model.zip and
+    // trained_y_model.zip)
     public NeuralNetwork(String xClassifierModel, String yClassifierModel) throws IOException {
         MultiLayerNetwork xModel = ModelSerializer.restoreMultiLayerNetwork(xClassifierModel);
         MultiLayerNetwork yModel = ModelSerializer.restoreMultiLayerNetwork(yClassifierModel);
@@ -181,11 +174,13 @@ public class NeuralNetwork {
                 .inferenceWorkspaceMode(WorkspaceMode.ENABLED)
                 .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
                 .convolutionMode(ConvolutionMode.Same)
-                .gradientNormalization(GradientNormalization.RenormalizeL2PerLayer) // Normalize to prevent vanishing or exploding gradients
+                .gradientNormalization(GradientNormalization.RenormalizeL2PerLayer) // Normalize
+                // to prevent vanishing or exploding gradients
                 .list()
                 // Block 1
                 .layer(0, new ConvolutionLayer.Builder()
-                        // nIn and nOut specify depth. nIn here is the nChannels and nOut is the number of filters to be applied
+                        // nIn and nOut specify depth. nIn here is the nChannels and nOut is the
+                        // number of filters to be applied
                         .name("cnn1")
                         .cudnnAlgoMode(ConvolutionLayer.AlgoMode.PREFER_FASTEST)
                         .kernelSize(2, 2)
@@ -246,7 +241,8 @@ public class NeuralNetwork {
                         .nOut(CLASSES_COUNT)
                         .activation(Activation.SOFTMAX)
                         .build())
-                .setInputType(InputType.convolutionalFlat(this.upperBound,this.upperBound,nChannels))
+                .setInputType(InputType.convolutionalFlat(this.upperBound, this.upperBound,
+                        nChannels))
                 .build();
 
         log.info("Training models...");
@@ -269,7 +265,8 @@ public class NeuralNetwork {
         File xModelLocation = new File("trained_x_model.zip");
 
         try {
-            ModelSerializer.writeModel(this.xCoordClassifierNetwork, xModelLocation, this.saveUpdater);
+            ModelSerializer.writeModel(this.xCoordClassifierNetwork, xModelLocation,
+                    this.saveUpdater);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -278,7 +275,8 @@ public class NeuralNetwork {
         File yModelLocation = new File("trained_y_model.zip");
 
         try {
-            ModelSerializer.writeModel(this.yCoordClassifierNetwork, yModelLocation, this.saveUpdater);
+            ModelSerializer.writeModel(this.yCoordClassifierNetwork, yModelLocation,
+                    this.saveUpdater);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

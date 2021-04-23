@@ -1,21 +1,24 @@
 package com.example.findmytag.utils;
 
-import com.example.findmytag.algorithms.randomforest.ResultGenerator;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
 public class DataParser {
-    String data = "";
     private static final String CSV_FILE_PATH
             = "./result.csv";
-    static String path = "/result.csv" ;
-    static String csvPath = android.os.Environment.getExternalStorageDirectory() + "/downloads" + path;
-    static String wifiDataPath = android.os.Environment.getExternalStorageDirectory() + "/downloads/WiFiData.txt";
-
+    static String path = "/result.csv";
+    static String csvPath =
+            android.os.Environment.getExternalStorageDirectory() + "/download" + path;
+    static String wifiDataPath = android.os.Environment.getExternalStorageDirectory() +
+            "/download/WiFiData.txt";
+    String data = "";
     //Updated variables after called readFile(file)
     private String nameOfSSIDs = "";
     private String onlyLevelsString = "";
@@ -31,10 +34,6 @@ public class DataParser {
     private List<String> listOfCoordZ = new ArrayList<>();
 
 
-
-
-
-
     //For removing dump and extracting levels, coordinates at the same time
     private String[] tempArr;
     private String rssiAndCoordString = "";
@@ -43,9 +42,9 @@ public class DataParser {
     private String stringBSSID = "";
     private String stringRSSI = "";
     private String stringCoord = "";
-    private String stringCoordX ="";
-    private String stringCoordY ="";
-    private String stringCoordZ ="";
+    private String stringCoordX = "";
+    private String stringCoordY = "";
+    private String stringCoordZ = "";
     private int numOfLinesOfData = 0;
 
 
@@ -54,10 +53,10 @@ public class DataParser {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String s;
         while ((s = br.readLine()) != null) {
-            numOfLinesOfData ++;
-            data = data + s+ "\n";
+            numOfLinesOfData++;
+            data = data + s + "\n";
             //For SSID names, in case needed
-            if(s.contains(" - ")) {
+            if (s.contains(" - ")) {
                 int index = s.indexOf(" - ");
                 if (index > 0) {
                     nameOfSSIDs = nameOfSSIDs + s.substring(0, index) + "\n";
@@ -81,14 +80,14 @@ public class DataParser {
     public void getSubsInDelimeters(String str) throws IOException {
         String t = "";
         BufferedReader b = new BufferedReader(new StringReader(data));
-        while((t = b.readLine()) != null){
-            if(t.contains("=")){
+        while ((t = b.readLine()) != null) {
+            if (t.contains("=")) {
                 int boo = t.indexOf("=");
 
 
-                stringCoord = t.substring(boo + 1, t.indexOf(")")+1);
+                stringCoord = t.substring(boo + 1, t.indexOf(")") + 1);
                 listOfCoord.add(stringCoord);
-                stringCoord = t.substring(boo + 1, t.indexOf(")")+1);
+                stringCoord = t.substring(boo + 1, t.indexOf(")") + 1);
                 listOfCoord.add(stringCoord);
 
                 //TODO: Uncomment the Z value when have third values
@@ -97,8 +96,8 @@ public class DataParser {
                 int comma = stringCoord.indexOf(",");
                 //int comma2 = stringCoord.lastIndexOf(",");
 
-                stringCoordX = stringCoord.substring(openBracket+1, comma);
-                stringCoordY = stringCoord.substring(comma+1,closeBracket);
+                stringCoordX = stringCoord.substring(openBracket + 1, comma);
+                stringCoordY = stringCoord.substring(comma + 1, closeBracket);
                 //stringCoordZ = stringCoord.substring(comma2+1,closeBracket);
                 listOfCoordX.add(stringCoordX);
                 listOfCoordY.add(stringCoordY);
@@ -108,7 +107,7 @@ public class DataParser {
 
         // Stores the indices of
         Stack<Integer> dels = new Stack<Integer>();
-        for(int i = 0; i < str.length(); i++) {
+        for (int i = 0; i < str.length(); i++) {
 
             // If opening delimeter
             // is encountered
@@ -139,29 +138,30 @@ public class DataParser {
         int count = 0;
         while ((s = bufReader.readLine()) != null) {
             count++;
-            if(s.contains(" - ")) {
+            if (s.contains(" - ")) {
                 int index = s.indexOf(" - ");
-                stringBSSID = stringBSSID + s.substring(index+3).substring(0, s.substring(index+3).indexOf(" "))+";";
-                stringRSSI = stringRSSI + s.substring(s.indexOf("- -")).substring(2)+";";
+                stringBSSID = stringBSSID + s.substring(index + 3).substring(0,
+                        s.substring(index + 3).indexOf(" ")) + ";";
+                stringRSSI = stringRSSI + s.substring(s.indexOf("- -")).substring(2) + ";";
                 //System.out.println(stringRSSI);
             }
-            if(s.contains(",")){
+            if (s.contains(",")) {
                 listOfBSSIDs.add(stringBSSID);
                 stringBSSID = "";
                 listOfRSSI.add(stringRSSI);
-                stringRSSI="";
-            }else if(count == numOfLinesOfData){
+                stringRSSI = "";
+            } else if (count == numOfLinesOfData) {
                 stringRSSI = stringRSSI.substring(0, stringRSSI.indexOf("]"));
                 listOfBSSIDs.add(stringBSSID);
                 listOfRSSI.add(stringRSSI);
             }
         }
 
-        for(String m : listOfRSSI){
-            if(m.contains(",")){
+        for (String m : listOfRSSI) {
+            if (m.contains(",")) {
                 int iopo = m.indexOf(",");
                 listOfRSSIs.add(m.substring(0, iopo));
-            }else{
+            } else {
                 listOfRSSIs.add(m);
             }
         }
@@ -169,7 +169,7 @@ public class DataParser {
 
     }
 
-    public void parseForLevelsAndXY(String[] arrOfRSSI){
+    public void parseForLevelsAndXY(String[] arrOfRSSI) {
         for (String x : arrOfRSSI) {
             if (x.contains("=")) {
                 tempArr = x.split(", ", -2);
@@ -197,36 +197,39 @@ public class DataParser {
 
     /**
      * String Versions of each getter.
+     *
      * @return String of each elements
      */
 
-    public String getSSIDinString(){
+    public String getSSIDinString() {
         return nameOfSSIDs;
     }
 
-    public String getLevelsInString(){
+    public String getLevelsInString() {
         for (int k = 0; k < kay.length(); k++) {
             if (((kay.charAt(k)) == '-') && Character.isDigit(kay.charAt(k + 2))) {
-                onlyLevelsString = onlyLevelsString + kay.charAt(k) + kay.charAt(k + 1) + kay.charAt(k + 2) + "\n";
-            }else if ( ((kay.charAt(k)) == '-') && Character.isDigit(kay.charAt(k + 2)) &&
+                onlyLevelsString =
+                        onlyLevelsString + kay.charAt(k) + kay.charAt(k + 1) + kay.charAt(k + 2) + "\n";
+            } else if (((kay.charAt(k)) == '-') && Character.isDigit(kay.charAt(k + 2)) &&
                     Character.isDigit(kay.charAt(k + 3))) {
-                onlyLevelsString = onlyLevelsString + kay.charAt(k) + kay.charAt(k + 1) + kay.charAt(k + 2) + kay.charAt(k + 3) + "\n";
+                onlyLevelsString =
+                        onlyLevelsString + kay.charAt(k) + kay.charAt(k + 1) + kay.charAt(k + 2) + kay.charAt(k + 3) + "\n";
             }
         }
         return onlyLevelsString;
     }
 
-    public String getCoordInString(){
+    public String getCoordInString() {
         for (int k = 0; k < kay.length(); k++) {
-            if (k < kay.length()-2 && Character.isDigit(kay.charAt(k)) && kay.charAt(k+2) != '(' ) {
-                if(k < kay.length()-1 && kay.charAt(k+1) != '(') {
+            if (k < kay.length() - 2 && Character.isDigit(kay.charAt(k)) && kay.charAt(k + 2) != '(') {
+                if (k < kay.length() - 1 && kay.charAt(k + 1) != '(') {
                     onlyCoordString += kay.charAt(k);
                 }
             }
 
             if (kay.charAt(k) == '(' || kay.charAt(k) == ')' || kay.charAt(k) == '.' || kay.charAt(k) == ',') {
                 onlyCoordString += kay.charAt(k);
-                if(kay.charAt(k) == ')' && k < kay.length()-1 && !Character.isDigit(kay.charAt(k+1)) ){
+                if (kay.charAt(k) == ')' && k < kay.length() - 1 && !Character.isDigit(kay.charAt(k + 1))) {
                     onlyCoordString += "\n";
                 }
             }
@@ -235,20 +238,18 @@ public class DataParser {
     }
 
 
-    public String getBSSIDInString(){
-        for(int o = 0; o < data.length(); o++){
+    public String getBSSIDInString() {
+        for (int o = 0; o < data.length(); o++) {
             char boo = data.charAt(o);
-            if(boo == ':'){
+            if (boo == ':') {
                 stringOfBSSID += boo;
-            }
-            else if((o < data.length() -  2 && data.charAt(o+2) == ':') ||
-                    (o < data.length() - 1 && data.charAt(o+1) == ':')) {
+            } else if ((o < data.length() - 2 && data.charAt(o + 2) == ':') ||
+                    (o < data.length() - 1 && data.charAt(o + 1) == ':')) {
                 stringOfBSSID += boo;
 
-            }
-            else if((o > 2 && data.charAt(o-2) == ':')|| ( o > 1 && data.charAt(o-1) == ':' )) {
+            } else if ((o > 2 && data.charAt(o - 2) == ':') || (o > 1 && data.charAt(o - 1) == ':')) {
                 stringOfBSSID += boo;
-                if(data.charAt(o-2) == ':' && data.charAt(o+1) == ' '){
+                if (data.charAt(o - 2) == ':' && data.charAt(o + 1) == ' ') {
                     stringOfBSSID += "\n";
                 }
             }
@@ -259,40 +260,42 @@ public class DataParser {
 
     /**
      * List version of each getter.
+     *
      * @return List
      */
 
 
-
-    public List<String> getSSID(){
+    public List<String> getSSID() {
         String str[] = getSSIDinString().split("\n", -2);
         List<String> ls = new ArrayList<String>();
         ls = Arrays.asList(str);
         return ls;
     }
 
-    public List<String> getLevels(){
+    public List<String> getLevels() {
         return listOfRSSIs;
     }
 
-    public List<String> getCoord(){
+    public List<String> getCoord() {
 //        String str[] = getCoordInString().split("\n", -2);
 //        List<String> ls = Arrays.asList(str);
 //        return ls;
         return listOfCoord;
     }
 
-    public List<String> getCoordX(){
+    public List<String> getCoordX() {
         return listOfCoordX;
     }
-    public List<String> getCoordY(){
+
+    public List<String> getCoordY() {
         return listOfCoordY;
     }
-    public List<String> getCoordZ(){
+
+    public List<String> getCoordZ() {
         return listOfCoordZ;
     }
 
-    public List<String> getBSSID(){
+    public List<String> getBSSID() {
         return listOfBSSIDs;
     }
 
@@ -302,18 +305,11 @@ public class DataParser {
 //        DataParser o = new DataParser();
 //        o.readFile(f);
 //
-//        ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoordX(), o.getCoordY(), CSV_FILE_PATH);
+//        ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoordX(), o.getCoordY(),
+//        CSV_FILE_PATH);
 //
 //
 //
-
-
-
-
-
-
-
-
 
 
 }

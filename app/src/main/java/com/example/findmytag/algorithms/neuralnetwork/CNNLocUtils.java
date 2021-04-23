@@ -99,15 +99,15 @@ public class CNNLocUtils {
 
     // Parse CSV file input to get meaningful data and convert them into INDArrays.
     // Returns a triple of inputs and target outputs to serve as dataset.
-    public static Triple<INDArray, INDArray, INDArray> parseCSV(String filePath) {
+    public static Triple<INDArray, INDArray, INDArray> parseCSV(String filePath) throws IOException {
         String[][] bssidList = new String[][]{};
         String[][] rssiList = new String[][]{};
         int[] xList = new int[]{};
         int[] yList = new int[]{};
 
         // TODO
-        int maxWidth = 600;
-        int maxHeight = 600;
+        int maxWidth = 800;
+        int maxHeight = 575;
 
         int[][] outerTransitory = new int[][]{};
         int[] innerTransitory = new int[WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()];
@@ -127,8 +127,10 @@ public class CNNLocUtils {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            throw new IOException("CSV file does not exist!");
         } catch (CsvException e) {
             e.printStackTrace();
+            throw new IOException("CSV file does not exist!");
         }
 
         // Loop through N locations
@@ -162,10 +164,12 @@ public class CNNLocUtils {
         return new Triple<>(normalizedFingerprints, xINDArray, yINDArray);
     }
 
-    // Normalize the RSSI scale from between -95 dB (lowest) and -40 dB (highest) to between 0 and N.
+    // Normalize the RSSI scale from between -95 dB (lowest) and -40 dB (highest) to between 0
+    // and N.
     // Utilizes custom implementation, slightly different from the ImagePreProcessingScaler class
     // in ND4J.
-    public static INDArray normalizeINDArray(@NotNull INDArray RSSIArray, float n, float difference) {
+    public static INDArray normalizeINDArray(@NotNull INDArray RSSIArray, float n,
+                                             float difference) {
         INDArray output = RSSIArray.dup();
         output.addi(95);
         output.divi(difference);
@@ -189,10 +193,10 @@ public class CNNLocUtils {
     }
 
     public static int normalizeFloat(float val, float n, int maxDimension) {
-        if (val > maxDimension) return Math.round(n-1);
+        if (val > maxDimension) return Math.round(n - 1);
         if (val < 0) return 0;
         float temp = (val / maxDimension) * n;
-        return Math.round(temp-1);    // Rounding
+        return Math.round(temp - 1);    // Rounding
     }
 
     public static INDArray parseTestingCSV(String filePath) {
