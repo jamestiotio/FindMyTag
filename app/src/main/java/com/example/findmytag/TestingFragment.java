@@ -91,6 +91,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
     private Spinner test_spinner;
     private Button test_btn;
     private Context context;
+
     public TestingFragment() {
         // Required empty public constructor
     }
@@ -163,11 +164,8 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                                     F.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                     // display the largest proportion
                                     //F.setMaxScale(10f);
-
                                 }
                             });
-
-
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -271,7 +269,7 @@ public class TestingFragment extends Fragment implements AdapterView.OnItemSelec
                                 "y: " + actualYCoordinate, Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
                         Toast.makeText(getContext(), "Failed to predict your current location! " +
-                                "Did you remember to map and train the model first?",
+                                        "Did you remember to map and train the model first?",
                                 Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }

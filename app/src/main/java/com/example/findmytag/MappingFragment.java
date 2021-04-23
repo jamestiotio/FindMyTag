@@ -6,26 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
-import android.media.MicrophoneInfo;
 import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.example.findmytag.algorithms.knn.KNN;
-import com.example.findmytag.algorithms.neuralnetwork.NeuralNetwork;
-import com.example.findmytag.algorithms.randomforest.ResultGenerator;
-import com.example.findmytag.utils.DataParser;
-import com.example.findmytag.wifi.WiFiDataManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-
-import android.os.Environment;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -35,12 +19,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.example.findmytag.algorithms.neuralnetwork.NeuralNetwork;
+import com.example.findmytag.algorithms.randomforest.ResultGenerator;
+import com.example.findmytag.utils.DataParser;
+import com.example.findmytag.wifi.WiFiDataManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,19 +50,12 @@ import org.nd4j.linalg.factory.Nd4j;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -81,29 +69,49 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
     public static float x;
     public static float y;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    private static int floorLvl = 1;
+    private static String select_algo = null;
+    private final int activity_code = 2000;
+    public HashMap hashMap = new HashMap() {
+    };
     String coord;
     String s;
     List<ScanResult> rssi;
     ArrayList arrayList;
-    private Context mcontext;
-    private WiFiDataManager wifiDataManager;
-    public HashMap hashMap = new HashMap() {
-    };
-
-
     //verifystoragePermissions verifystoragePermissions;
     String[] permissions = {
             "android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE"
     };
     int requestCode = 200;
-
-
+    //outside
+    Button rssi_btn;
+    Button upload_btn;
+    Button file_btn;
+    Button map_btn;
+    Marker mapping_floorplan_imgView;
+    //firebase
+    FirebaseUser user;
+    StorageReference storageReference;
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
+    private Context mcontext;
+    private WiFiDataManager wifiDataManager;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Uri imgUri1 = null, imgUri2 = null;
+    private TextView lvl1, lvl2;
+    private Context context;
+    private Spinner mapping_spinner;
+    private boolean ready = false; // boolean to check if user uploaded image
 
     public MappingFragment() {
         // Required empty public constructor
@@ -127,12 +135,6 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         return fragment;
     }
 
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-
     /**
      * Checks if the app has permission to write to device storage
      * <p>
@@ -142,7 +144,8 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
      */
     public static void verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int permission = ActivityCompat.checkSelfPermission(activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
@@ -153,7 +156,6 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
             );
         }
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,7 +173,6 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         context = getContext();
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -180,30 +181,6 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_mapping, container, false);
     }
-
-    //outside
-    Button rssi_btn;
-    Button upload_btn;
-    Button file_btn;
-    Button map_btn;
-    Marker mapping_floorplan_imgView;
-    private final int activity_code = 2000;
-    private Uri imgUri1 = null, imgUri2 = null;
-    private TextView lvl1, lvl2;
-    private static int floorLvl = 1;
-    private Context context;
-    private Spinner mapping_spinner;
-    private static String select_algo = null;
-
-    //firebase
-    FirebaseUser user;
-    StorageReference storageReference;
-    FirebaseAuth fAuth;
-    FirebaseFirestore fStore;
-
-
-
-    private boolean ready = false; // boolean to check if user uploaded image
 
     public void onStart() {
 
@@ -230,7 +207,8 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         map_btn = view.findViewById(R.id.btn_map);
 
         //spinner stuff
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.algo, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.algo, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mapping_spinner.setAdapter(adapter);
         mapping_spinner.setOnItemSelectedListener(this);
@@ -239,10 +217,12 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         map_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(select_algo.equals("Neural Network")){
+                if (select_algo.equals("Neural Network")) {
                     try {
-                        Toast.makeText(getContext(),"Neural Network selected",Toast.LENGTH_SHORT).show();
-                        String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
+                        Toast.makeText(getContext(), "Neural Network selected",
+                                Toast.LENGTH_SHORT).show();
+                        String pathName =
+                                android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
                         NeuralNetwork nn = new NeuralNetwork(pathName + "/result.csv");
                         nn.train();
                         // Save binary files
@@ -253,16 +233,13 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                         Nd4j.saveBinary(xCorrelationVector, xCorrelationFile);
                         Nd4j.saveBinary(yCorrelationVector, yCorrelationFile);
                     } catch (IOException e) {
-                        Toast.makeText(getContext(),"File access error!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "File access error!", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
-                }
-                else if(select_algo.equals("Random Forest")){
-                    Toast.makeText(getContext(),"Random Forest selected",Toast.LENGTH_SHORT).show();
-                }
-                else if(select_algo.equals("KNN")){
-                    Toast.makeText(getContext(),"KNN selected",Toast.LENGTH_SHORT).show();
-
+                } else if (select_algo.equals("Random Forest")) {
+                    Toast.makeText(getContext(), "Random Forest selected", Toast.LENGTH_SHORT).show();
+                } else if (select_algo.equals("KNN")) {
+                    Toast.makeText(getContext(), "KNN selected", Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -271,8 +248,9 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
 
 
         //instantly put location image if exist
-        if(fAuth.getCurrentUser() != null) {
-            StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
+        if (fAuth.getCurrentUser() != null) {
+            StorageReference fileRef =
+                    storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/l1.jpg");
             fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
@@ -280,16 +258,21 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                             .download(uri)
                             .into(new SimpleTarget<File>() {
 //                                        @Override
-//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                        public void onLoadFailed(@Nullable Drawable
+//                                        errorDrawable) {
 //                                            super.onLoadFailed(errorDrawable);
 //                                            Log.d("Failed to load");
 //                                        }
 
                                 @Override
-                                public void onResourceReady(File resource, Transition<? super File> transition) {
+                                public void onResourceReady(File resource, Transition<?
+                                        super File> transition) {
                                     //mPlaceHolder.setVisibility(GONE);
-                                    // ImageViewState three parameters are: scale, center, orientation
-                                    // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                    // ImageViewState three parameters are: scale, center,
+                                    // orientation
+                                    // subsamplingScaleImageView.setImage(ImageSource.uri(Uri
+                                    // .fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0)
+                                    // , 0));
                                     //
                                     mapping_floorplan_imgView.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                     ready = true;
@@ -308,9 +291,9 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         }
 
 
-
-       // map_btn = view.findViewById(R.id.btn_map);
-        int permission = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        // map_btn = view.findViewById(R.id.btn_map);
+        int permission = ActivityCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
@@ -333,8 +316,10 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                 String s = wifiDataManager.scanWifi();
                 ArrayList arrayList = new ArrayList(Arrays.asList(s.split("/n")));
 
-                coord = ("(" + x + "," + y + ","+floorLvl +")");//(x,y)
+                coord = ("(" + x + "," + y + "," + floorLvl + ")");//(x,y)
                 hashMap.put(arrayList, coord);
+
+                // For logging purposes
                 System.out.println(hashMap);
 
                 Toast.makeText(mcontext, "saved successfully", Toast.LENGTH_SHORT).show();
@@ -351,12 +336,16 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
             public void onClick(View view) {
                 try {
                     writeToFile(hashMap);
-                    String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
-                    File dir = new File(pathName);
+                    String pathName =
+                            android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
+                    File dir = new File(pathName + "/WiFiData.txt");
                     DataParser o = new DataParser();
                     o.readFile(dir);
-                    ResultGenerator.addDataToCSV(o.getBSSID(),o.getLevels(),o.getCoordX(), o.getCoordY(), o.getCoordZ(), pathName + "/result.csv");
+                    ResultGenerator.addDataToCSV(o.getBSSID(), o.getLevels(), o.getCoordX(),
+                            o.getCoordY(), o.getCoordZ(), pathName + "/result.csv");
                 } catch (Exception exception) {
+                    System.out.println("File not found! Have you collected the Wi-Fi data " +
+                            "already?");
                     exception.printStackTrace();
                 }
                 Toast.makeText(mcontext, "file saved successfully", Toast.LENGTH_SHORT).show();
@@ -372,9 +361,11 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
 //                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri1));
                 floorLvl = 1;
 //                }
-                if(fAuth.getCurrentUser() != null) {
+                if (fAuth.getCurrentUser() != null) {
 
-                    StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
+                    StorageReference fileRef =
+                            storageReference.child("users/" + fAuth.getCurrentUser().getUid() +
+                                    "/l1.jpg");
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -382,16 +373,21 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                                     .download(uri)
                                     .into(new SimpleTarget<File>() {
 //                                        @Override
-//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                        public void onLoadFailed(@Nullable Drawable
+//                                        errorDrawable) {
 //                                            super.onLoadFailed(errorDrawable);
 //                                            Log.d("Failed to load");
 //                                        }
 
                                         @Override
-                                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                                        public void onResourceReady(File resource, Transition<?
+                                                super File> transition) {
                                             //mPlaceHolder.setVisibility(GONE);
-                                            // ImageViewState three parameters are: scale, center, orientation
-                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            // ImageViewState three parameters are: scale,
+                                            // center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri
+                                            // (Uri.fromFile(file)),new ImageViewState(1.0f, new
+                                            // PointF(0, 0), 0));
                                             //
                                             mapping_floorplan_imgView.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                             // display the largest proportion
@@ -403,7 +399,7 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(),"No image found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "No image found", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -419,8 +415,10 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
 //                    mapping_floorplan_imgView.setImage(ImageSource.uri(imgUri2));
                 floorLvl = 2;
 //                }
-                if(fAuth.getCurrentUser() != null) {
-                    StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l2.jpg");
+                if (fAuth.getCurrentUser() != null) {
+                    StorageReference fileRef =
+                            storageReference.child("users/" + fAuth.getCurrentUser().getUid() +
+                                    "/l2.jpg");
                     fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -428,16 +426,21 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                                     .download(uri)
                                     .into(new SimpleTarget<File>() {
 //                                        @Override
-//                                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+//                                        public void onLoadFailed(@Nullable Drawable
+//                                        errorDrawable) {
 //                                            super.onLoadFailed(errorDrawable);
 //                                            Log.d("Failed to load");
 //                                        }
 
                                         @Override
-                                        public void onResourceReady(File resource, Transition<? super File> transition) {
+                                        public void onResourceReady(File resource, Transition<?
+                                                super File> transition) {
                                             //mPlaceHolder.setVisibility(GONE);
-                                            // ImageViewState three parameters are: scale, center, orientation
-                                            // subsamplingScaleImageView.setImage(ImageSource.uri(Uri.fromFile(file)),new ImageViewState(1.0f, new PointF(0, 0), 0));
+                                            // ImageViewState three parameters are: scale,
+                                            // center, orientation
+                                            // subsamplingScaleImageView.setImage(ImageSource.uri
+                                            // (Uri.fromFile(file)),new ImageViewState(1.0f, new
+                                            // PointF(0, 0), 0));
                                             //
                                             mapping_floorplan_imgView.setImage(ImageSource.uri(resource.getAbsolutePath()));
                                             // display the largest proportion
@@ -449,7 +452,7 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(),"No image found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "No image found", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -467,13 +470,17 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
 //        });
 
         //--------Marker touch event------------
-        GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+        GestureDetector gestureDetector = new GestureDetector(getContext(),
+                new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 if (mapping_floorplan_imgView.isReady() && ready) {
-                    PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(), e.getY());
+                    PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(),
+                            e.getY());
                     mapping_floorplan_imgView.setPin(markerCoord);
-                    Toast.makeText(getContext(), "(Actual) x: " + markerCoord.x + " y: " + markerCoord.y, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            "(Actual) x: " + markerCoord.x + " y: " + markerCoord.y,
+                            Toast.LENGTH_SHORT).show();
                     x = markerCoord.x;
                     y = markerCoord.y;
                 }
@@ -504,7 +511,7 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(),imgPopupWindow.class);
+                Intent intent = new Intent(getContext(), imgPopupWindow.class);
                 startActivityForResult(intent, activity_code);
             }
         });
@@ -532,14 +539,25 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
      */
     private void writeToFile(HashMap map) {
         final String TAG = "MEDIA";
-        String pathName = android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/Downloads";
+        String pathName =
+                android.os.Environment.getExternalStorageDirectory().getAbsolutePath() +
+                        "/download";
+        File dir = new File(pathName);
+        dir.mkdirs();
         File file = new File(pathName + "/WiFiData.txt");
 
         try {
-            FileWriter f = new FileWriter(file, true);
-            BufferedWriter writer = new BufferedWriter(f);
-            writer.write(String.valueOf(map));
-            f.close();
+            if (file.exists()) {
+                FileWriter f = new FileWriter(file, true);
+                BufferedWriter writer = new BufferedWriter(f);
+                writer.write(String.valueOf(map));
+                f.close();
+            } else {
+                FileWriter f = new FileWriter(file, false);
+                BufferedWriter writer = new BufferedWriter(f);
+                writer.write(String.valueOf(map));
+                f.close();
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             Log.i(TAG, "File not found.");
@@ -550,10 +568,11 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
 
 
     }
-//spinner stuff
+
+    //spinner stuff
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if(adapterView.getId() == R.id.mapping_spinner){
+        if (adapterView.getId() == R.id.mapping_spinner) {
             select_algo = adapterView.getItemAtPosition(i).toString();
         }
     }
