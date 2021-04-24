@@ -82,10 +82,10 @@ public class NeuralNetwork {
     private boolean saveUpdater = false;
 
     // Initialize class
-    public NeuralNetwork(String dataSetFilePath) throws IOException {
+    public NeuralNetwork(String dataSetFilePath, float maxWidth, float maxHeight) throws IOException {
         this.resultFilePath = dataSetFilePath;
         // Parse CSV file to prep for model training process
-        this.parsedInput = CNNLocUtils.parseCSV(this.resultFilePath);
+        this.parsedInput = CNNLocUtils.parseCSV(this.resultFilePath, maxWidth, maxHeight);
 
         this.xCorrelationVector = Nd4j.create(1, k);
         this.yCorrelationVector = Nd4j.create(1, k);

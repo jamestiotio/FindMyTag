@@ -72,6 +72,8 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     public static float x;
     public static float y;
+    private static float imgWidth = -1;
+    private static float imgHeight = -1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -217,13 +219,16 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         map_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PointF imgSourceCoords = mapping_floorplan_imgView.viewToSourceCoord(mapping_floorplan_imgView.getWidth(), mapping_floorplan_imgView.getHeight());
+                imgWidth = imgSourceCoords.x;
+                imgHeight = imgSourceCoords.y;
                 if (select_algo.equals("Neural Network")) {
                     try {
                         Toast.makeText(getContext(), "Neural Network selected",
                                 Toast.LENGTH_SHORT).show();
                         String pathName =
                                 android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
-                        NeuralNetwork nn = new NeuralNetwork(pathName + "/result.csv");
+                        NeuralNetwork nn = new NeuralNetwork(pathName + "/result.csv", imgWidth, imgHeight);
                         nn.train();
                         // Save binary files
                         INDArray xCorrelationVector = nn.xCorrelationVector;

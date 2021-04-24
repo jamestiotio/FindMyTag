@@ -99,15 +99,11 @@ public class CNNLocUtils {
 
     // Parse CSV file input to get meaningful data and convert them into INDArrays.
     // Returns a triple of inputs and target outputs to serve as dataset.
-    public static Triple<INDArray, INDArray, INDArray> parseCSV(String filePath) throws IOException {
+    public static Triple<INDArray, INDArray, INDArray> parseCSV(String filePath, float maxWidth, float maxHeight) throws IOException {
         String[][] bssidList = new String[][]{};
         String[][] rssiList = new String[][]{};
         int[] xList = new int[]{};
         int[] yList = new int[]{};
-
-        // TODO
-        int maxWidth = 800;
-        int maxHeight = 575;
 
         int[][] outerTransitory = new int[][]{};
         int[] innerTransitory = new int[WiFiAPBSSIDAndSSIDList.KNOWN_WIFI_BSSID_LIST.size()];
@@ -192,7 +188,7 @@ public class CNNLocUtils {
         return copy;
     }
 
-    public static int normalizeFloat(float val, float n, int maxDimension) {
+    public static int normalizeFloat(float val, float n, float maxDimension) {
         if (val > maxDimension) return Math.round(n - 1);
         if (val < 0) return 0;
         float temp = (val / maxDimension) * n;
