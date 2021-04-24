@@ -60,7 +60,7 @@ public class WifiDataManagerTest {
         assertTrue(!wiFiDataManager[0].gets().isEmpty());
     }
     @Test
-    public void testScanWifiinotherpage() throws InterruptedException {
+    public void testScanWifiInAnotherPage() throws InterruptedException {
         final WiFiDataManager[] wiFiDataManager = new WiFiDataManager[1];
         ActivityScenario scenario = wifiTestRule.getScenario();
         scenario.onActivity(new ActivityScenario.ActivityAction() {
@@ -76,7 +76,7 @@ public class WifiDataManagerTest {
         assertTrue(!wiFiDataManager[0].gets().isEmpty());
     }
     @Test
-    public void testScanWifidisable() throws InterruptedException {
+    public void testScanWifiDisabled() throws InterruptedException {
         final WiFiDataManager[] wiFiDataManager = new WiFiDataManager[1];
         ActivityScenario scenario = wifiTestRule.getScenario();
         scenario.onActivity(new ActivityScenario.ActivityAction() {
