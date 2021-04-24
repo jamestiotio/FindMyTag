@@ -219,7 +219,8 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         map_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PointF imgSourceCoords = mapping_floorplan_imgView.viewToSourceCoord(mapping_floorplan_imgView.getWidth(), mapping_floorplan_imgView.getHeight());
+                PointF imgSourceCoords =
+                        mapping_floorplan_imgView.viewToSourceCoord(mapping_floorplan_imgView.getWidth(), mapping_floorplan_imgView.getHeight());
                 imgWidth = imgSourceCoords.x;
                 imgHeight = imgSourceCoords.y;
                 if (select_algo.equals("Neural Network")) {
@@ -228,7 +229,8 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                                 Toast.LENGTH_SHORT).show();
                         String pathName =
                                 android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + "/download";
-                        NeuralNetwork nn = new NeuralNetwork(pathName + "/result.csv", imgWidth, imgHeight);
+                        NeuralNetwork nn = new NeuralNetwork(pathName + "/result.csv", imgWidth,
+                                imgHeight);
                         nn.train();
                         // Save binary files
                         INDArray xCorrelationVector = nn.xCorrelationVector;
@@ -245,8 +247,6 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                     Toast.makeText(getContext(), "Random Forest selected", Toast.LENGTH_SHORT).show();
                 } else if (select_algo.equals("KNN")) {
                     Toast.makeText(getContext(), "KNN selected", Toast.LENGTH_SHORT).show();
-
-
                 }
             }
         });
@@ -482,7 +482,7 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
                         if (mapping_floorplan_imgView.isReady() && ready) {
                             PointF markerCoord =
                                     mapping_floorplan_imgView.viewToSourceCoord(e.getX(),
-                                    e.getY());
+                                            e.getY());
                             mapping_floorplan_imgView.setPin(markerCoord);
                             Toast.makeText(getContext(),
                                     "(Actual) x: " + markerCoord.x + " y: " + markerCoord.y,
