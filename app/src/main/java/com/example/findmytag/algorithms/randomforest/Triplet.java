@@ -1,28 +1,25 @@
 package com.example.findmytag.algorithms.randomforest;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 // Triplet class
-class Triplet<U, V, T>
-{
+class Triplet<U, V, T> {
     public final U first;       // the first field of a triplet
     public final V second;      // the second field of a triplet
     public final T third;       // the third field of a triplet
 
     // Constructs a new triplet with the given values
-    Triplet(U first, V second, T third)
-    {
+    Triplet(U first, V second, T third) {
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
+    // Factory method for creating a typed immutable instance of triplet
+    public static <U, V, T> Triplet<U, V, T> of(U a, V b, T c) {
+        return new Triplet<>(a, b, c);
+    }
+
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         /* Checks specified object is "equal to" the current object or not */
 
         if (this == o) {
@@ -46,8 +43,7 @@ class Triplet<U, V, T>
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         /* Computes hash code for an object by using hash codes of
         the underlying objects */
 
@@ -60,11 +56,6 @@ class Triplet<U, V, T>
     @Override
     public String toString() {
         return "(" + first + ", " + second + ", " + third + ")";
-    }
-
-    // Factory method for creating a typed immutable instance of triplet
-    public static <U, V, T> Triplet <U, V, T> of(U a, V b, T c) {
-        return new Triplet <>(a, b, c);
     }
 }
 

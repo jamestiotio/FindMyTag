@@ -3,14 +3,12 @@ package com.example.findmytag;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.GrantPermissionRule;
 
 import org.hamcrest.Matcher;
@@ -19,8 +17,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static android.app.Activity.RESULT_OK;
-import static androidx.test.InstrumentationRegistry.getContext;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
@@ -28,16 +24,16 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasData;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.allOf;
-import static org.junit.Assert.*;
 
 public class ImgPopupWindowTest {
     @Rule
-    public IntentsTestRule<imgPopupWindow> mPopupActivityTestRule = new IntentsTestRule<>(imgPopupWindow.class);
-    public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule .grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+    public IntentsTestRule<imgPopupWindow> mPopupActivityTestRule =
+            new IntentsTestRule<>(imgPopupWindow.class);
+    public GrantPermissionRule mRuntimePermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
 
     @Before
     public void setUp() throws Exception {
@@ -75,17 +71,17 @@ public class ImgPopupWindowTest {
         intended(expectedIntent);
     }
 
-    private Instrumentation.ActivityResult galleryPick(){
+    private Instrumentation.ActivityResult galleryPick() {
         Resources resources = ApplicationProvider.getApplicationContext().getResources();
         Uri imgUri = Uri.parse(
                 ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
-                        +resources.getResourcePackageName(R.drawable.ic_launcher_background)+"/"
-                        +resources.getResourceTypeName(R.drawable.ic_launcher_background)+"/"
-                        +resources.getResourceEntryName(R.drawable.ic_launcher_background)
+                        + resources.getResourcePackageName(R.drawable.ic_launcher_background) + "/"
+                        + resources.getResourceTypeName(R.drawable.ic_launcher_background) + "/"
+                        + resources.getResourceEntryName(R.drawable.ic_launcher_background)
         );
 
         Intent resultIntent = new Intent();
         resultIntent.setData(imgUri);
-        return new Instrumentation.ActivityResult(Activity.RESULT_OK,resultIntent);
+        return new Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent);
     }
 }

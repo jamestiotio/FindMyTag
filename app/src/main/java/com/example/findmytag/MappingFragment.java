@@ -472,20 +472,21 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
         //--------Marker touch event------------
         GestureDetector gestureDetector = new GestureDetector(getContext(),
                 new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (mapping_floorplan_imgView.isReady() && ready) {
-                    PointF markerCoord = mapping_floorplan_imgView.viewToSourceCoord(e.getX(),
-                            e.getY());
-                    mapping_floorplan_imgView.setPin(markerCoord);
-                    Toast.makeText(getContext(),
-                            "(Actual) x: " + markerCoord.x + " y: " + markerCoord.y,
-                            Toast.LENGTH_SHORT).show();
-                    x = markerCoord.x;
-                    y = markerCoord.y;
-                }
-                return true;
-            }
+                    @Override
+                    public boolean onSingleTapConfirmed(MotionEvent e) {
+                        if (mapping_floorplan_imgView.isReady() && ready) {
+                            PointF markerCoord =
+                                    mapping_floorplan_imgView.viewToSourceCoord(e.getX(),
+                                    e.getY());
+                            mapping_floorplan_imgView.setPin(markerCoord);
+                            Toast.makeText(getContext(),
+                                    "(Actual) x: " + markerCoord.x + " y: " + markerCoord.y,
+                                    Toast.LENGTH_SHORT).show();
+                            x = markerCoord.x;
+                            y = markerCoord.y;
+                        }
+                        return true;
+                    }
 
 
 //            @Override
@@ -497,7 +498,7 @@ public class MappingFragment extends Fragment implements AdapterView.OnItemSelec
 //                }
 //                return true;
 //            }
-        });
+                });
 
         mapping_floorplan_imgView.setOnTouchListener(new View.OnTouchListener() {
             @Override

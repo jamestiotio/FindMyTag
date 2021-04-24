@@ -10,7 +10,6 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,31 +20,25 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.findmytag.LocationActivity;
-import com.example.findmytag.MappingFragment;
 import com.example.findmytag.R;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.io.File;
-import java.util.Map;
 
 
-public class WiFiActivity extends AppCompatActivity{
+public class WiFiActivity extends AppCompatActivity {
+    private final int MY_PERMISSIONS_ACCESS_COARSE_LOCATION = 1;
+    StringBuilder sb;
+    String t1, path, txt;
+    WifiReceiver receiverWifi;
     private ListView wifiList;
     private WifiManager wifiManager;
-    StringBuilder sb;
-    String t1 ,path,txt;
-
-    private final int MY_PERMISSIONS_ACCESS_COARSE_LOCATION = 1;
-
-    WifiReceiver receiverWifi;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +61,13 @@ public class WiFiActivity extends AppCompatActivity{
         });
 
         buttonScan.setOnClickListener(v -> {
-            if (ActivityCompat.checkSelfPermission(WiFiActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)
+            if (ActivityCompat.checkSelfPermission(WiFiActivity.this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
                         WiFiActivity.this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_ACCESS_COARSE_LOCATION
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSIONS_ACCESS_COARSE_LOCATION
                 );
             } else {
                 wifiManager.startScan();
@@ -93,33 +88,34 @@ public class WiFiActivity extends AppCompatActivity{
 
 
                         }
-                        HashMap txt=new HashMap();
-                        txt.put(t1,sb);
+                        HashMap txt = new HashMap();
+                        txt.put(t1, sb);
 
-                            try {
-                                path =Environment.getDownloadCacheDirectory().toString() + File.separator +"hello.txt";
+                        try {
+                            path = Environment.getDownloadCacheDirectory().toString() + File.separator + "hello.txt";
 
-                                File fss = new File(path);
-                                if(!fss.exists()){
-                                    try{
-                                        fss.mkdirs();
-                                    }catch (Exception e){
-                                        //
-                                    }
+                            File fss = new File(path);
+                            if (!fss.exists()) {
+                                try {
+                                    fss.mkdirs();
+                                } catch (Exception e) {
+                                    //
                                 }
-
-                                //FileOutputStream outputStream =new FileOutputStream(fss);
-                                ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(fss));
-                                objectOutputStream.writeObject(txt);
-                                new FileOutputStream(fss).close();
-                                new FileOutputStream(fss).close();
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-
                             }
+
+                            //FileOutputStream outputStream =new FileOutputStream(fss);
+                            ObjectOutputStream objectOutputStream =
+                                    new ObjectOutputStream(new FileOutputStream(fss));
+                            objectOutputStream.writeObject(txt);
+                            new FileOutputStream(fss).close();
+                            new FileOutputStream(fss).close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+
                         }
+                    }
 
 
                 });
@@ -141,9 +137,12 @@ public class WiFiActivity extends AppCompatActivity{
     private void getWifi() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Toast.makeText(WiFiActivity.this, "version>=marshmallow", Toast.LENGTH_SHORT).show();
-            if (ContextCompat.checkSelfPermission(WiFiActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(WiFiActivity.this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(WiFiActivity.this, "location turned off", Toast.LENGTH_SHORT).show();
-                ActivityCompat.requestPermissions(WiFiActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS_ACCESS_COARSE_LOCATION);
+                ActivityCompat.requestPermissions(WiFiActivity.this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSIONS_ACCESS_COARSE_LOCATION);
             } else {
                 Toast.makeText(WiFiActivity.this, "location turned on", Toast.LENGTH_SHORT).show();
                 wifiManager.startScan();
@@ -161,7 +160,8 @@ public class WiFiActivity extends AppCompatActivity{
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSIONS_ACCESS_COARSE_LOCATION:
@@ -170,7 +170,8 @@ public class WiFiActivity extends AppCompatActivity{
                     wifiManager.startScan();
                 } else {
 
-                    Toast.makeText(WiFiActivity.this, "permission not granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(WiFiActivity.this, "permission not granted",
+                            Toast.LENGTH_SHORT).show();
                     return;
                 }
                 break;

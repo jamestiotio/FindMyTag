@@ -1,15 +1,14 @@
 package com.example.findmytag;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.findmytag.wifi.WiFiActivity;
 
@@ -37,7 +36,7 @@ public class LocationActivity extends AppCompatActivity {
                 finish();
             }
         });
-        
+
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         MappingFragment mappingFragment = new MappingFragment();
 //        bundle.putString("rssi", rssi);

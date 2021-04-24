@@ -10,9 +10,6 @@ import smile.data.CategoricalEncoder;
 import smile.data.DataFrame;
 import smile.data.formula.Formula;
 import smile.io.Read;
-import smile.util.Paths;
-
-import static smile.util.Paths.home;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class WeatherNominal {
@@ -28,9 +25,11 @@ public class WeatherNominal {
     static {
         try {
             //data = Read.arff(Paths.getTestData("weka/weather.nominal.arff"));
-            //data = Read.arff(java.nio.file.Paths.get(home + "/data", "weka/weather.nominal.arff"));
+            //data = Read.arff(java.nio.file.Paths.get(home + "/data", "weka/weather.nominal
+            // .arff"));
 
-            Path pathToFile = java.nio.file.Paths.get("/Users","zen","Downloads", "weather.nominal.arff.txt");
+            Path pathToFile = java.nio.file.Paths.get("/Users", "zen", "Downloads", "weather" +
+                    ".nominal.arff.txt");
             data = Read.arff(pathToFile);
 
 

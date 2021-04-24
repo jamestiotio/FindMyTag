@@ -32,7 +32,7 @@ import java.util.Map;
 public class EditProfile extends AppCompatActivity {
 
     public static final String TAG = "TAG";
-    EditText profileFullName,profileEmail,profilePhone;
+    EditText profileFullName, profileEmail, profilePhone;
     ImageView profileImageView;
     Button saveBtn;
     FirebaseAuth fAuth;
@@ -61,7 +61,8 @@ public class EditProfile extends AppCompatActivity {
         profileImageView = findViewById(R.id.profileImageView);
         saveBtn = findViewById(R.id.saveProfileInfo);
 
-        StorageReference profileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/profile.jpg");
+        StorageReference profileRef =
+                storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/profile.jpg");
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -72,16 +73,18 @@ public class EditProfile extends AppCompatActivity {
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(openGalleryIntent,1000);
+                Intent openGalleryIntent = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(openGalleryIntent, 1000);
             }
         });
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(profileFullName.getText().toString().isEmpty() || profileEmail.getText().toString().isEmpty() || profilePhone.getText().toString().isEmpty()){
-                    Toast.makeText(EditProfile.this, "One or Many fields are empty.", Toast.LENGTH_SHORT).show();
+                if (profileFullName.getText().toString().isEmpty() || profileEmail.getText().toString().isEmpty() || profilePhone.getText().toString().isEmpty()) {
+                    Toast.makeText(EditProfile.this, "One or Many fields are empty.",
+                            Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -89,16 +92,19 @@ public class EditProfile extends AppCompatActivity {
                 user.updateEmail(email).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        DocumentReference docRef = fStore.collection("users").document(user.getUid());
-                        Map<String,Object> edited = new HashMap<>();
-                        edited.put("email",email);
-                        edited.put("fName",profileFullName.getText().toString());
-                        edited.put("studentid",profilePhone.getText().toString());
+                        DocumentReference docRef =
+                                fStore.collection("users").document(user.getUid());
+                        Map<String, Object> edited = new HashMap<>();
+                        edited.put("email", email);
+                        edited.put("fName", profileFullName.getText().toString());
+                        edited.put("studentid", profilePhone.getText().toString());
                         docRef.update(edited).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(EditProfile.this, "Profile Updated", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                Toast.makeText(EditProfile.this, "Profile Updated",
+                                        Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getApplicationContext(),
+                                        MainActivity.class));
                                 finish();
                             }
                         });
@@ -107,7 +113,7 @@ public class EditProfile extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(EditProfile.this,   e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -124,10 +130,11 @@ public class EditProfile extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    @androidx.annotation.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1000){
-            if(resultCode == Activity.RESULT_OK){
+        if (requestCode == 1000) {
+            if (resultCode == Activity.RESULT_OK) {
                 Uri imageUri = data.getData();
 
                 //profileImage.setImageURI(imageUri);
@@ -142,7 +149,8 @@ public class EditProfile extends AppCompatActivity {
 
     private void uploadImageToFirebase(Uri imageUri) {
         // uplaod image to firebase storage
-        final StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/profile.jpg");
+        final StorageReference fileRef =
+                storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/profile.jpg");
         fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

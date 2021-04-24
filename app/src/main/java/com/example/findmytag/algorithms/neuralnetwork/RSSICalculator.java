@@ -2,8 +2,6 @@
 // https://github.com/VREMSoftwareDevelopment/WiFiAnalyzer or Xirrus Wi-Fi Inspector.
 package com.example.findmytag.algorithms.neuralnetwork;
 
-import java.lang.Math;
-
 /**
  * This class is used to generate the RSSI signal strength values for the data training. There are
  * several static methods/formulas that can be invoked for the sake of convenience. All of these
@@ -11,14 +9,14 @@ import java.lang.Math;
  * applicable in a specific context and they have their own advantages and disadvantages. Other
  * factors related to indoor environments such as attenuation and signal-to-noise ratio thresholds
  * might only be taken into consideration by some/several formulas (i.e., not all methods).
- * 
+ * <p>
  * RSSI values closer to 0 would imply a stronger and better signal strength. Common RSSI values are
  * usually negative (unless their signal power is somehow larger than 1 mW).
- * 
+ * <p>
  * Please do take note that it is highly desirable for the indoor building environment that we are
  * testing the neural network algorithm in to have the same WiFi router/modem's chipset model
  * everywhere.
- * 
+ * <p>
  * For reference, SUTD's Office of IT informed us that they use the Aruba AP-225 (220 Series).
  * However, independent personal OSINT-assisted research indicates that they (referring to the SUTD
  * university school side) are using the Alcatel-Lucent OmniAccess OAW-AP114/115 (110 Series).
@@ -32,7 +30,7 @@ import java.lang.Math;
  * M1-Nokia 5G WiFi APs in the Campus Centre, but I was not able to find the specific model number.
  * Anyway, all possibly relevant technical specifications are included in the `docs/ap_specs`
  * directory. Don't ask how I found the German one. I don't even know how to read or speak German.
- * 
+ * <p>
  * NOTE: This aspect is the weak-point link of this entire neural network algorithm since it has so
  * many assumptions. A good neural network should be able to handle significantly variable
  * fluctuations of RSSI values in a fairly resistant behavior (i.e., should not overfit).
@@ -48,7 +46,7 @@ public class RSSICalculator {
 
     /**
      * This is the conventional formula method. Calibrated against a known distance.
-     * 
+     *
      * @param d - distance from WiFi AP in metres
      * @param n - propagation constant or path-loss exponent/index (2 for free space, normal range
      *          is 2.7-4.3 for indoor but can reach 10 if outdoor)
@@ -65,7 +63,7 @@ public class RSSICalculator {
     /**
      * This uses the naive theoretical free space path loss method. Derived from Friis transmission
      * equation.
-     * 
+     *
      * @param d  - distance from WiFi AP in metres
      * @param f  - frequency of WiFi signal in Hz (usually either 2.4 GHz or 5 GHz)
      * @param gt - transmitter gain in dB (usually 0)
@@ -83,7 +81,7 @@ public class RSSICalculator {
      * seems like an academic study conducted by some researchers from the Division/Department of
      * Electrical & Computer Engineering (School of Electrical Engineering and Computer Science) of
      * Louisiana State University. Looks slightly similar to the conventional formula.
-     * 
+     *
      * @param d  - distance from WiFi AP in metres
      * @param n  - propagation constant or path-loss exponent (2 for free space, normal range is
      *           2.7-4.3)

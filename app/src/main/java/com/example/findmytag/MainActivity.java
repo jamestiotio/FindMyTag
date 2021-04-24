@@ -1,14 +1,5 @@
 package com.example.findmytag;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,6 +11,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -37,22 +32,23 @@ import com.squareup.picasso.Picasso;
 import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity {
-    TextView fullName,email,phone,verifyMsg;
+    TextView fullName, email, phone, verifyMsg;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userId;
     Button resendCode, logout, location;
-    Button resetPassLocal,changeProfileImage;
+    Button resetPassLocal, changeProfileImage;
     FirebaseUser user;
     ImageView mprofileImage;
     StorageReference storageReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         phone = findViewById(R.id.profilePhone);
         fullName = findViewById(R.id.profileName);
-        email    = findViewById(R.id.profileEmail);
+        email = findViewById(R.id.profileEmail);
         location = findViewById(R.id.location);
         resetPassLocal = findViewById(R.id.resetPasswordLocal);
         fAuth = FirebaseAuth.getInstance();
@@ -60,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
         changeProfileImage = findViewById(R.id.changeProfile);
         storageReference = FirebaseStorage.getInstance().getReference();
         mprofileImage = (ImageView) findViewById(R.id.profileImage);
-        if(fAuth.getCurrentUser() != null) {
-            StorageReference profileRef = storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/profile.jpg");
+        if (fAuth.getCurrentUser() != null) {
+            StorageReference profileRef =
+                    storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/profile" +
+                            ".jpg");
             profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
@@ -73,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         resendCode = findViewById(R.id.resendCode);
         verifyMsg = findViewById(R.id.verifyMsg);
 
-        if(fAuth.getCurrentUser() != null) {
+        if (fAuth.getCurrentUser() != null) {
             userId = fAuth.getCurrentUser().getUid();
             user = fAuth.getCurrentUser();
             final FirebaseUser user = fAuth.getCurrentUser();
@@ -88,7 +86,8 @@ public class MainActivity extends AppCompatActivity {
                         user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Toast.makeText(v.getContext(), "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(v.getContext(), "Verification Email Has been Sent" +
+                                        ".", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -103,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
             DocumentReference documentReference = fStore.collection("users").document(userId);
             documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
                 @Override
-                public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                    @Nullable FirebaseFirestoreException e) {
                     if (documentSnapshot != null) {
                         phone.setText(documentSnapshot.getString("phone"));
                         fullName.setText(documentSnapshot.getString("fName"));
@@ -118,14 +118,16 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                       final EditText resetPassword = new EditText(v.getContext());
+                    final EditText resetPassword = new EditText(v.getContext());
 
-                    final AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
+                    final AlertDialog.Builder passwordResetDialog =
+                            new AlertDialog.Builder(v.getContext());
                     passwordResetDialog.setTitle("Reset Password ?");
                     passwordResetDialog.setMessage("Enter New Password > 6 Characters long.");
                     passwordResetDialog.setView(resetPassword);
 
-                    passwordResetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    passwordResetDialog.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // extract the email and send reset link
@@ -133,18 +135,21 @@ public class MainActivity extends AppCompatActivity {
                             user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Toast.makeText(MainActivity.this, "Password Reset Successfully.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, "Password Reset " +
+                                            "Successfully.", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(MainActivity.this, "Password Reset Failed.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, "Password Reset Failed.",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
                     });
 
-                    passwordResetDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    passwordResetDialog.setNegativeButton("No",
+                            new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // close
@@ -159,10 +164,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     // open gallery
-                    Intent i = new Intent(v.getContext(),EditProfile.class);
-                    i.putExtra("fullName",fullName.getText().toString());
-                    i.putExtra("email",email.getText().toString());
-                    i.putExtra("phone",phone.getText().toString());
+                    Intent i = new Intent(v.getContext(), EditProfile.class);
+                    i.putExtra("fullName", fullName.getText().toString());
+                    i.putExtra("email", email.getText().toString());
+                    i.putExtra("phone", phone.getText().toString());
                     startActivity(i);
 //
 
@@ -174,10 +179,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(getApplicationContext(),Login.class));
+        startActivity(new Intent(getApplicationContext(), Login.class));
         finish();
     }
+
     public void location(View view) {
-        startActivity(new Intent(getApplicationContext(),LocationActivity.class));
+        startActivity(new Intent(getApplicationContext(), LocationActivity.class));
     }
 }

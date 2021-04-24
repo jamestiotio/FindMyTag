@@ -1,9 +1,5 @@
 package com.example.findmytag;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -20,8 +16,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.example.findmytag.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,22 +30,19 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.net.URI;
-import java.util.HashMap;
-
 public class imgPopupWindow extends AppCompatActivity {
     private static final int PERMISSION_CODE = 1001;
-    private Button inner_upload_btn, inner_upload_btn2, inner_upload_confirm, inner_upload_cancel;
     private static final int IMAGE_PICK_CODE = 1000;
     private static final int IMAGE_PICK_CODE2 = 1100;
-    private ImageView inner_imgView, inner_imgView2;
-    private EditText inner_edtTxt, inner_edtTxt2;
-    private Uri imgUri = null;
-    private Uri imgUri2 = null;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     FirebaseUser user;
     StorageReference storageReference;
+    private Button inner_upload_btn, inner_upload_btn2, inner_upload_confirm, inner_upload_cancel;
+    private ImageView inner_imgView, inner_imgView2;
+    private EditText inner_edtTxt, inner_edtTxt2;
+    private Uri imgUri = null;
+    private Uri imgUri2 = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,49 +65,48 @@ public class imgPopupWindow extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
 
         //--------Btn confirm------------------
-            inner_upload_confirm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getApplicationContext(),LocationActivity.class);
-                    if (inner_edtTxt.getText().toString().isEmpty()){
-                        Toast.makeText(getApplicationContext(), "Please fill in Location 1 Name", Toast.LENGTH_SHORT).show();
-                    }
-                    else if (imgUri == null){
-                        Toast.makeText(getApplicationContext(), "Please upload Location 1 Floor Plan", Toast.LENGTH_SHORT).show();
-                    }
-                    else if (inner_edtTxt2.getText().toString().isEmpty()){
-                        Toast.makeText(getApplicationContext(), "Please fill in Location 2 Name", Toast.LENGTH_SHORT).show();
-                    }
-                    else if (imgUri2 == null){
-                        Toast.makeText(getApplicationContext(), "Please upload Location 2 Floor Plan", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        intent.putExtra("locationName1", inner_edtTxt.getText().toString());
-                        intent.putExtra("imgUri1", imgUri.toString());
-                        intent.putExtra("locationName2", inner_edtTxt2.getText().toString());
-                        intent.putExtra("imgUri2", imgUri2.toString());
-                        setResult(Activity.RESULT_OK, intent);
-                        uploadImageToFirebase(imgUri);
-                        uploadImage2ToFirebase(imgUri2);
-                        finish();
-
-                    }
-
-
+        inner_upload_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), LocationActivity.class);
+                if (inner_edtTxt.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please fill in Location 1 Name",
+                            Toast.LENGTH_SHORT).show();
+                } else if (imgUri == null) {
+                    Toast.makeText(getApplicationContext(), "Please upload Location 1 Floor Plan"
+                            , Toast.LENGTH_SHORT).show();
+                } else if (inner_edtTxt2.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please fill in Location 2 Name",
+                            Toast.LENGTH_SHORT).show();
+                } else if (imgUri2 == null) {
+                    Toast.makeText(getApplicationContext(), "Please upload Location 2 Floor Plan"
+                            , Toast.LENGTH_SHORT).show();
+                } else {
+                    intent.putExtra("locationName1", inner_edtTxt.getText().toString());
+                    intent.putExtra("imgUri1", imgUri.toString());
+                    intent.putExtra("locationName2", inner_edtTxt2.getText().toString());
+                    intent.putExtra("imgUri2", imgUri2.toString());
+                    setResult(Activity.RESULT_OK, intent);
+                    uploadImageToFirebase(imgUri);
+                    uploadImage2ToFirebase(imgUri2);
+                    finish();
 
                 }
-            });
+
+
+            }
+        });
         //--------Btn confirm------------------
 
         //--------Btn cancel-------------------
-            inner_upload_cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent();
-                    setResult(Activity.RESULT_CANCELED, intent);
-                    finish();
-                }
-            });
+        inner_upload_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                setResult(Activity.RESULT_CANCELED, intent);
+                finish();
+            }
+        });
         //--------Btn cancel-------------------
 
         // ---------Upload image--------------
@@ -121,20 +115,18 @@ public class imgPopupWindow extends AppCompatActivity {
             public void onClick(View view) {
 
                 //check runtime permission
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                    if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                         //permission not granted, request it.
                         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
                         //show popup for permission
                         requestPermissions(permissions, PERMISSION_CODE);
 
-                    }
-                    else {
+                    } else {
                         //permission already granted
                         pickImageFromGallery();
                     }
-                }
-                else{
+                } else {
                     pickImageFromGallery();
                 }
             }
@@ -147,20 +139,18 @@ public class imgPopupWindow extends AppCompatActivity {
             public void onClick(View view) {
 
                 //check runtime permission
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                    if(getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                         //permission not granted, request it.
                         String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
                         //show popup for permission
                         requestPermissions(permissions, PERMISSION_CODE);
 
-                    }
-                    else {
+                    } else {
                         //permission already granted
                         pickImageFromGallery2();
                     }
-                }
-                else{
+                } else {
                     pickImageFromGallery2();
                 }
             }
@@ -198,6 +188,7 @@ public class imgPopupWindow extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(intent, IMAGE_PICK_CODE);
     }
+
     //----------upload img 2---------
     private void pickImageFromGallery2() {
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -206,23 +197,26 @@ public class imgPopupWindow extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
+        switch (requestCode) {
             case PERMISSION_CODE:
-                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     pickImageFromGallery();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied",
+                            Toast.LENGTH_SHORT).show();
                 }
         }
 
 
     }
+
     private void uploadImageToFirebase(Uri imageUri) {
         // uplaod image to firebase storage
-        final StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l1.jpg");
+        final StorageReference fileRef =
+                storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/l1.jpg");
         fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -242,9 +236,11 @@ public class imgPopupWindow extends AppCompatActivity {
         });
 
     }
+
     private void uploadImage2ToFirebase(Uri imageUri) {
         // uplaod image to firebase storage
-        final StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/l2.jpg");
+        final StorageReference fileRef =
+                storageReference.child("users/" + fAuth.getCurrentUser().getUid() + "/l2.jpg");
         fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -264,10 +260,11 @@ public class imgPopupWindow extends AppCompatActivity {
         });
 
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             //set image to image view
             inner_imgView.setImageURI(data.getData());
             imgUri = data.getData();
@@ -275,7 +272,7 @@ public class imgPopupWindow extends AppCompatActivity {
             //inner_imgView.setImage(ImageSource.uri(data.getData()));
             //ready = true;
         }
-        if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE2){
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE2) {
             //set image to image view
             inner_imgView2.setImageURI(data.getData());
             imgUri2 = data.getData();

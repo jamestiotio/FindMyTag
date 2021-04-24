@@ -5,7 +5,6 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.example.findmytag.algorithms.randomforest.Serialize;
-import com.example.findmytag.algorithms.randomforest.WifiValues;
 
 import org.junit.After;
 import org.junit.Before;
@@ -15,12 +14,14 @@ import org.testng.annotations.BeforeClass;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+
 import smile.base.cart.SplitRule;
 import smile.classification.RandomForest;
 import smile.math.MathEx;
-import smile.validation.*;
+import smile.validation.ClassificationMetrics;
+import smile.validation.LOOCV;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class RandomForestTest {
     long[] seeds = {
@@ -84,15 +85,18 @@ public class RandomForestTest {
         System.out.println("Weather");
 
         MathEx.setSeed(19650218); // to get repeatable results for cross validation.
-        RandomForest model = RandomForest.fit(WeatherNominal.formula, WeatherNominal.data, 20, 2, SplitRule.GINI, 8, 10, 1, 1.0, null, Arrays.stream(seeds));
+        RandomForest model = RandomForest.fit(WeatherNominal.formula, WeatherNominal.data, 20, 2,
+                SplitRule.GINI, 8, 10, 1, 1.0, null, Arrays.stream(seeds));
 
         double[] importance = model.importance();
         for (int i = 0; i < importance.length; i++) {
             System.out.format("%-15s %.4f%n", model.schema().name(), importance[i]);
         }
 
-        ClassificationMetrics metrics = LOOCV.classification(WeatherNominal.formula, WeatherNominal.data,
-                (f, x) -> RandomForest.fit(f, x, 20, 2, SplitRule.GINI, 8, 10, 1, 1.0, null, Arrays.stream(seeds)));
+        ClassificationMetrics metrics = LOOCV.classification(WeatherNominal.formula,
+                WeatherNominal.data,
+                (f, x) -> RandomForest.fit(f, x, 20, 2, SplitRule.GINI, 8, 10, 1, 1.0, null,
+                        Arrays.stream(seeds)));
 
         System.out.println(metrics);
         assertEquals(0.5714, metrics.accuracy, 1E-4);

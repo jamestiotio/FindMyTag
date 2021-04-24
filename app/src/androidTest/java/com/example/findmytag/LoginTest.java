@@ -1,6 +1,5 @@
 package com.example.findmytag;
 
-import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,22 +13,19 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static org.junit.Assert.*;
 
 public class LoginTest {
 
+    @Rule
+    public ActivityScenarioRule<Login> mSigninTestRul = new ActivityScenarioRule<>(Login.class);
     private FirebaseAuth fAuth = FirebaseAuth.getInstance();
     private String correctEmail = "Darren@gmail.com";
     private String correctPassword = "123456";
-
-    @Rule
-    public ActivityScenarioRule<Login> mSigninTestRul = new ActivityScenarioRule<>(Login.class);
 
     @Before
     public void setUp() throws Exception {
@@ -43,40 +39,45 @@ public class LoginTest {
     }
 
     @Test
-    public void emptyEmailANDPassword(){
+    public void emptyEmailANDPassword() {
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withId(R.id.Email)).check(matches(hasErrorText("Email is Required.")));
     }
+
     @Test
-    public void emptyEmail(){
+    public void emptyEmail() {
         onView(withId(R.id.password)).perform(clearText());
-        onView(withId(R.id.password)).perform(typeText(correctPassword),closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText(correctPassword), closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withId(R.id.Email)).check(matches(hasErrorText("Email is Required.")));
     }
+
     @Test
-    public void emptyPassword(){
+    public void emptyPassword() {
         onView(withId(R.id.Email)).perform(clearText());
-        onView(withId(R.id.Email)).perform(typeText(correctEmail),closeSoftKeyboard());
+        onView(withId(R.id.Email)).perform(typeText(correctEmail), closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
         onView(withId(R.id.password)).check(matches(hasErrorText("Password is Required.")));
     }
+
     //password length less than 6 gives error
     @Test
-    public void PasswordLength(){
+    public void PasswordLength() {
         onView(withId(R.id.Email)).perform(clearText());
         onView(withId(R.id.Email)).perform(typeText(correctEmail));
         onView(withId(R.id.password)).perform(clearText());
-        onView(withId(R.id.password)).perform(typeText("123"),closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText("123"), closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
-        onView(withId(R.id.password)).check(matches(hasErrorText("Password Must be >= 6 Characters")));
+        onView(withId(R.id.password)).check(matches(hasErrorText("Password Must be >= 6 " +
+                "Characters")));
     }
+
     @Test
     public void LoginSuccess() throws InterruptedException {
         onView(withId(R.id.Email)).perform(clearText());
         onView(withId(R.id.Email)).perform(typeText(correctEmail));
         onView(withId(R.id.password)).perform(clearText());
-        onView(withId(R.id.password)).perform(typeText(correctPassword),closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText(correctPassword), closeSoftKeyboard());
         onView(withId(R.id.loginBtn)).perform(click());
         //sleep to allow firebase to load
         Thread.sleep(2000);

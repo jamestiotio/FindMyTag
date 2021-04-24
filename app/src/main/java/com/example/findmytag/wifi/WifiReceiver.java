@@ -36,7 +36,8 @@ class WifiReceiver extends BroadcastReceiver {
             }
             Toast.makeText(context, sb, Toast.LENGTH_SHORT).show();
 
-            ArrayAdapter arrayAdapter = new ArrayAdapter(context, android.R.layout.simple_list_item_1, deviceList.toArray());
+            ArrayAdapter arrayAdapter = new ArrayAdapter(context,
+                    android.R.layout.simple_list_item_1, deviceList.toArray());
 
             wifiDeviceList.setAdapter(arrayAdapter);
         }

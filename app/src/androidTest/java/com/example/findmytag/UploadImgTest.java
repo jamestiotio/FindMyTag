@@ -7,11 +7,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 
-import androidx.fragment.app.FragmentTransaction;
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.rule.GrantPermissionRule;
 
 import org.hamcrest.Matcher;
@@ -25,34 +22,29 @@ import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.matcher.ViewMatchers.isClickable;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.junit.Assert.*;
 
 public class UploadImgTest {
+    @Rule
+    // public ActivityScenarioRule<LocationActivity> mLocationActivityRule = new
+    // ActivityScenarioRule<>(LocationActivity.class);
+    public IntentsTestRule<LocationActivity> mLoginActivityTestRule =
+            new IntentsTestRule<>(LocationActivity.class);
+    public GrantPermissionRule mRuntimePermissionRule =
+            GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
     String locationInputError1 = "Please fill in Location 1 Name";
     String locationInputError2 = "Please fill in Location 2 Name";
     String imgError1 = "Please upload Location 1 Floor Plan";
     String imgError2 = "Please upload Location 2 Floor Plan";
-
     String location1INPUT = "Location 1";
     String location2INPUT = "Location 2";
-
-    @Rule
-    // public ActivityScenarioRule<LocationActivity> mLocationActivityRule = new ActivityScenarioRule<>(LocationActivity.class);
-    public IntentsTestRule<LocationActivity> mLoginActivityTestRule = new IntentsTestRule<>(LocationActivity.class);
-    public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule .grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
     // public IntentsTestRule<LocationActivity> mLoginActivityActivityTestRule =
     //        new IntentsTestRule<>(LocationActivity.class);
 
@@ -209,7 +201,8 @@ public class UploadImgTest {
         onView(withId(R.id.uploadPopup_upload_locationName2)).check(matches(isDisplayed()));
         onView(withId(R.id.uploadPopup_upload_locationName2)).perform(click());
         onView(withId(R.id.uploadPopup_upload_locationName2)).perform(clearText());
-        onView(withId(R.id.uploadPopup_upload_locationName2)).perform(typeText(location2INPUT),closeSoftKeyboard());
+        onView(withId(R.id.uploadPopup_upload_locationName2)).perform(typeText(location2INPUT),
+                closeSoftKeyboard());
 
         //add location img 2
         onView(withId(R.id.uploadPopup_upload_btn2)).perform(scrollTo());
@@ -228,17 +221,17 @@ public class UploadImgTest {
     }
 
     // image picking function
-    private Instrumentation.ActivityResult galleryPick(){
+    private Instrumentation.ActivityResult galleryPick() {
         Resources resources = ApplicationProvider.getApplicationContext().getResources();
         Uri imgUri = Uri.parse(
                 ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
-                        +resources.getResourcePackageName(R.drawable.ic_launcher_background)+"/"
-                        +resources.getResourceTypeName(R.drawable.ic_launcher_background)+"/"
-                        +resources.getResourceEntryName(R.drawable.ic_launcher_background)
+                        + resources.getResourcePackageName(R.drawable.ic_launcher_background) + "/"
+                        + resources.getResourceTypeName(R.drawable.ic_launcher_background) + "/"
+                        + resources.getResourceEntryName(R.drawable.ic_launcher_background)
         );
 
         Intent resultIntent = new Intent();
         resultIntent.setData(imgUri);
-        return new Instrumentation.ActivityResult(Activity.RESULT_OK,resultIntent);
+        return new Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent);
     }
 }

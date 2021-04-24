@@ -2,9 +2,11 @@ package com.example.findmytag.algorithms.randomforest;
 
 import android.os.Build;
 
-import androidx.annotation.RequiresApi;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -32,7 +34,9 @@ public class Serialize {
         return temp;
     }
 
-    /** Reads an object from a (temp) file. */
+    /**
+     * Reads an object from a (temp) file.
+     */
     public static Object read(Path path) throws IOException, ClassNotFoundException {
         InputStream file = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

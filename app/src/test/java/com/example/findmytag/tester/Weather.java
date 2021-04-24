@@ -4,18 +4,14 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import java.nio.file.Path;
-
 import smile.data.CategoricalEncoder;
 import smile.data.DataFrame;
 import smile.data.formula.Formula;
 import smile.io.Read;
-import smile.util.Paths;
 
 import static smile.util.Paths.home;
 
 /**
- *
  * @author Haifeng
  */
 @RequiresApi(api = Build.VERSION_CODES.O)

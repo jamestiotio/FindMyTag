@@ -1,56 +1,16 @@
 package com.example.findmytag.algorithms.randomforest;
 
-import android.os.Build;
-import android.util.Log;
-
-import androidx.annotation.RequiresApi;
-
-import org.apache.commons.csv.CSVFormat;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import java.io.PrintWriter;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-//import tech.tablesaw.api.*;
-
-import smile.base.cart.SplitRule;
-import smile.classification.DataFrameClassifier;
 import smile.classification.SoftClassifier;
-import smile.data.CategoricalEncoder;
 import smile.data.DataFrame;
-import smile.data.Tuple;
 import smile.data.formula.Formula;
 import smile.data.type.DataTypes;
 import smile.data.type.StructField;
 import smile.data.type.StructType;
-import smile.glm.model.Model;
-import smile.io.CSV;
-import smile.classification.RandomForest;
-import smile.validation.ClassificationMetrics;
-import smile.validation.CrossValidation;
-import smile.validation.LOOCV;
-import smile.validation.metric.ClassificationMetric;
+
+//import tech.tablesaw.api.*;
 
 
 public class WiFiRF {
-    public static DataFrame train;
-    public static DataFrame test;
-    public static Formula formula = Formula.lhs("location");
-
-
-    //For building model
-    int numberOfFolds = 5;
-    int bestFold = 0;
-    double bestAccuracy = 0d;
-    SoftClassifier<double[]> bestModel = null;
-
     //Hyperparameters to be edited
     private static final int nTrees = 100;
     private static final int mTry = 2;
@@ -58,25 +18,32 @@ public class WiFiRF {
     private static final int maxNodes = 100;
     private static final int nodeSize = 5;
     private static final double samplingRate = 1.0;
-
-
-
+    public static DataFrame train;
+    public static DataFrame test;
+    public static Formula formula = Formula.lhs("location");
     public static double[][] x;
     public static double[] y;
     public static double[][] testX;
     public static double[] testY;
-    static String path = "/result.csv" ;
-    static String csvPath = android.os.Environment.getExternalStorageDirectory() + "/downloads" + path;
+    static String path = "/result.csv";
+    static String csvPath =
+            android.os.Environment.getExternalStorageDirectory() + "/downloads" + path;
     static StructType schema = DataTypes.struct(
             new StructField("bssid", DataTypes.StringType),
             new StructField("rssi", DataTypes.StringType),
             new StructField("coordinates", DataTypes.StringType)
     );
+    //For building model
+    int numberOfFolds = 5;
+    int bestFold = 0;
+    double bestAccuracy = 0d;
+    SoftClassifier<double[]> bestModel = null;
 
 //
 //    //Try 1
 //    @RequiresApi(api = Build.VERSION_CODES.O)
-//    public static void trainModel(String trainingPath, String outputPath, int responseIndex, boolean skipCrossValidation) throws Exception{
+//    public static void trainModel(String trainingPath, String outputPath, int responseIndex,
+//    boolean skipCrossValidation) throws Exception{
 //
 //
 //        String modelFilePath = Paths.get(outputPath, "RandomForest.model").toString();
@@ -101,7 +68,7 @@ public class WiFiRF {
 //        File root = android.os.Environment.getExternalStorageDirectory();
 //        String pathName = root.getAbsolutePath()+"/download"+path;
 
-        //Build the model
+    //Build the model
 //        CrossValidation cv = new CrossValidation()
 
 
@@ -115,7 +82,8 @@ public class WiFiRF {
 //            testY = formula.y(test).toDoubleArray();
 //
 //            //Build the model
-//            RandomForest model = RandomForest.fit(formula, train, nTrees, mTry, maxDepth, maxNodes, nodeSize, samplingRate);
+//            RandomForest model = RandomForest.fit(formula, train, nTrees, mTry, maxDepth,
+//            maxNodes, nodeSize, samplingRate);
 //
 //            double[] importance = model.importance();
 //            for(int i = 0 ; i < importance.length ; i++){
@@ -123,7 +91,8 @@ public class WiFiRF {
 //            }
 //
 //            ClassificationMetrics metrics = LOOCV.classification(formula, train,
-//                    (f, x) -> (DataFrameClassifier) RandomForest.fit(f, x, nTrees,mTry,maxDepth,maxNodes,nodeSize,samplingRate));
+//                    (f, x) -> (DataFrameClassifier) RandomForest.fit(f, x, nTrees,mTry,
+//                    maxDepth,maxNodes,nodeSize,samplingRate));
 //
 //
 //            File file = new File(pathName,"WiFiData.txt");

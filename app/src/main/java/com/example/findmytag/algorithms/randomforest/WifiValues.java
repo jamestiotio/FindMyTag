@@ -10,7 +10,6 @@ import androidx.annotation.RequiresApi;
 
 import java.nio.file.Path;
 
-import smile.data.CategoricalEncoder;
 import smile.data.DataFrame;
 import smile.data.formula.Formula;
 import smile.io.Read;
@@ -26,9 +25,10 @@ public class WifiValues {
     public static double[][] onehot;
     public static String[] y;
 
-    static{
-        try{
-            Path pathToFile = java.nio.file.Paths.get("/Users","zen","Downloads", "weather.nominal.csv");
+    static {
+        try {
+            Path pathToFile = java.nio.file.Paths.get("/Users", "zen", "Downloads", "weather" +
+                    ".nominal.csv");
 
             data = Read.csv(pathToFile);
 
