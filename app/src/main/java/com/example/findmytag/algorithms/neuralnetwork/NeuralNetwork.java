@@ -30,6 +30,10 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * Everything under this neuralnetwork folder/directory is under copyright, all rights reserved by
+ * James Raphael Tiovalen. If you would like to use any part of this CNN implementation, please ask
+ * and request for permission first from the author.
+ * <p>
  * This is just a simple feed-forward convolutional neural network (Conv-ReLu CNN-LOC), nothing
  * fancy. This network uses RSSI instead of CSI information data to solve a fingerprinting
  * classification problem. Based on this research paper:
@@ -58,6 +62,8 @@ import java.io.IOException;
  * https://dl.acm.org/doi/10.1145/3194554.3194594
  * <p>
  * For testing, we can implement mutation-based testing or differential testing.
+ * 
+ * @author James Raphael Tiovalen
  */
 public class NeuralNetwork {
     private static final Logger log = LoggerFactory.getLogger(NeuralNetwork.class);
