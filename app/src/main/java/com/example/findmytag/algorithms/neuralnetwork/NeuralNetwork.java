@@ -58,7 +58,7 @@ import java.io.IOException;
  * numbers/arrangements of Wi-Fi access points with different specifications/models, but this may
  * not generally scale to N floors (this is only for 2 floors).
  * <p>
- * This is a modified implementation of this research paper:
+ * This is a modified implementation of the deep neural network described in this research paper:
  * https://dl.acm.org/doi/10.1145/3194554.3194594
  * <p>
  * For testing, we can implement mutation-based testing or differential testing.
